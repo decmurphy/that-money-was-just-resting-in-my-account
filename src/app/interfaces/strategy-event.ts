@@ -1,7 +1,7 @@
 import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { FormErrorProvider } from "app/shared/http/flight-club/interfaces/form-error-provider";
-import { Formable } from "app/shared/http/flight-club/interfaces/formable";
-import { RequiredNumber } from "app/shared/validators/required-number.directive";
+import { FormErrorProvider } from "./form-error-provider";
+import { Formable } from "./formable";
+import { RequiredNumber } from "../validators/required-number.directive";
 import { FormData } from "./form-data";
 
 export class StrategyEvent implements Formable {

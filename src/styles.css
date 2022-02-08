@@ -1,1 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
+.cdk-drag-handle:not(:active) {
+  cursor: grab !important;
+}
+
+.cdk-drag-handle:active {
+  cursor: grabbing !important;
+}
+
+/* Animate items as they're being sorted. */
+.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Animate an item that has been dropped. */
+.cdk-drag-animating {
+  transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.mat-row:hover {
+  background-color: #41576f !important;
+  cursor: pointer;
+}

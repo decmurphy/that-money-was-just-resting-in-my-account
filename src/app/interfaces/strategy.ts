@@ -1,6 +1,6 @@
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from "@angular/forms";
-import { FormErrorProvider } from "app/shared/http/flight-club/interfaces/form-error-provider";
-import { Formable } from "app/shared/http/flight-club/interfaces/formable";
+import { FormErrorProvider } from "./form-error-provider";
+import { Formable } from "./formable";
 import { FormData } from "./form-data";
 import { StrategyEvent } from "./strategy-event";
 

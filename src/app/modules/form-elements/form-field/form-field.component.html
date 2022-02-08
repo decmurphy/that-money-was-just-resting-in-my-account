@@ -1,0 +1,33 @@
+<div
+    class='relative min-w-[210px] h-[60px] rounded-md bg-slate-700 px-3 pt-3 border-2 border-rose-400/0'
+    [ngClass]="{
+        'border-rose-400/100': formError != null
+    }"
+    >
+    <div class='relative w-full h-full flex flex-row whitespace-nowrap max-w-full'>
+
+        <!-- Prefix -->
+        <div *ngIf="formPrefix" class='mt-2 -ml-2 mr-1'>
+            <ng-content select="[formPrefix]"></ng-content>
+        </div>
+
+        <!-- Input and Label -->
+        <div class='relative w-full flex flex-col grow'>
+            <ng-content></ng-content>
+            <label [attr.for]="inputId" class='absolute left-0 -top-0.5 translate-y-0 z-10 text-slate-400 text-xs transition-[transform,font-size,line-height] peer-focus:translate-y-0 peer-focus:text-xs peer-placeholder-shown:translate-y-2 peer-placeholder-shown:text-base'>
+                <ng-content select="[formLabel]"></ng-content>
+            </label>
+        </div>
+
+        <!-- Suffix -->
+        <div *ngIf="formSuffix" class="h-9 flex justify-center items-end">
+            <ng-content select="[formSuffix]"></ng-content>
+        </div>
+
+    </div>
+
+    <!-- Form Errors -->
+    <div class='absolute top-[60px] w-full text-rose-400 text-xs'>
+        <ng-content select="[formError]"></ng-content>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+
+<div class='w-full h-12 relative text-slate-100 hover:bg-noche-400'>
+    <ng-container *ngIf="multiple then checkboxInputTmpl else radioInputTmpl"></ng-container>
+</div>
+
+<ng-template #checkboxInputTmpl>
+
+    <div class='w-full h-full flex items-center'>
+        <input
+            #input
+            [id]="id"
+            type="checkbox"
+            class='cursor-pointer disabled:cursor-default accent-accent focus:ring-accent'
+            [checked]="checked ? true : null"
+            [disabled]="disabled ? true : null"
+            (change)="selectionChange()" />
+        <label
+            #label
+            [for]="id"
+            class="w-full h-full px-4 py-2 text-base flex justify-start items-center ml-2 leading-4 cursor-pointer"
+            >
+            <ng-container *ngTemplateOutlet="content"></ng-container>
+        </label>
+    </div>
+
+</ng-template>
+
+<ng-template #radioInputTmpl>
+
+    <div class='w-full h-full flex items-center'>
+        <input
+            #input
+            [id]="id"
+            class='peer appearance-none'
+            type="radio"
+            [value]="value"
+            [checked]="checked ? true : null"
+            [disabled]="disabled ? true : null"
+            (change)="selectionChange()"
+            (click)="selectionChange()" />
+        <label
+            #label
+            [for]="id"
+            class="w-full h-full px-4 py-2 text-base flex justify-start items-center cursor-pointer peer-checked:bg-noche-400"
+            >
+            <ng-container *ngTemplateOutlet="content"></ng-container>
+        </label>
+    </div>
+
+</ng-template>
+
+<ng-template #content>
+    <ng-content></ng-content>
+</ng-template>

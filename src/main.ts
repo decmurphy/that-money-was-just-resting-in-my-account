@@ -9,4 +9,16 @@ if (environment.production) {
 }
 
 platformBrowserDynamic().bootstrapModule(AppModule)
+.then(moduleRef => {
+  //   if (!environment.production) {
+  //     const applicationRef = moduleRef.injector.get(ApplicationRef);
+  //     const componentRef = applicationRef.components[0];
+  //     // allows to run `ng.profiler.timeChangeDetection();`
+  //     enableDebugTools(componentRef);
+  //   }
+
+    if ('serviceWorker' in navigator && environment.production) {
+      navigator.serviceWorker.register('ngsw-worker.js');
+    }
+  })
   .catch(err => console.error(err));

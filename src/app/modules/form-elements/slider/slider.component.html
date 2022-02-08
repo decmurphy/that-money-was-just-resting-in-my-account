@@ -1,0 +1,14 @@
+<div class='flex flex-col justify-center items-stretch w-full h-full'>
+    <input
+        [id]="id"
+        class="w-full"
+        type="range"
+        [min]="min"
+        [max]="max"
+        [step]="step"
+        [value]="value"
+        [disabled]="disabled ? true : null"
+        (change)="onSliderChange($event)"
+        (input)="onSliderInput($event)"
+        />
+</div>

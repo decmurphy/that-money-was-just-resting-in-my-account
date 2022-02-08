@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    html, body {
+        @apply w-full h-full p-0 m-0 overflow-x-hidden overscroll-y-none;
+    }
+    html * {
+        scrollbar-width: thin;
+        scrollbar-color: theme('colors.sky.400') transparent;
+    }
+    html ::-webkit-scrollbar {
+        width: var(--scrollbarWidth);
+        height: var(--scrollbarWidth);
+    }
+    html ::-webkit-scrollbar {
+        @apply bg-transparent;
+    }
+    html ::-webkit-scrollbar-thumb {
+        @apply bg-sky-400 w-1 rounded-full;
+    }
+
+    svg {
+        @apply flex-none;
+    }
+
+    /*
+        Range slider
+    */
+
+    .slider {
+        @apply appearance-none cursor-pointer bg-accent rounded-full h-0.5 disabled:bg-slate-400;
+    }
+
+    .slider-thumb {
+        @apply appearance-none cursor-grab bg-accent rounded-full w-5 h-5 border-4 border-sky-300 shadow-xl;
+    }
+
+    .slider-thumb-active {
+        @apply cursor-grabbing;
+    }
+
+    input[formInput] {
+        @apply
+            absolute left-0 bottom-3
+            mt-1
+            h-4 w-full
+            border-none focus:border-none focus:ring-white/0
+            bg-white/0
+            text-slate-100
+            placeholder:invisible focus:placeholder:visible
+            focus:outline-none
+            disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+    }
+
+    select[formInput] {
+        @apply
+            absolute left-0 bottom-0
+            mt-1
+            h-full w-full
+            border-none focus:border-none focus:ring-white/0
+            bg-white/0
+            text-slate-100
+            placeholder:invisible focus:placeholder:visible
+            focus:outline-none
+            disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+    }
+
+    input[type='range'] {
+        @apply slider;
+    }
+
+    input[type='range']::-moz-range-thumb {
+        @apply slider-thumb;
+    }
+
+    input[type='range']::-webkit-slider-thumb {
+        @apply slider-thumb;
+    }
+
+    input[type='range']::-moz-range-thumb:active {
+        @apply slider-thumb-active;
+    }
+
+    input[type='range']::-webkit-slider-thumb:active {
+        @apply slider-thumb-active;
+    }
+
+    /*
+        Typography
+    */
+
+    h1 {
+        @apply font-heading font-medium text-5xl xl:text-6xl;
+    }
+
+    h2 {
+        @apply font-heading font-normal text-4xl xl:text-5xl;
+    }
+
+    h3 {
+        @apply font-heading font-normal text-3xl xl:text-4xl;
+    }
+
+    h4 {
+        @apply font-heading font-normal text-2xl xl:text-3xl;
+    }
+
+    h5 {
+        @apply font-heading font-normal text-xl xl:text-2xl;
+    }
+
+    h6 {
+        @apply font-heading font-normal text-lg xl:text-xl;
+    }
+
+    p, ul, li {
+        @apply xl:text-lg xl:leading-6;
+    }
+
+    small {
+        @apply text-sm xl:text-base;
+    }
+
+    caption {
+        @apply text-xs xl:text-sm;
+    }
+
+    a[href^="http"] {
+        @apply text-accent hover:underline;
+    }
+
+}
+
+@layer components {
+
+    /*
+        Convert a chevron-right icon into an arrow-right icon on hover.
+        Translate and delayed opacity transitions, reversed transitions on unhover
+        See buttons on /home for reference.
+        • Must add .absolute to svgs and put them centered in a div.relative
+        • Must add .animated-icon-link to button/link
+    */
+
+    .animated-icon-link .chevron-right {
+        transition: opacity 150ms linear 0s, transform 150ms linear 150ms;
+    }
+    .animated-icon-link .arrow-right {
+        transition: opacity 150ms linear 0s;
+        opacity: 0;
+    }
+    .animated-icon-link:hover .chevron-right {
+        transition: transform 150ms linear 0s, opacity 150ms linear 150ms;
+        transform: translateX(6px);
+        opacity: 0;
+    }
+    .animated-icon-link:hover .arrow-right {
+        transition-delay: 150ms;
+        opacity: 1;
+    }
+
+    .loader {
+        @apply block relative left-1/2 top-1/2 rounded-full border-4 border-solid border-transparent w-40 h-40 -mt-20 -ml-20;
+        border-top-color: #9370DB;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+    .loader:before {
+        @apply absolute rounded-full border-4 border-solid border-transparent inset-1.5;
+        content: "";
+        border-top-color: #409be5;
+        -webkit-animation: spin 3s linear infinite;
+        animation: spin 3s linear infinite;
+    }
+    .loader:after {
+        @apply absolute rounded-full border-4 border-solid border-transparent inset-4;
+        content: "";
+        border-top-color: #FF00FF;
+        -webkit-animation: spin 1.5s linear infinite;
+        animation: spin 1.5s linear infinite;
+    }
+
+    /*
+        Buttons
+    */
+
+    .btn {
+        @apply
+            flex
+            shadow-lg shadow-noche-800/50
+            rounded-lg bg-transparent hover:bg-sky-200 text-sky-200 hover:text-noche-800 active:bg-sky-200/90
+            py-2 px-4 cursor-pointer focus:outline-none
+            transition-opacity-colors;
+    }
+
+    .btn.no-hover {
+        @apply hover:text-sky-100 hover:bg-transparent active:bg-transparent;
+    }
+
+    .btn.dark {
+        @apply bg-noche-600 text-sky-100 hover:bg-noche-500 active:bg-noche-600;
+    }
+
+    .btn.primary {
+        @apply bg-sky-300 text-noche-800 hover:bg-sky-200 active:bg-sky-300;
+    }
+
+    .btn.accent {
+        @apply bg-accent/90 text-noche-800 hover:bg-accent/100 active:bg-accent/80;
+    }
+
+    .btn.fab {
+        @apply
+            p-4 h-6 w-6 box-content rounded-full shadow-2xl
+            transition-transform hover:scale-105;
+    }
+    .btn.pill {
+        @apply
+            flex flex-row items-center rounded-full
+            transition-opacity-transform hover:scale-105;
+    }
+
+    /*
+        Dividers
+    */
+
+    .divider {
+        @apply border-sky-500/50 border-solid;
+    }
+    .divider:not(.vertical) {
+        @apply my-4 border-b flex;
+    }
+    .divider.vertical {
+        @apply mx-4 border-r flex;
+    }
+
+    /**
+        Misc
+    */
+
+    .hero {
+        @apply font-heading font-semibold text-7xl xl:text-8xl leading-tight tracking-tighter;
+    }
+
+    .list-element {
+        @apply flex flex-row justify-between items-center px-4 min-h-[5rem] h-auto border-l-4 rounded-lg hover:rounded-l-none border-sky-400/0 hover:border-sky-400/100 bg-noche-700 hover:bg-noche-600 cursor-pointer;
+    }
+
+}
+
+@layer utilities {
+
+    /*
+        https://tailwindcss.com/docs/adding-new-utilities
+    */
+
+    .background-gradient {
+        background-image:
+            radial-gradient(
+                circle at top right,
+                theme('colors.noche.700'), transparent
+            ),
+            radial-gradient(
+                circle at bottom left,
+                rgba(0,0,0,0.95), transparent
+            )
+            ;
+    }
+
+    .disabled {
+        @apply cursor-default pointer-events-none opacity-50;
+    }
+
+}

@@ -2,7 +2,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -21,7 +21,12 @@
     "lib": [
       "es2020",
       "dom"
-    ]
+    ],
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,      // should probably remove this in the future and fix the errors it generates
+    "strictNullChecks": false,                  // should probably remove this in the future and fix the errors it generates
+    "noImplicitAny": false,                     // should probably remove this in the future and fix the errors it generates
+    "skipLibCheck": true,                       // skip TS checks on 3rd party libs. The big culprit is OpenLayers ('ol' on npm).
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -1,27 +1,26 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { Subscription, takeUntil, tap } from 'rxjs';
 
-import { GenericPlotData } from 'app/shared/interfaces/generic-plot-data';
-import { SubscriptionHandler } from 'app/shared/interfaces/subscription-handler';
-import { MonthData } from '../interfaces/month-data';
-import { FormData } from '../interfaces/form-data';
-import { Strategy } from '../interfaces/strategy';
-import { RequiredNumber } from 'app/shared/validators/required-number.directive';
-import { TaxPayer } from '../interfaces/tax-payer';
-import { MatPaginator } from '@angular/material/paginator';
-import { KeyVal } from 'app/shared/http/flight-club/misc/keyval';
-import { LocalStorageService } from 'app/shared/services/local-storage.service';
-import { MaritalStatus } from '../interfaces/marital-status';
-import { StrategyEvent } from '../interfaces/strategy-event';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { GenericPlotData } from './interfaces/generic-plot-data';
+import { SubscriptionHandler } from './interfaces/subscription-handler';
+import { MonthData } from './interfaces/month-data';
+import { FormData } from './interfaces/form-data';
+import { Strategy } from './interfaces/strategy';
+import { TaxPayer } from './interfaces/tax-payer';
+import { KeyVal } from './interfaces/keyval';
+import { LocalStorageService } from './services/local-storage.service';
+import { MaritalStatus } from './interfaces/marital-status';
+import { StrategyEvent } from './interfaces/strategy-event';
 
 @Component({
-    selector: 'app',
+    selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.componentscss']
+    styleUrls: ['./app.component.css']
 })
 export class AppComponent extends SubscriptionHandler implements OnInit, AfterViewInit {
 

@@ -1,6 +1,6 @@
 import { AbstractControl, FormBuilder, FormGroup } from "@angular/forms";
-import { FormErrorProvider } from "app/shared/http/flight-club/interfaces/form-error-provider";
-import { Formable } from "app/shared/http/flight-club/interfaces/formable";
+import { FormErrorProvider } from "./form-error-provider";
+import { Formable } from "./formable";
 import { Expenditures } from "./expenditures";
 import { MaritalStatus } from "./marital-status";
 import { Mortgage } from "./mortgage";

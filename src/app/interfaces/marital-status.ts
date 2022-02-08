@@ -1,6 +1,6 @@
 import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { FormErrorProvider } from "app/shared/http/flight-club/interfaces/form-error-provider";
-import { Formable } from "app/shared/http/flight-club/interfaces/formable";
+import { FormErrorProvider } from "./form-error-provider";
+import { Formable } from "./formable";
 
 export class MaritalStatus implements Formable {
 

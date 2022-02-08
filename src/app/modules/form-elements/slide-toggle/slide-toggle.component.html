@@ -1,0 +1,18 @@
+<div class='shadow-none outline-none select-none relative w-8 hover:bg-black'>
+    <input
+        type="checkbox"
+        [id]="id"
+        [name]="id"
+        [checked]="checked ? true : null"
+        (change)="change($event)"
+        class='shadow-none outline-none absolute p-0 -m-px overflow-hidden whitespace-no-wrap'>
+    <label
+        [for]="id"
+        class='block overflow-hidden cursor-pointer h-4 rounded-full'
+        [ngClass]="checked ? 'bg-accent bg-opacity-50' : 'bg-sky-300 bg-opacity-50'">
+        <span
+            class='absolute block w-6 h-6 -top-1 rounded-full transition-position duration-150 ease-out'
+            [ngClass]="checked ? 'left-4 bg-accent' : '-left-2 bg-sky-300'">
+        </span>
+    </label>
+</div>
