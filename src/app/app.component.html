@@ -112,7 +112,7 @@
                               </div>
                           </ng-container>
                           <ng-container *ngIf="editingTaxpayerIdx !== 0">
-                              <div class='list-element flex items-center w-full'>
+                              <div class='list-element flex items-center h-full w-full' (click)="editingTaxpayerIdx = 0;">
                                   <div class='flex flex-col grow'>
                                       <h6>{{ data.tp1.name }}</h6>
                                       <p class='ml-4'>{{ data.tp1 | salarySummary}}</p>
@@ -121,9 +121,6 @@
                                   <button [ngClass]="{ 'disabled': data.tp2 == null }" [disabled]="data.tp2 == null" class='btn w-8 h-8 p-1' (click)="removeTaxpayer(0)">
                                       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                   </button>
-                                  <button class='btn w-8 h-8 p-1' (click)="editingTaxpayerIdx = 0;">
-                                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                                  </button>
                               </div>
                           </ng-container>
 
@@ -131,7 +128,7 @@
                               <ng-container *ngIf="editingTaxpayerIdx === 1">
                                   <div class='space-y-4 border rounded px-4 py-2' formGroupName='tp2'>
                                       <div class='flex flex-row justify-between'>
-                                          <div class='flex space-x-2'>
+                                          <div class='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2'>
                                               <fc-form-field>
                                                   <span formLabel>Name</span>
                                                   <input formInput type='text' formControlName='name'/>
@@ -208,7 +205,7 @@
                                   </div>
                               </ng-container>
                               <ng-container *ngIf="editingTaxpayerIdx !== 1">
-                                  <div class='list-element flex items-center w-full'>
+                                  <div class='list-element flex items-center h-full w-full' (click)="editingTaxpayerIdx = 1;">
                                       <div class='flex flex-col grow'>
                                           <h6>{{ data.tp2.name }}</h6>
                                           <p class='ml-4'>{{ data.tp2 | salarySummary}}</p>
@@ -216,9 +213,6 @@
                                       </div>
                                       <button class='btn w-8 h-8 p-1' (click)="removeTaxpayer(1)">
                                           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                      </button>
-                                      <button class='btn w-8 h-8 p-1' (click)="editingTaxpayerIdx = 1;">
-                                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                       </button>
                                   </div>
                               </ng-container>
@@ -287,7 +281,7 @@
                           </div>
                       </ng-container>
                       <ng-container *ngIf="!editingMortgage">
-                          <div class='list-element flex items-center w-full'>
+                          <div class='list-element flex items-center h-full w-full' (click)="editingMortgage = true;">
                               <div class='flex flex-col grow'>
                                   <h6>{{ data.mortgage | mortgageSummary:1 }}</h6>
                                   <p class='ml-4'>{{ data.mortgage | mortgageSummary:2 }}</p>
@@ -317,7 +311,7 @@
                           Every time you add or edit an event, the changes will be immediately reflected in the graphs and data
                       </p>
                       <div cdkDropList [cdkDropListData]="data.strategy.events" (cdkDropListDropped)="drop($event)" class='w-full grid grid-cols-1 gap-y-2 mt-2' formArrayName='events'>
-                          <div *ngFor="let ev of events.controls; let i = index" class='list-element cursor-default grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-1 px-4 py-2' [formGroupName]='i'>
+                          <div cdkDrag *ngFor="let ev of events.controls; let i = index" class='list-element grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-1 px-4 py-2' [formGroupName]='i'>
                               <ng-container *ngIf="editingEventIdx === i">
                                   <fc-form-field>
                                       <span formLabel>After Months</span>
@@ -328,9 +322,10 @@
                                       <span formLabel>TaxPayer</span>
                                       <fc-select formInput formControlName="taxpayer">
                                           <fc-option [value]="null"></fc-option>
-                                          <fc-option *ngFor="let tp of data | taxpayers" [value]="tp.id">
-                                              <span>{{tp.name}}</span>
-                                          </fc-option>
+                                          <fc-option [value]="'0'">{{ data.tp1.name }}</fc-option>
+                                          <ng-container *ngIf="data.tp2 != null">
+                                            <fc-option [value]="'1'">{{ data.tp2.name }}</fc-option>
+                                          </ng-container>
                                       </fc-select>
                                       <span formError *ngIf="events.at(i).get('taxpayer').invalid"> </span>
                                   </fc-form-field>
@@ -358,7 +353,7 @@
                                       <span formError *ngIf="events.at(i).get('value').invalid"> </span>
                                   </fc-form-field>
                                   <div class='flex justify-end items-center'>
-                                      <button class='btn w-8 h-8 p-1' (click)="removeEvent(i)">
+                                      <button *ngIf="!events.at(i).valid" class='btn w-8 h-8 p-1' (click)="removeEvent(i)">
                                           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                       </button>
                                       <button [ngClass]="{ 'disabled': !events.at(i).valid }" [disabled]="!events.at(i).valid" class='btn w-8 h-8 p-1' (click)="editingEventIdx = null;">
@@ -367,14 +362,11 @@
                                   </div>
                               </ng-container>
                               <ng-container *ngIf="editingEventIdx !== i">
-                                  <div cdkDrag class='col-span-full flex items-center w-full'>
+                                  <div class='col-span-full h-full flex items-center w-full' (click)="editingEventIdx = i;">
                                       <p class='flex grow'>{{ ev.value | summary:data }}</p>
                                       <svg cdkDragHandle viewBox="0 0 20 20" fill="currentColor" class="menu-alt4 w-6 h-6"><path fill-rule="evenodd" d="M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
                                       <button class='btn w-8 h-8 p-1' (click)="removeEvent(i)">
                                           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                      </button>
-                                      <button class='btn w-8 h-8 p-1' (click)="editingEventIdx = i;">
-                                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                       </button>
                                   </div>
                               </ng-container>

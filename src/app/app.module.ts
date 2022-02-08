@@ -17,26 +17,20 @@ import { FormElementsModule } from './modules/form-elements/form-elements.module
 import { ChartModule } from './modules/chart/chart.module';
 import { PlotlyModule } from './modules/chart/plotly.module';
 import { SummaryPipe } from './pipes/summary.pipe';
-import { CombinedIncomePipe } from './pipes/combined-income.pipe';
-import { TaxpayerSummaryPipe } from './pipes/taxpayer-summary.pipe';
 import { SalarySummaryPipe } from './pipes/salary-summary.pipe';
 import { PensionSummaryPipe } from './pipes/pension-summary.pipe';
 import { MortgageSummaryPipe } from './pipes/mortgage-summary.pipe';
 import { AppServicesModule } from './modules/app-services.module';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { TaxpayersPipe } from './pipes/taxpayers.pipe';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     SummaryPipe,
-    CombinedIncomePipe,
-    TaxpayerSummaryPipe,
     SalarySummaryPipe,
     PensionSummaryPipe,
-    MortgageSummaryPipe,
-    TaxpayersPipe
+    MortgageSummaryPipe
   ],
   imports: [
     BrowserModule,
