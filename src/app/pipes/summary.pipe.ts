@@ -36,6 +36,10 @@ export class SummaryPipe implements PipeTransform {
 
                 const tp = ev.taxpayer === '0' ? formData.tp1 : formData.tp2;
 
+                if (tp == null) {
+                  return '';
+                }
+
                 switch(ev.operation) {
                     case "add":
                         summary += `${tp.name} increases ${formattedQuantity} by ${formattedValue}`;

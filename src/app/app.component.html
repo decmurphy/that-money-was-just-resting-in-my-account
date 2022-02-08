@@ -2,7 +2,7 @@
 
   <div class='w-full h-screen overflow-hidden box-border fixed inset-0 -z-10 bg-noche-500 background-gradient'></div>
 
-  <div class='px-16 pt-16 p-4 overflow-y-scroll h-screen'>
+  <div class='px-2 sm:px-4 md:px-8 xl:px-16 pt-16 p-4 overflow-y-scroll h-screen'>
 
       <div class='flex flex-col lg:flex-row lg:space-x-4'>
           <div class='w-full lg:w-1/2'>
@@ -24,7 +24,7 @@
                       <p>
                           Every time you edit a field, the changes will be immediately reflected in the graphs and data
                       </p>
-                      <div [hidden]="!data.tp2" class='grid grid-cols-3 gap-2' formGroupName='maritalStatus'>
+                      <div *ngIf="data.tp2 != null" class='grid grid-cols-3 gap-2' formGroupName='maritalStatus'>
                           <fc-checkbox formControlName='married'>Married</fc-checkbox>
                           <fc-radio-group *ngIf="data.maritalStatus.married" class='col-span-2 grid grid-cols-2 gap-2' formControlName='assessmentMode'>
                               <fc-radio-button value='0'>Joint Assessed</fc-radio-button>
@@ -36,7 +36,7 @@
                           <ng-container *ngIf="editingTaxpayerIdx === 0">
                               <div class='space-y-4 border rounded px-4 py-2' formGroupName='tp1'>
                                   <div class='flex flex-row justify-between'>
-                                      <div class='flex space-x-2'>
+                                      <div class='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2'>
                                           <fc-form-field>
                                               <span formLabel>Name</span>
                                               <input formInput type='text' formControlName='name'/>
@@ -317,7 +317,7 @@
                           Every time you add or edit an event, the changes will be immediately reflected in the graphs and data
                       </p>
                       <div cdkDropList [cdkDropListData]="data.strategy.events" (cdkDropListDropped)="drop($event)" class='w-full grid grid-cols-1 gap-y-2 mt-2' formArrayName='events'>
-                          <div cdkDrag *ngFor="let ev of events.controls; let i = index" class='list-element cursor-default grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-1 px-4 py-2' [formGroupName]='i'>
+                          <div *ngFor="let ev of events.controls; let i = index" class='list-element cursor-default grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-1 px-4 py-2' [formGroupName]='i'>
                               <ng-container *ngIf="editingEventIdx === i">
                                   <fc-form-field>
                                       <span formLabel>After Months</span>
@@ -328,8 +328,8 @@
                                       <span formLabel>TaxPayer</span>
                                       <fc-select formInput formControlName="taxpayer">
                                           <fc-option [value]="null"></fc-option>
-                                          <fc-option *ngFor="let tp of ['0', '1']" [value]="tp">
-                                              <span>{{tp === '0' ? data.tp1.name : data.tp2.name}}</span>
+                                          <fc-option *ngFor="let tp of data | taxpayers" [value]="tp.id">
+                                              <span>{{tp.name}}</span>
                                           </fc-option>
                                       </fc-select>
                                       <span formError *ngIf="events.at(i).get('taxpayer').invalid"> </span>
@@ -358,13 +358,16 @@
                                       <span formError *ngIf="events.at(i).get('value').invalid"> </span>
                                   </fc-form-field>
                                   <div class='flex justify-end items-center'>
+                                      <button class='btn w-8 h-8 p-1' (click)="removeEvent(i)">
+                                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                      </button>
                                       <button [ngClass]="{ 'disabled': !events.at(i).valid }" [disabled]="!events.at(i).valid" class='btn w-8 h-8 p-1' (click)="editingEventIdx = null;">
                                           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                       </button>
                                   </div>
                               </ng-container>
                               <ng-container *ngIf="editingEventIdx !== i">
-                                  <div class='col-span-full flex items-center w-full'>
+                                  <div cdkDrag class='col-span-full flex items-center w-full'>
                                       <p class='flex grow'>{{ ev.value | summary:data }}</p>
                                       <svg cdkDragHandle viewBox="0 0 20 20" fill="currentColor" class="menu-alt4 w-6 h-6"><path fill-rule="evenodd" d="M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
                                       <button class='btn w-8 h-8 p-1' (click)="removeEvent(i)">

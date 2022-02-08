@@ -24,6 +24,7 @@ import { PensionSummaryPipe } from './pipes/pension-summary.pipe';
 import { MortgageSummaryPipe } from './pipes/mortgage-summary.pipe';
 import { AppServicesModule } from './modules/app-services.module';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { TaxpayersPipe } from './pipes/taxpayers.pipe';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     TaxpayerSummaryPipe,
     SalarySummaryPipe,
     PensionSummaryPipe,
-    MortgageSummaryPipe
+    MortgageSummaryPipe,
+    TaxpayersPipe
   ],
   imports: [
     BrowserModule,
