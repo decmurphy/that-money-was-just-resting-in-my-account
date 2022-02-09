@@ -1,0 +1,49 @@
+<form [formGroup]="form" class="w-full space-y-4 rounded border px-4 py-2">
+    <h6>Expenditures</h6>
+    <p>
+        Monthly expenditures are everything EXCEPT for mortgage payments. That
+        is covered in the
+        <b>Mortgage</b>
+        section below
+    </p>
+    <p>
+        Include here things like petrol, insurance, groceries, other monthly
+        bills
+    </p>
+    <p>
+        Annual expenditures are things like car tax which are only paid once per
+        year. The cost is divided into 12 and split evenly across the months of
+        the year
+    </p>
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <span class="col-span-2 text-left lg:col-span-1 lg:text-right"
+            >Monthly</span
+        >
+        <fc-slider
+            class="col-span-2"
+            formControlName="monthly"
+            [min]="0"
+            [max]="5000"
+            [step]="100"
+            >Monthly</fc-slider
+        >
+        <span class="col-span-2 text-right lg:col-span-1 lg:text-left">{{
+            data.monthly | currency: "EUR"
+        }}</span>
+
+        <span class="col-span-2 text-left lg:col-span-1 lg:text-right"
+            >Annual</span
+        >
+        <fc-slider
+            class="col-span-2"
+            formControlName="yearly"
+            [min]="0"
+            [max]="5000"
+            [step]="100"
+            >Yearly</fc-slider
+        >
+        <span class="col-span-2 text-right lg:col-span-1 lg:text-left">{{
+            data.yearly | currency: "EUR"
+        }}</span>
+    </div>
+</form>

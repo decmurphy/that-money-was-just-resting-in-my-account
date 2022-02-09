@@ -22,9 +22,31 @@ import { PensionSummaryPipe } from './pipes/pension-summary.pipe';
 import { MortgageSummaryPipe } from './pipes/mortgage-summary.pipe';
 import { AppServicesModule } from './modules/app-services.module';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { IncomePensionComponent } from './components/income-pension/income-pension.component';
+import { ExpendituresComponent } from './components/expenditures/expenditures.component';
+import { MortgageComponent } from './components/mortgage/mortgage.component';
+import { StrategyComponent } from './components/strategy/strategy.component';
+import { StrategyEventComponent } from './components/strategy-event/strategy-event.component';
+import { TaxpayerComponent } from './components/taxpayer/taxpayer.component';
+import { SummaryComponent } from './components/summary/summary.component';
+import { TableComponent } from './components/table/table.component';
 
 @NgModule({
-    declarations: [AppComponent, SummaryPipe, SalarySummaryPipe, PensionSummaryPipe, MortgageSummaryPipe],
+    declarations: [
+        AppComponent,
+        SummaryPipe,
+        SalarySummaryPipe,
+        PensionSummaryPipe,
+        MortgageSummaryPipe,
+        IncomePensionComponent,
+        ExpendituresComponent,
+        MortgageComponent,
+        StrategyComponent,
+        StrategyEventComponent,
+        TaxpayerComponent,
+        SummaryComponent,
+        TableComponent,
+    ],
     imports: [
         BrowserModule,
         ServiceWorkerModule.register('ngsw-worker.js?version=13', {

@@ -1,4 +1,10 @@
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+    AbstractControl,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators,
+} from '@angular/forms';
 import { FormErrorProvider } from './form-error-provider';
 import { Formable } from './formable';
 import { RequiredNumber } from '../validators/required-number.directive';
@@ -6,7 +12,11 @@ import { RequiredNumber } from '../validators/required-number.directive';
 export class Pension implements Formable {
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();
 
-    constructor(public percentage: number = 15, public amount: number = null, public max: boolean = false) {}
+    constructor(
+        public percentage: number = 15,
+        public amount: number = null,
+        public max: boolean = false
+    ) {}
 
     static create(model: Pension): Pension {
         if (model == null) {

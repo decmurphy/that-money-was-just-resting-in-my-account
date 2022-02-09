@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
+import { TaxPayer } from 'app/interfaces/tax-payer';
 import { FormData } from '../interfaces/form-data';
 import { StrategyEvent } from '../interfaces/strategy-event';
 
@@ -9,7 +10,7 @@ import { StrategyEvent } from '../interfaces/strategy-event';
 export class SummaryPipe implements PipeTransform {
     constructor(private currencyPipe: CurrencyPipe) {}
 
-    transform(ev: StrategyEvent, formData: FormData): string {
+    transform(ev: StrategyEvent, taxpayer: TaxPayer): string {
         if (ev.quantity == null) {
             return '';
         }
@@ -23,26 +24,25 @@ export class SummaryPipe implements PipeTransform {
         if (ev.quantity === 'pensionPercentage') {
             formattedValue = ev.value >= 40 ? `Max` : `${ev.value}%`;
         } else {
-            formattedValue = `${this.currencyPipe.transform(ev.value, 'EUR', 'symbol', '1.0-0')}`;
+            formattedValue = `${this.currencyPipe.transform(
+                ev.value,
+                'EUR',
+                'symbol',
+                '1.0-0'
+            )}`;
         }
 
         if (['pensionPercentage', 'grossIncome'].indexOf(ev.quantity) > -1) {
-            if (ev.taxpayer != null) {
-                const tp = ev.taxpayer === '0' ? formData.tp1 : formData.tp2;
-
-                if (tp == null) {
-                    return '';
-                }
-
+            if (taxpayer != null) {
                 switch (ev.operation) {
                     case 'add':
-                        summary += `${tp.name} increases ${formattedQuantity} by ${formattedValue}`;
+                        summary += `${taxpayer.name} increases ${formattedQuantity} by ${formattedValue}`;
                         break;
                     case 'subtract':
-                        summary += `${tp.name} decreases ${formattedQuantity} by ${formattedValue}`;
+                        summary += `${taxpayer.name} decreases ${formattedQuantity} by ${formattedValue}`;
                         break;
                     case 'to':
-                        summary += `${tp.name} changes ${formattedQuantity} to ${formattedValue}`;
+                        summary += `${taxpayer.name} changes ${formattedQuantity} to ${formattedValue}`;
                         break;
                 }
             } else {

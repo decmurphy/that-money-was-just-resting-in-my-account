@@ -1,4 +1,9 @@
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+    AbstractControl,
+    FormBuilder,
+    FormGroup,
+    Validators,
+} from '@angular/forms';
 import { FormErrorProvider } from './form-error-provider';
 import { Formable } from './formable';
 import { RequiredNumber } from '../validators/required-number.directive';
@@ -28,16 +33,28 @@ export class StrategyEvent implements Formable {
         if (model == null) {
             return new StrategyEvent();
         }
-        return new StrategyEvent(model.taxpayer, model.afterMonths, model.quantity, model.operation, model.value);
+        return new StrategyEvent(
+            model.taxpayer,
+            model.afterMonths,
+            model.quantity,
+            model.operation,
+            model.value
+        );
     }
 
     toFormGroup(formBuilder: FormBuilder): FormGroup {
         return formBuilder.group({
             taxpayer: [this.taxpayer],
-            afterMonths: [this.afterMonths, [Validators.required, RequiredNumber, Validators.min(0)]],
+            afterMonths: [
+                this.afterMonths,
+                [Validators.required, RequiredNumber, Validators.min(0)],
+            ],
             quantity: [this.quantity, [Validators.required]],
             operation: [this.operation, [Validators.required]],
-            value: [this.value, [Validators.required, RequiredNumber, Validators.min(0)]],
+            value: [
+                this.value,
+                [Validators.required, RequiredNumber, Validators.min(0)],
+            ],
         });
     }
 
@@ -84,8 +101,13 @@ export class StrategyEvent implements Formable {
             throw new Error('quantity is required');
         }
 
-        if (['pensionPercentage', 'grossIncome'].indexOf(this.quantity) > -1 && this.taxpayer == null) {
-            throw new Error("['pensionPercentage', 'grossIncome'] require a valid TaxPayer!");
+        if (
+            ['pensionPercentage', 'grossIncome'].indexOf(this.quantity) > -1 &&
+            this.taxpayer == null
+        ) {
+            throw new Error(
+                "['pensionPercentage', 'grossIncome'] require a valid TaxPayer!"
+            );
         }
 
         this.quantity = quantity;
@@ -131,8 +153,12 @@ export class StrategyEvent implements Formable {
 
     private _add(addValue: number): StrategyEvent {
         if (
-            ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure'].indexOf(this.quantity) ===
-            -1
+            [
+                'grossIncome',
+                'mortgageRepayment',
+                'monthlyExpenditure',
+                'yearlyExpenditure',
+            ].indexOf(this.quantity) === -1
         ) {
             throw new Error(
                 "Add/Subtract only supported for ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure']"
@@ -145,8 +171,12 @@ export class StrategyEvent implements Formable {
 
     private _subtract(subtractValue: number): StrategyEvent {
         if (
-            ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure'].indexOf(this.quantity) ===
-            -1
+            [
+                'grossIncome',
+                'mortgageRepayment',
+                'monthlyExpenditure',
+                'yearlyExpenditure',
+            ].indexOf(this.quantity) === -1
         ) {
             throw new Error(
                 "Add/Subtract only supported for ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure']"
@@ -180,21 +210,27 @@ export class StrategyEvent implements Formable {
                 break;
             case 'grossIncome':
                 if (tp != null) {
-                    tp.income.gross = this._newValue || tp.income.gross + this._deltaValue;
+                    tp.income.gross =
+                        this._newValue || tp.income.gross + this._deltaValue;
                 }
                 break;
             case 'monthlyExpenditure':
-                formData.expenditures.monthly = this._newValue || formData.expenditures.monthly + this._deltaValue;
+                formData.expenditures.monthly =
+                    this._newValue ||
+                    formData.expenditures.monthly + this._deltaValue;
                 break;
             case 'yearlyExpenditure':
-                formData.expenditures.yearly = this._newValue || formData.expenditures.yearly + this._deltaValue;
+                formData.expenditures.yearly =
+                    this._newValue ||
+                    formData.expenditures.yearly + this._deltaValue;
                 break;
             case 'mortgageAPRC':
                 formData.mortgage.aprc = this._newValue;
                 break;
             case 'mortgageRepayment':
                 formData.mortgage.monthlyRepayments =
-                    this._newValue || formData.mortgage.monthlyRepayments + this._deltaValue;
+                    this._newValue ||
+                    formData.mortgage.monthlyRepayments + this._deltaValue;
                 break;
             default:
                 break;

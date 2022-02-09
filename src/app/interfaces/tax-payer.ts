@@ -1,4 +1,9 @@
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+    AbstractControl,
+    FormBuilder,
+    FormGroup,
+    Validators,
+} from '@angular/forms';
 import { FormErrorProvider } from './form-error-provider';
 import { Formable } from './formable';
 import { RequiredNumber } from '../validators/required-number.directive';
@@ -42,7 +47,12 @@ export class TaxPayer implements Formable {
             name: [this.name, [Validators.required]],
             yearOfBirth: [
                 this.yearOfBirth,
-                [Validators.required, RequiredNumber, Validators.min(1900), Validators.max(2030)],
+                [
+                    Validators.required,
+                    RequiredNumber,
+                    Validators.min(1900),
+                    Validators.max(2030),
+                ],
             ],
             income: this.income.toFormGroup(formBuilder),
             pension: this.pension.toFormGroup(formBuilder),
@@ -78,9 +88,13 @@ export class TaxPayer implements Formable {
         if (this.pension.max) {
             pensionPercentage = this.maxAllowablePensionPercentage(year);
         } else {
-            pensionPercentage = Math.min(this.maxAllowablePensionPercentage(year), this.pension.percentage);
+            pensionPercentage = Math.min(
+                this.maxAllowablePensionPercentage(year),
+                this.pension.percentage
+            );
         }
-        this.pension.amount = (Math.min(this.income.gross, 115000) * pensionPercentage) / 100.0;
+        this.pension.amount =
+            (Math.min(this.income.gross, 115000) * pensionPercentage) / 100.0;
     }
 
     calculateNetIncome(): void {
@@ -140,20 +154,38 @@ export class TaxPayer implements Formable {
     */
     getIncomeTaxChargeable_Single(): number {
         const bracket = Tax.incomeTax.single;
-        return Tax.getTaxPayable(this.income.gross - this.pension.amount, bracket.bands);
+        return Tax.getTaxPayable(
+            this.income.gross - this.pension.amount,
+            bracket.bands
+        );
     }
 
     /*
         Don't forget to remove pension contrib from income before calculating income tax
     */
-    static getIncomeTaxChargeable_JointAssessed(taxpayer1: TaxPayer, taxpayer2: TaxPayer): number[] {
+    static getIncomeTaxChargeable_JointAssessed(
+        taxpayer1: TaxPayer,
+        taxpayer2: TaxPayer
+    ): number[] {
         const brackets = Tax.incomeTax.married;
 
-        const band1 = taxpayer1.income.gross >= taxpayer2.income.gross ? brackets.assessor.bands : brackets.lower.bands;
-        const band2 = taxpayer1.income.gross < taxpayer2.income.gross ? brackets.assessor.bands : brackets.lower.bands;
+        const band1 =
+            taxpayer1.income.gross >= taxpayer2.income.gross
+                ? brackets.assessor.bands
+                : brackets.lower.bands;
+        const band2 =
+            taxpayer1.income.gross < taxpayer2.income.gross
+                ? brackets.assessor.bands
+                : brackets.lower.bands;
 
-        const incomeTax1 = Tax.getTaxPayable(taxpayer1.income.gross - taxpayer1.pension.amount, band1);
-        const incomeTax2 = Tax.getTaxPayable(taxpayer2.income.gross - taxpayer2.pension.amount, band2);
+        const incomeTax1 = Tax.getTaxPayable(
+            taxpayer1.income.gross - taxpayer1.pension.amount,
+            band1
+        );
+        const incomeTax2 = Tax.getTaxPayable(
+            taxpayer2.income.gross - taxpayer2.pension.amount,
+            band2
+        );
 
         return [incomeTax1, incomeTax2];
     }

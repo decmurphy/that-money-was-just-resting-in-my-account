@@ -1,0 +1,128 @@
+<ng-container *ngIf="editing; then eventTmpl; else summaryTmpl"></ng-container>
+
+<ng-template #eventTmpl>
+    <form [formGroup]="form">
+        <fc-form-field>
+            <span formLabel>After Months</span>
+            <input formInput type="number" formControlName="afterMonths" />
+            <span formError *ngIf="form.get('afterMonths').invalid"> </span>
+        </fc-form-field>
+        <fc-form-field>
+            <span formLabel>TaxPayer</span>
+            <fc-select formInput formControlName="taxpayer">
+                <fc-option [value]="null"></fc-option>
+                <fc-option [value]="'0'">{{ tp1.name }}</fc-option>
+                <ng-container *ngIf="tp2 != null">
+                    <fc-option [value]="'1'">{{ tp2.name }}</fc-option>
+                </ng-container>
+            </fc-select>
+            <span formError *ngIf="form.get('taxpayer').invalid"> </span>
+        </fc-form-field>
+        <fc-form-field>
+            <span formLabel>Change</span>
+            <fc-select formInput formControlName="quantity">
+                <fc-option
+                    *ngFor="let quantity of eventQuantities"
+                    [value]="quantity.key"
+                >
+                    <span>{{ quantity.value }}</span>
+                </fc-option>
+            </fc-select>
+            <span formError *ngIf="form.get('quantity').invalid"> </span>
+        </fc-form-field>
+        <fc-form-field>
+            <span formLabel>Operation</span>
+            <fc-select formInput formControlName="operation">
+                <fc-option *ngFor="let op of eventOperations" [value]="op.key">
+                    <span>{{ op.value }}</span>
+                </fc-option>
+            </fc-select>
+            <span formError *ngIf="form.get('operation').invalid"> </span>
+        </fc-form-field>
+        <fc-form-field>
+            <span formLabel>Value</span>
+            <input formInput type="number" formControlName="value" />
+            <span formError *ngIf="form.get('value').invalid"> </span>
+        </fc-form-field>
+    </form>
+    <div class="flex items-center justify-end">
+        <button *ngIf="!form.valid" class="btn h-8 w-8 p-1" (click)="delete()">
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                ></path>
+            </svg>
+        </button>
+        <button
+            [ngClass]="{
+                disabled: !form.valid
+            }"
+            [disabled]="!form.valid"
+            class="btn h-8 w-8 p-1"
+            (click)="editing = false"
+        >
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+            </svg>
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #summaryTmpl>
+    <div
+        class="col-span-full flex h-full w-full items-center"
+        (click)="editing = true"
+    >
+        <p class="flex grow">
+            {{ event | summary: selectedTp }}
+        </p>
+        <svg
+            cdkDragHandle
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="menu-alt4 h-6 w-6"
+        >
+            <path
+                fill-rule="evenodd"
+                d="M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clip-rule="evenodd"
+            ></path>
+        </svg>
+        <button class="btn h-8 w-8 p-1" (click)="delete()">
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                ></path>
+            </svg>
+        </button>
+    </div>
+</ng-template>

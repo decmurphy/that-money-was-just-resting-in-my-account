@@ -1,0 +1,114 @@
+<div class="w-full space-y-4 rounded border px-4 py-2">
+    <h6>Mortgage</h6>
+    <p>
+        The Amount field should be the amount of money to be borrowed from the
+        bank - NOT the price of the property
+    </p>
+    <p>
+        APRC takes into account the initial fixed interest rate, any later
+        variable rate changes, and any once-off fees included in the process of
+        drawing up mortgages. Most banks will provide APRC figures for different
+        mortgage plans
+    </p>
+    <p>
+        Repayments is per month, and represents your
+        <em>initial</em> repayment amount. Any increases/decreases over time can
+        be dealt with in the <b>Timeline</b> section below
+    </p>
+    <ng-container
+        *ngIf="editing; then formTmpl; else summaryTmpl"
+    ></ng-container>
+</div>
+
+<ng-template #formTmpl>
+    <form [formGroup]="form" class="grid grid-cols-4 gap-4">
+        <span class="col-span-1 text-right">Amount</span>
+        <fc-slider
+            class="col-span-2"
+            formControlName="amount"
+            [min]="200000"
+            [max]="700000"
+            [step]="5000"
+            >Mortgage Amount</fc-slider
+        >
+        <span class="col-span-1 text-left">{{
+            data.amount | currency: "EUR"
+        }}</span>
+
+        <span class="col-span-1 text-right">APRC</span>
+        <fc-slider
+            class="col-span-2"
+            formControlName="aprc"
+            [min]="2"
+            [max]="5"
+            [step]="0.01"
+            >APRC</fc-slider
+        >
+        <span class="col-span-1 text-left">{{ data.aprc }}%</span>
+
+        <span class="col-span-1 text-right">Repayments</span>
+        <fc-slider
+            class="col-span-2"
+            formControlName="monthlyRepayments"
+            [min]="1000"
+            [max]="6000"
+            [step]="50"
+        >
+            Monthly Repayments</fc-slider
+        >
+        <span class="col-span-1 text-left">{{
+            data.monthlyRepayments | currency: "EUR"
+        }}</span>
+
+        <div class="col-span-full flex w-full justify-end">
+            <button class="btn h-8 w-8 p-1" (click)="editing = false">
+                <svg
+                    class="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                </svg>
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #summaryTmpl>
+    <div class="list-element flex w-full items-center" (click)="editing = true">
+        <div class="flex grow flex-col">
+            <h6>
+                {{ data | mortgageSummary: 1 }}
+            </h6>
+            <p class="ml-4">
+                {{ data | mortgageSummary: 2 }}
+            </p>
+            <p class="ml-4">
+                {{ data | mortgageSummary: 3 }}
+            </p>
+        </div>
+        <button class="btn h-8 w-8 p-1" (click)="editing = true">
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                ></path>
+            </svg>
+        </button>
+    </div>
+</ng-template>

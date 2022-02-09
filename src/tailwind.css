@@ -55,7 +55,7 @@
     }
 
     select[formInput] {
-        @apply absolute left-0 bottom-0
+        @apply absolute left-0 bottom-0     
             mt-1
             h-full w-full
             border-none bg-white/0 text-slate-100
@@ -250,8 +250,16 @@
     */
 
     .background-gradient {
-        background-image: radial-gradient(circle at top right, theme("colors.noche.700"), transparent),
-            radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.95), transparent);
+        background-image: radial-gradient(
+                circle at top right,
+                theme("colors.noche.700"),
+                transparent
+            ),
+            radial-gradient(
+                circle at bottom left,
+                rgba(0, 0, 0, 0.95),
+                transparent
+            );
     }
 
     .disabled {

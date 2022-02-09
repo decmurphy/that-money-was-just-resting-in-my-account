@@ -1,0 +1,56 @@
+<form [formGroup]="form" class="w-full space-y-4 rounded border px-4 py-2">
+    <div class="flex flex-row items-center justify-between">
+        <h6>Timeline</h6>
+        <button class="btn" (click)="addEvent()">
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+            </svg>
+        </button>
+    </div>
+    <p>
+        Let's be realistic, the numbers you've entered above in
+        <b>Incomes</b>, <b>Expenditures</b>, and <b>Mortgage</b> are not going
+        to stay the same for the next 30 odd years.
+    </p>
+    <p>
+        Use this section to build a timeline of events which change your income,
+        pension contributions, mortgage repayments, interest levels, etc to give
+        a better picture of what your finances will look like in the future
+    </p>
+    <p>
+        Every time you add or edit an event, the changes will be immediately
+        reflected in the graphs and data
+    </p>
+    <div
+        cdkDropList
+        [cdkDropListData]="data.events"
+        (cdkDropListDropped)="drop($event)"
+        class="mt-2 w-full space-y-2"
+        formArrayName="events"
+    >
+        <div
+            cdkDrag
+            *ngFor="let ev of data.events; let i = index"
+            class="list-element px-4 py-2"
+            [formGroupName]="i"
+        >
+            <fc-strategy-event
+                class="w-full"
+                [eventIdx]="i"
+                (onDelete)="deleteEvent($event)"
+            ></fc-strategy-event>
+            <span *cdkDragPreview></span>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,67 @@
+<form [formGroup]="form" class="w-full space-y-4 rounded border px-4 py-2">
+    <div class="flex flex-row justify-between">
+        <h6>Incomes, Taxes & Pensions</h6>
+        <button
+            [ngClass]="{ disabled: tp2Exists }"
+            [disabled]="tp2Exists"
+            class="btn h-8 w-8 p-1"
+            (click)="addTaxpayer()"
+        >
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+            </svg>
+        </button>
+    </div>
+    <p>
+        Add here the gross income and pension contributions for one or two
+        taxpayers
+    </p>
+    <p>
+        If there are two taxpayers, you have the option to be taxed as a married
+        couple and the higher earner will automatically be assigned the role of
+        Assessor. The data shown in the graphs will update to indicate your
+        combined Net Worth, combined Pension contributions and combined savings
+    </p>
+    <p>
+        Every time you edit a field, the changes will be immediately reflected
+        in the graphs and data
+    </p>
+    <div
+        *ngIf="tp2Exists"
+        class="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-1 2xl:grid-cols-3"
+    >
+        <fc-checkbox formControlName="married">Married</fc-checkbox>
+        <fc-radio-group
+            *ngIf="data.married"
+            class="col-span-2 grid grid-cols-2 gap-2"
+            formControlName="assessmentMode"
+        >
+            <fc-radio-button value="0"> Joint Assessed </fc-radio-button>
+            <fc-radio-button value="1"> Separate Assessed </fc-radio-button>
+            <!-- <fc-radio-button value='2'>Separate Treatment</fc-radio-button> -->
+        </fc-radio-group>
+    </div>
+
+    <fc-taxpayer
+        class="flex"
+        [taxpayerIndex]="0"
+        (onDelete)="removeTaxpayer($event)"
+    ></fc-taxpayer>
+    <fc-taxpayer
+        class="flex"
+        *ngIf="tp2Exists"
+        [taxpayerIndex]="1"
+        (onDelete)="removeTaxpayer($event)"
+    ></fc-taxpayer>
+</form>
