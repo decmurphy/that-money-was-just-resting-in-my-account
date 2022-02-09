@@ -1,14 +1,13 @@
-<div class='flex items-end py-2'>
+<div class="flex items-end py-2">
     <input
         [id]="id"
         type="checkbox"
-        class='cursor-pointer disabled:cursor-default accent-accent focus:ring-accent'
+        class="cursor-pointer accent-accent focus:ring-accent disabled:cursor-default"
         [checked]="checked ? true : null"
         [disabled]="disabled ? true : null"
-        (change)="selectionChange($event)" />
-    <label
-        [for]="id"
-        class="ml-2 leading-4 cursor-pointer">
+        (change)="selectionChange($event)"
+    />
+    <label [for]="id" class="ml-2 cursor-pointer leading-4">
         <ng-content></ng-content>
     </label>
 </div>

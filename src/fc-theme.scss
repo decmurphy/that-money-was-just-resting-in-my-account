@@ -1,33 +1,181 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 /* Functions */
 
 @function custom-background($color) {
-    @return ( status-bar: #00ff00, // black, //
-    app-bar: mat.get-color-from-palette($color, 500), //
-    background: mat.get-color-from-palette($color, 800), //
-    hover: rgba(white, 0.04), //
-    card: mat.get-color-from-palette($color, 500), //
-    dialog: mat.get-color-from-palette($color, 500), //
-    disabled-button: rgba(white, 0.12), //
-    raised-button: mat.get-color-from-palette($color, 500), //
-    focused-button: #00ff08, // $light-focused, //
-    selected-button: #00ff09, // mat-color($color, 900), //
-    selected-disabled-button: #00ff0a, // mat-color($color, 800), //
-    disabled-button-toggle: #00ff0b, // black, //
-    unselected-chip: #00ff0c, // mat-color($color, 700), //
-    disabled-list-option: #00ff0d, // black, //
-    tooltip: mat.get-color-from-palette($color, 300), //
+    @return (
+        status-bar: #00ff00,
+        // black, //
+        app-bar: mat.get-color-from-palette($color, 500),
+        //
+        background: mat.get-color-from-palette($color, 800),
+        //
+        hover: rgba(white, 0.04),
+        //
+        card: mat.get-color-from-palette($color, 500),
+        //
+        dialog: mat.get-color-from-palette($color, 500),
+        //
+        disabled-button: rgba(white, 0.12),
+        //
+        raised-button: mat.get-color-from-palette($color, 500),
+        //
+        focused-button: #00ff08,
+        // $light-focused, //
+        selected-button: #00ff09,
+        // mat-color($color, 900), //
+        selected-disabled-button: #00ff0a,
+        // mat-color($color, 800), //
+        disabled-button-toggle: #00ff0b,
+        // black, //
+        unselected-chip: #00ff0c,
+        // mat-color($color, 700), //
+        disabled-list-option: #00ff0d,
+        // black, //
+        tooltip: mat.get-color-from-palette($color, 300),
+        //
     );
 }
 
-$md-primary3: mat.define-palette(( 50: #f7fbff, 100: #ecf5fe, 200: #dfeefe, 300: #d2e7fd, 400: #c9e1fc, 500: #bfdcfc, 600: #b9d8fc, 700: #b1d3fb, 800: #a9cefb, 900: #9bc5fa, A100: #ffffff, A200: #ffffff, A400: #ffffff, A700: #ffffff, contrast: ( 50: #000000, 100: #000000, 200: #000000, 300: #000000, 400: #000000, 500: #000000, 600: #000000, 700: #000000, 800: #000000, 900: #000000, A100: #000000, A200: #000000, A400: #000000, A700: #000000, )));
+$md-primary3: mat.define-palette(
+    (
+        50: #f7fbff,
+        100: #ecf5fe,
+        200: #dfeefe,
+        300: #d2e7fd,
+        400: #c9e1fc,
+        500: #bfdcfc,
+        600: #b9d8fc,
+        700: #b1d3fb,
+        800: #a9cefb,
+        900: #9bc5fa,
+        A100: #ffffff,
+        A200: #ffffff,
+        A400: #ffffff,
+        A700: #ffffff,
+        contrast: (
+            50: #000000,
+            100: #000000,
+            200: #000000,
+            300: #000000,
+            400: #000000,
+            500: #000000,
+            600: #000000,
+            700: #000000,
+            800: #000000,
+            900: #000000,
+            A100: #000000,
+            A200: #000000,
+            A400: #000000,
+            A700: #000000,
+        ),
+    )
+);
 
-$md-accent3: mat.define-palette(( 50: #fef6eb, 100: #fce9ce, 200: #fadbad, 300: #f8cc8c, 400: #f7c174, 500: #f5b65b, 600: #f4af53, 700: #f2a649, 800: #f09e40, 900: #ee8e2f, A100: #ffffff, A200: #fffefc, A400: #ffe3c9, A700: #ffd6b0, contrast: ( 50: #000000, 100: #000000, 200: #000000, 300: #000000, 400: #000000, 500: #000000, 600: #000000, 700: #000000, 800: #000000, 900: #000000, A100: #000000, A200: #000000, A400: #000000, A700: #000000, )));
+$md-accent3: mat.define-palette(
+    (
+        50: #fef6eb,
+        100: #fce9ce,
+        200: #fadbad,
+        300: #f8cc8c,
+        400: #f7c174,
+        500: #f5b65b,
+        600: #f4af53,
+        700: #f2a649,
+        800: #f09e40,
+        900: #ee8e2f,
+        A100: #ffffff,
+        A200: #fffefc,
+        A400: #ffe3c9,
+        A700: #ffd6b0,
+        contrast: (
+            50: #000000,
+            100: #000000,
+            200: #000000,
+            300: #000000,
+            400: #000000,
+            500: #000000,
+            600: #000000,
+            700: #000000,
+            800: #000000,
+            900: #000000,
+            A100: #000000,
+            A200: #000000,
+            A400: #000000,
+            A700: #000000,
+        ),
+    )
+);
 
-$md-warn3: mat.define-palette(( 50: #fcecec, 100: #f8cfcf, 200: #f4afaf, 300: #ef8e8e, 400: #eb7676, 500: #e85e5e, 600: #e55656, 700: #e24c4c, 800: #de4242, 900: #d83131, A100: #ffffff, A200: #ffeaea, A400: #ffb7b7, A700: #ff9d9d, contrast: ( 50: #000000, 100: #000000, 200: #000000, 300: #000000, 400: #000000, 500: #000000, 600: #000000, 700: #ffffff, 800: #ffffff, 900: #ffffff, A100: #000000, A200: #000000, A400: #000000, A700: #000000, )));
+$md-warn3: mat.define-palette(
+    (
+        50: #fcecec,
+        100: #f8cfcf,
+        200: #f4afaf,
+        300: #ef8e8e,
+        400: #eb7676,
+        500: #e85e5e,
+        600: #e55656,
+        700: #e24c4c,
+        800: #de4242,
+        900: #d83131,
+        A100: #ffffff,
+        A200: #ffeaea,
+        A400: #ffb7b7,
+        A700: #ff9d9d,
+        contrast: (
+            50: #000000,
+            100: #000000,
+            200: #000000,
+            300: #000000,
+            400: #000000,
+            500: #000000,
+            600: #000000,
+            700: #ffffff,
+            800: #ffffff,
+            900: #ffffff,
+            A100: #000000,
+            A200: #000000,
+            A400: #000000,
+            A700: #000000,
+        ),
+    )
+);
 
-$md-bg3: mat.define-palette(( 50: #e4e7eb, 100: #bcc4cc, 200: #909cab, 300: #637489, 400: #41576f, 500: #203956, 600: #1c334f, 700: #182c45, 800: #13243c, 900: #0b172b, A100: #6999ff, A200: #3676ff, A400: #0353ff, A700: #004ae8, contrast: ( 50: #000000, 100: #000000, 200: #000000, 300: #ffffff, 400: #ffffff, 500: #ffffff, 600: #ffffff, 700: #ffffff, 800: #ffffff, 900: #ffffff, A100: #000000, A200: #ffffff, A400: #ffffff, A700: #ffffff, )));
+$md-bg3: mat.define-palette(
+    (
+        50: #e4e7eb,
+        100: #bcc4cc,
+        200: #909cab,
+        300: #637489,
+        400: #41576f,
+        500: #203956,
+        600: #1c334f,
+        700: #182c45,
+        800: #13243c,
+        900: #0b172b,
+        A100: #6999ff,
+        A200: #3676ff,
+        A400: #0353ff,
+        A700: #004ae8,
+        contrast: (
+            50: #000000,
+            100: #000000,
+            200: #000000,
+            300: #ffffff,
+            400: #ffffff,
+            500: #ffffff,
+            600: #ffffff,
+            700: #ffffff,
+            800: #ffffff,
+            900: #ffffff,
+            A100: #000000,
+            A200: #ffffff,
+            A400: #ffffff,
+            A700: #ffffff,
+        ),
+    )
+);
 
 /* Build initial theme */
 
@@ -43,4 +191,9 @@ $my-background: custom-background($app-bg);
 
 /* Define the final theme */
 
-$theme: map-merge($theme-part1, (background: $my-background));
+$theme: map-merge(
+    $theme-part1,
+    (
+        background: $my-background,
+    )
+);

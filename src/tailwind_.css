@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-
-    html, body {
-        @apply w-full h-full p-0 m-0 overflow-x-hidden overscroll-y-none;
+    html,
+    body {
+        @apply m-0 h-full w-full overflow-x-hidden overscroll-y-none p-0;
     }
     html * {
         scrollbar-width: thin;
-        scrollbar-color: theme('colors.sky.400') transparent;
+        scrollbar-color: theme("colors.sky.400") transparent;
     }
     html ::-webkit-scrollbar {
         width: var(--scrollbarWidth);
@@ -19,7 +19,7 @@
         @apply bg-transparent;
     }
     html ::-webkit-scrollbar-thumb {
-        @apply bg-sky-400 w-1 rounded-full;
+        @apply w-1 rounded-full bg-sky-400;
     }
 
     svg {
@@ -31,11 +31,11 @@
     */
 
     .slider {
-        @apply appearance-none cursor-pointer bg-accent rounded-full h-0.5 disabled:bg-slate-400;
+        @apply h-0.5 cursor-pointer appearance-none rounded-full bg-accent disabled:bg-slate-400;
     }
 
     .slider-thumb {
-        @apply appearance-none cursor-grab bg-accent rounded-full w-5 h-5 border-4 border-sky-300 shadow-xl;
+        @apply h-5 w-5 cursor-grab appearance-none rounded-full border-4 border-sky-300 bg-accent shadow-xl;
     }
 
     .slider-thumb-active {
@@ -43,48 +43,46 @@
     }
 
     input[formInput] {
-        @apply
-            absolute left-0 bottom-3
+        @apply absolute left-0 bottom-3
             mt-1
             h-4 w-full
-            border-none focus:border-none focus:ring-white/0
-            bg-white/0
-            text-slate-100
-            placeholder:invisible focus:placeholder:visible
-            focus:outline-none
-            disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+            border-none bg-white/0 text-slate-100
+            placeholder:invisible
+            focus:border-none
+            focus:outline-none focus:ring-white/0
+            focus:placeholder:visible
+            disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none;
     }
 
     select[formInput] {
-        @apply
-            absolute left-0 bottom-0
+        @apply absolute left-0 bottom-0
             mt-1
             h-full w-full
-            border-none focus:border-none focus:ring-white/0
-            bg-white/0
-            text-slate-100
-            placeholder:invisible focus:placeholder:visible
-            focus:outline-none
-            disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+            border-none bg-white/0 text-slate-100
+            placeholder:invisible
+            focus:border-none
+            focus:outline-none focus:ring-white/0
+            focus:placeholder:visible
+            disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none;
     }
 
-    input[type='range'] {
+    input[type="range"] {
         @apply slider;
     }
 
-    input[type='range']::-moz-range-thumb {
+    input[type="range"]::-moz-range-thumb {
         @apply slider-thumb;
     }
 
-    input[type='range']::-webkit-slider-thumb {
+    input[type="range"]::-webkit-slider-thumb {
         @apply slider-thumb;
     }
 
-    input[type='range']::-moz-range-thumb:active {
+    input[type="range"]::-moz-range-thumb:active {
         @apply slider-thumb-active;
     }
 
-    input[type='range']::-webkit-slider-thumb:active {
+    input[type="range"]::-webkit-slider-thumb:active {
         @apply slider-thumb-active;
     }
 
@@ -93,30 +91,32 @@
     */
 
     h1 {
-        @apply font-heading font-medium text-5xl xl:text-6xl;
+        @apply font-heading text-5xl font-medium xl:text-6xl;
     }
 
     h2 {
-        @apply font-heading font-normal text-4xl xl:text-5xl;
+        @apply font-heading text-4xl font-normal xl:text-5xl;
     }
 
     h3 {
-        @apply font-heading font-normal text-3xl xl:text-4xl;
+        @apply font-heading text-3xl font-normal xl:text-4xl;
     }
 
     h4 {
-        @apply font-heading font-normal text-2xl xl:text-3xl;
+        @apply font-heading text-2xl font-normal xl:text-3xl;
     }
 
     h5 {
-        @apply font-heading font-normal text-xl xl:text-2xl;
+        @apply font-heading text-xl font-normal xl:text-2xl;
     }
 
     h6 {
-        @apply font-heading font-normal text-lg xl:text-xl;
+        @apply font-heading text-lg font-normal xl:text-xl;
     }
 
-    p, ul, li {
+    p,
+    ul,
+    li {
         @apply xl:text-lg xl:leading-6;
     }
 
@@ -131,11 +131,9 @@
     a[href^="http"] {
         @apply text-accent hover:underline;
     }
-
 }
 
 @layer components {
-
     /*
         Convert a chevron-right icon into an arrow-right icon on hover.
         Translate and delayed opacity transitions, reversed transitions on unhover
@@ -162,22 +160,22 @@
     }
 
     .loader {
-        @apply block relative left-1/2 top-1/2 rounded-full border-4 border-solid border-transparent w-40 h-40 -mt-20 -ml-20;
-        border-top-color: #9370DB;
+        @apply relative left-1/2 top-1/2 -mt-20 -ml-20 block h-40 w-40 rounded-full border-4 border-solid border-transparent;
+        border-top-color: #9370db;
         -webkit-animation: spin 2s linear infinite;
         animation: spin 2s linear infinite;
     }
     .loader:before {
-        @apply absolute rounded-full border-4 border-solid border-transparent inset-1.5;
+        @apply absolute inset-1.5 rounded-full border-4 border-solid border-transparent;
         content: "";
         border-top-color: #409be5;
         -webkit-animation: spin 3s linear infinite;
         animation: spin 3s linear infinite;
     }
     .loader:after {
-        @apply absolute rounded-full border-4 border-solid border-transparent inset-4;
+        @apply absolute inset-4 rounded-full border-4 border-solid border-transparent;
         content: "";
-        border-top-color: #FF00FF;
+        border-top-color: #ff00ff;
         -webkit-animation: spin 1.5s linear infinite;
         animation: spin 1.5s linear infinite;
     }
@@ -187,16 +185,15 @@
     */
 
     .btn {
-        @apply
-            flex
-            shadow-lg shadow-noche-800/50
-            rounded-lg bg-transparent hover:bg-sky-200 text-sky-200 hover:text-noche-800 active:bg-sky-200/90
-            py-2 px-4 cursor-pointer focus:outline-none
-            transition-opacity-colors;
+        @apply flex
+            cursor-pointer rounded-lg
+            bg-transparent py-2 px-4 text-sky-200 shadow-lg shadow-noche-800/50
+            transition-opacity-colors hover:bg-sky-200 hover:text-noche-800 focus:outline-none
+            active:bg-sky-200/90;
     }
 
     .btn.no-hover {
-        @apply hover:text-sky-100 hover:bg-transparent active:bg-transparent;
+        @apply hover:bg-transparent hover:text-sky-100 active:bg-transparent;
     }
 
     .btn.dark {
@@ -212,13 +209,11 @@
     }
 
     .btn.fab {
-        @apply
-            p-4 h-6 w-6 box-content rounded-full shadow-2xl
+        @apply box-content h-6 w-6 rounded-full p-4 shadow-2xl
             transition-transform hover:scale-105;
     }
     .btn.pill {
-        @apply
-            flex flex-row items-center rounded-full
+        @apply flex flex-row items-center rounded-full
             transition-opacity-transform hover:scale-105;
     }
 
@@ -227,13 +222,13 @@
     */
 
     .divider {
-        @apply border-sky-500/50 border-solid;
+        @apply border-solid border-sky-500/50;
     }
     .divider:not(.vertical) {
-        @apply my-4 border-b flex;
+        @apply my-4 flex border-b;
     }
     .divider.vertical {
-        @apply mx-4 border-r flex;
+        @apply mx-4 flex border-r;
     }
 
     /**
@@ -241,36 +236,25 @@
     */
 
     .hero {
-        @apply font-heading font-semibold text-7xl xl:text-8xl leading-tight tracking-tighter;
+        @apply font-heading text-7xl font-semibold leading-tight tracking-tighter xl:text-8xl;
     }
 
     .list-element {
-        @apply flex flex-row justify-between items-center px-4 min-h-[5rem] h-auto border-l-4 rounded-lg hover:rounded-l-none border-sky-400/0 hover:border-sky-400/100 bg-noche-700 hover:bg-noche-600 cursor-pointer;
+        @apply flex h-auto min-h-[5rem] cursor-pointer flex-row items-center justify-between rounded-lg border-l-4 border-sky-400/0 bg-noche-700 px-4 hover:rounded-l-none hover:border-sky-400/100 hover:bg-noche-600;
     }
-
 }
 
 @layer utilities {
-
     /*
         https://tailwindcss.com/docs/adding-new-utilities
     */
 
     .background-gradient {
-        background-image:
-            radial-gradient(
-                circle at top right,
-                theme('colors.noche.700'), transparent
-            ),
-            radial-gradient(
-                circle at bottom left,
-                rgba(0,0,0,0.95), transparent
-            )
-            ;
+        background-image: radial-gradient(circle at top right, theme("colors.noche.700"), transparent),
+            radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.95), transparent);
     }
 
     .disabled {
-        @apply cursor-default pointer-events-none opacity-50;
+        @apply pointer-events-none cursor-default opacity-50;
     }
-
 }

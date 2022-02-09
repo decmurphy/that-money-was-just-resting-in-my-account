@@ -1,16 +1,15 @@
-<div class='w-full'>
+<div class="w-full">
     <input
         [id]="id"
         [name]="name"
-        class='cursor-pointer disabled:cursor-default accent-accent focus:outline-accent'
+        class="cursor-pointer accent-accent focus:outline-accent disabled:cursor-default"
         type="radio"
         [value]="value"
         [checked]="checked ? true : null"
         [disabled]="disabled ? true : null"
-        (change)="selectionChange($event)" />
-    <label
-        [for]="id"
-        class="ml-2 cursor-pointer">
+        (change)="selectionChange($event)"
+    />
+    <label [for]="id" class="ml-2 cursor-pointer">
         <ng-content></ng-content>
     </label>
 </div>

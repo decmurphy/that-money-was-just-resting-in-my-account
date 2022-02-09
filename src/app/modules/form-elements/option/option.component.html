@@ -1,52 +1,49 @@
-
-<div class='w-full h-12 relative text-slate-100 hover:bg-noche-400'>
-    <ng-container *ngIf="multiple then checkboxInputTmpl else radioInputTmpl"></ng-container>
+<div class="relative h-12 w-full text-slate-100 hover:bg-noche-400">
+    <ng-container *ngIf="multiple; then checkboxInputTmpl; else radioInputTmpl"></ng-container>
 </div>
 
 <ng-template #checkboxInputTmpl>
-
-    <div class='w-full h-full flex items-center'>
+    <div class="flex h-full w-full items-center">
         <input
             #input
             [id]="id"
             type="checkbox"
-            class='cursor-pointer disabled:cursor-default accent-accent focus:ring-accent'
+            class="cursor-pointer accent-accent focus:ring-accent disabled:cursor-default"
             [checked]="checked ? true : null"
             [disabled]="disabled ? true : null"
-            (change)="selectionChange()" />
+            (change)="selectionChange()"
+        />
         <label
             #label
             [for]="id"
-            class="w-full h-full px-4 py-2 text-base flex justify-start items-center ml-2 leading-4 cursor-pointer"
-            >
+            class="ml-2 flex h-full w-full cursor-pointer items-center justify-start px-4 py-2 text-base leading-4"
+        >
             <ng-container *ngTemplateOutlet="content"></ng-container>
         </label>
     </div>
-
 </ng-template>
 
 <ng-template #radioInputTmpl>
-
-    <div class='w-full h-full flex items-center'>
+    <div class="flex h-full w-full items-center">
         <input
             #input
             [id]="id"
-            class='peer appearance-none'
+            class="peer appearance-none"
             type="radio"
             [value]="value"
             [checked]="checked ? true : null"
             [disabled]="disabled ? true : null"
             (change)="selectionChange()"
-            (click)="selectionChange()" />
+            (click)="selectionChange()"
+        />
         <label
             #label
             [for]="id"
-            class="w-full h-full px-4 py-2 text-base flex justify-start items-center cursor-pointer peer-checked:bg-noche-400"
-            >
+            class="flex h-full w-full cursor-pointer items-center justify-start px-4 py-2 text-base peer-checked:bg-noche-400"
+        >
             <ng-container *ngTemplateOutlet="content"></ng-container>
         </label>
     </div>
-
 </ng-template>
 
 <ng-template #content>

@@ -1,26 +1,28 @@
-<button #selectButton class="pt-3 w-full flex justify-between" type="button" (click)="openOptions()">
-    <ng-container *ngIf="value !== undefined then chosenOption else noChosenOption"></ng-container>
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+<button #selectButton class="flex w-full justify-between pt-3" type="button" (click)="openOptions()">
+    <ng-container *ngIf="value !== undefined; then chosenOption; else noChosenOption"></ng-container>
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
 </button>
 <fc-overlay (click)="closeOptions()" [active]="!optionsHidden" [visible]="false"></fc-overlay>
 <div
     #optionsContainer
     class="fixed z-50 max-h-64 overflow-x-hidden overflow-y-scroll bg-noche-500 text-slate-100"
     [ngClass]="{
-        'hidden': optionsHidden
+        hidden: optionsHidden
     }"
     [ngStyle]="{
-        'width': ((selectButtonPos$ | async)?.width + 28) + 'px',
-        'left': ((selectButtonPos$ | async)?.x - 16) + 'px',
-        'top': ((selectButtonPos$ | async)?.y) + 'px',
-        'transform': 'translateY(' + containerTransform + 'px)'
+        width: (selectButtonPos$ | async)?.width + 28 + 'px',
+        left: (selectButtonPos$ | async)?.x - 16 + 'px',
+        top: (selectButtonPos$ | async)?.y + 'px',
+        transform: 'translateY(' + containerTransform + 'px)'
     }"
-    >
+>
     <ng-content></ng-content>
 </div>
 
 <ng-template #chosenOption>
-    <span class='truncate' [innerHTML]="chosenOptionLabel"></span>
+    <span class="truncate" [innerHTML]="chosenOptionLabel"></span>
 </ng-template>
 
 <ng-template #noChosenOption>
