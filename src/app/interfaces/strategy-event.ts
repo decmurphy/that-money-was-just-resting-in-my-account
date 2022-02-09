@@ -1,11 +1,10 @@
-import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { FormErrorProvider } from "./form-error-provider";
-import { Formable } from "./formable";
-import { RequiredNumber } from "../validators/required-number.directive";
-import { FormData } from "./form-data";
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormErrorProvider } from './form-error-provider';
+import { Formable } from './formable';
+import { RequiredNumber } from '../validators/required-number.directive';
+import { FormData } from './form-data';
 
 export class StrategyEvent implements Formable {
-
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();
 
     private _newValue: number = null;
@@ -14,23 +13,22 @@ export class StrategyEvent implements Formable {
     constructor(
         public taxpayer: string = null,
         public afterMonths: number = null,
-        public quantity: 'pensionPercentage'|'grossIncome'|'monthlyExpenditure'|'yearlyExpenditure'|'mortgageAPRC'|'mortgageRepayment' = null,
-        public operation: 'to'|'add'|'subtract' = null,
+        public quantity:
+            | 'pensionPercentage'
+            | 'grossIncome'
+            | 'monthlyExpenditure'
+            | 'yearlyExpenditure'
+            | 'mortgageAPRC'
+            | 'mortgageRepayment' = null,
+        public operation: 'to' | 'add' | 'subtract' = null,
         public value: number = null
-    ) {
-    }
+    ) {}
 
     static create(model: StrategyEvent): StrategyEvent {
         if (model == null) {
             return new StrategyEvent();
         }
-        return new StrategyEvent(
-            model.taxpayer,
-            model.afterMonths,
-            model.quantity,
-            model.operation,
-            model.value
-        );
+        return new StrategyEvent(model.taxpayer, model.afterMonths, model.quantity, model.operation, model.value);
     }
 
     toFormGroup(formBuilder: FormBuilder): FormGroup {
@@ -39,7 +37,7 @@ export class StrategyEvent implements Formable {
             afterMonths: [this.afterMonths, [Validators.required, RequiredNumber, Validators.min(0)]],
             quantity: [this.quantity, [Validators.required]],
             operation: [this.operation, [Validators.required]],
-            value: [this.value, [Validators.required, RequiredNumber, Validators.min(0)]]
+            value: [this.value, [Validators.required, RequiredNumber, Validators.min(0)]],
         });
     }
 
@@ -49,8 +47,7 @@ export class StrategyEvent implements Formable {
 
     construct(): boolean {
         try {
-            this
-                .setAfterMonths(this.afterMonths)
+            this.setAfterMonths(this.afterMonths)
                 .setTaxpayer(this.taxpayer)
                 .setQuantity(this.quantity)
                 .setOperation(this.operation)
@@ -63,7 +60,7 @@ export class StrategyEvent implements Formable {
 
     setAfterMonths(afterMonths: number): StrategyEvent {
         if (afterMonths == null) {
-            throw new Error("afterMonths is required");
+            throw new Error('afterMonths is required');
         }
         this.afterMonths = afterMonths;
         return this;
@@ -74,10 +71,17 @@ export class StrategyEvent implements Formable {
         return this;
     }
 
-    setQuantity(quantity: 'pensionPercentage'|'grossIncome'|'monthlyExpenditure'|'yearlyExpenditure'|'mortgageAPRC'|'mortgageRepayment'): StrategyEvent {
-
+    setQuantity(
+        quantity:
+            | 'pensionPercentage'
+            | 'grossIncome'
+            | 'monthlyExpenditure'
+            | 'yearlyExpenditure'
+            | 'mortgageAPRC'
+            | 'mortgageRepayment'
+    ): StrategyEvent {
         if (quantity == null) {
-            throw new Error("quantity is required");
+            throw new Error('quantity is required');
         }
 
         if (['pensionPercentage', 'grossIncome'].indexOf(this.quantity) > -1 && this.taxpayer == null) {
@@ -88,10 +92,9 @@ export class StrategyEvent implements Formable {
         return this;
     }
 
-    setOperation(op: 'to'|'add'|'subtract'): StrategyEvent {
-
+    setOperation(op: 'to' | 'add' | 'subtract'): StrategyEvent {
         if (op == null) {
-            throw new Error("operation is required");
+            throw new Error('operation is required');
         }
 
         this.operation = op;
@@ -99,24 +102,23 @@ export class StrategyEvent implements Formable {
     }
 
     setValue(value: number): StrategyEvent {
-
         if (value == null) {
-            throw new Error("value is required");
+            throw new Error('value is required');
         }
 
         this.value = value;
         switch (this.operation) {
-            case "to":
+            case 'to':
                 this._to(value);
                 break;
-            case "add":
+            case 'add':
                 this._add(value);
                 break;
-            case "subtract":
+            case 'subtract':
                 this._subtract(value);
                 break;
             default:
-                throw new Error("Must set operation before value!");
+                throw new Error('Must set operation before value!');
         }
         return this;
     }
@@ -128,8 +130,13 @@ export class StrategyEvent implements Formable {
     }
 
     private _add(addValue: number): StrategyEvent {
-        if (['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure'].indexOf(this.quantity) === -1) {
-            throw new Error("Add/Subtract only supported for ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure']");
+        if (
+            ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure'].indexOf(this.quantity) ===
+            -1
+        ) {
+            throw new Error(
+                "Add/Subtract only supported for ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure']"
+            );
         }
         this._deltaValue = addValue;
         this._newValue = null;
@@ -137,8 +144,13 @@ export class StrategyEvent implements Formable {
     }
 
     private _subtract(subtractValue: number): StrategyEvent {
-        if (['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure'].indexOf(this.quantity) === -1) {
-            throw new Error("Add/Subtract only supported for ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure']");
+        if (
+            ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure'].indexOf(this.quantity) ===
+            -1
+        ) {
+            throw new Error(
+                "Add/Subtract only supported for ['grossIncome', 'mortgageRepayment', 'monthlyExpenditure', 'yearlyExpenditure']"
+            );
         }
         this._deltaValue = -subtractValue;
         this._newValue = null;
@@ -146,8 +158,7 @@ export class StrategyEvent implements Formable {
     }
 
     activate(formData: FormData): void {
-
-        if(!this.construct()) {
+        if (!this.construct()) {
             return;
         }
 
@@ -156,13 +167,12 @@ export class StrategyEvent implements Formable {
             tp = this.taxpayer === '0' ? formData.tp1 : formData.tp2;
         }
 
-        switch(this.quantity) {
+        switch (this.quantity) {
             case 'pensionPercentage':
                 if (tp != null) {
                     if (this._newValue >= 40) {
                         tp.pension.max = true;
-                    }
-                    else {
+                    } else {
                         tp.pension.max = false;
                         tp.pension.percentage = this._newValue;
                     }
@@ -170,25 +180,24 @@ export class StrategyEvent implements Formable {
                 break;
             case 'grossIncome':
                 if (tp != null) {
-                    tp.income.gross = this._newValue || (tp.income.gross + this._deltaValue);;
+                    tp.income.gross = this._newValue || tp.income.gross + this._deltaValue;
                 }
                 break;
             case 'monthlyExpenditure':
-                formData.expenditures.monthly = this._newValue || (formData.expenditures.monthly + this._deltaValue);
+                formData.expenditures.monthly = this._newValue || formData.expenditures.monthly + this._deltaValue;
                 break;
             case 'yearlyExpenditure':
-                formData.expenditures.yearly = this._newValue || (formData.expenditures.yearly + this._deltaValue);
+                formData.expenditures.yearly = this._newValue || formData.expenditures.yearly + this._deltaValue;
                 break;
             case 'mortgageAPRC':
                 formData.mortgage.aprc = this._newValue;
                 break;
             case 'mortgageRepayment':
-                formData.mortgage.monthlyRepayments = this._newValue || (formData.mortgage.monthlyRepayments + this._deltaValue);
+                formData.mortgage.monthlyRepayments =
+                    this._newValue || formData.mortgage.monthlyRepayments + this._deltaValue;
                 break;
             default:
                 break;
         }
-
     }
-
 }

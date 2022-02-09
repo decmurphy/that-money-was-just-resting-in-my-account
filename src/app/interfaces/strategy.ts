@@ -1,32 +1,26 @@
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from "@angular/forms";
-import { FormErrorProvider } from "./form-error-provider";
-import { Formable } from "./formable";
-import { FormData } from "./form-data";
-import { StrategyEvent } from "./strategy-event";
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormErrorProvider } from './form-error-provider';
+import { Formable } from './formable';
+import { FormData } from './form-data';
+import { StrategyEvent } from './strategy-event';
 
 export class Strategy implements Formable {
-
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();
 
-    private _currentMonth: number
+    private _currentMonth: number;
 
-    constructor(
-        public events: StrategyEvent[] = []
-    ) {
-    }
+    constructor(public events: StrategyEvent[] = []) {}
 
     static create(model: Strategy): Strategy {
         if (model == null) {
             return new Strategy();
         }
-        return new Strategy(
-            model.events.map(ev => StrategyEvent.create(ev))
-        );
+        return new Strategy(model.events.map((ev) => StrategyEvent.create(ev)));
     }
 
     toFormGroup(formBuilder: FormBuilder): FormGroup {
         return formBuilder.group({
-            events: new FormArray(this.events.map(ev => ev.toFormGroup(formBuilder)))
+            events: new FormArray(this.events.map((ev) => ev.toFormGroup(formBuilder))),
         });
     }
 
@@ -44,7 +38,6 @@ export class Strategy implements Formable {
     }
 
     apply(formData: FormData): void {
-        this.events.filter(ev => ev.afterMonths === this._currentMonth).forEach(ev => ev.activate(formData));
+        this.events.filter((ev) => ev.afterMonths === this._currentMonth).forEach((ev) => ev.activate(formData));
     }
-
 }

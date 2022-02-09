@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core';
 
 import { UtilityService } from '../../../services/utility.service';
 
@@ -6,24 +14,19 @@ import { UtilityService } from '../../../services/utility.service';
     selector: 'fc-slide-toggle',
     templateUrl: './slide-toggle.component.html',
     styleUrls: ['./slide-toggle.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SlideToggleComponent implements OnInit {
-
-    @Input() checked: boolean = false;
+    @Input() checked = false;
     @Output() toggle: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     // can have multiple slide-toggles in one page, so need to make sure they all have different id/name/for attributes so they don't clash and interact with each other. UUID is surely overkill, but that's how i like it
     id: string;
 
-    constructor(
-        private cd: ChangeDetectorRef,
-        private utils: UtilityService
-    ) {
-    }
+    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
 
     ngOnInit(): void {
-        this.id = this.utils.newID("tgl");
+        this.id = this.utils.newID('tgl');
     }
 
     change($event) {
@@ -31,5 +34,4 @@ export class SlideToggleComponent implements OnInit {
         this.toggle.emit(this.checked);
         this.cd.detectChanges();
     }
-
 }

@@ -1,16 +1,12 @@
 import { Directive, ElementRef } from '@angular/core';
 
 @Directive({
-    selector: '[formSuffix]'
+    selector: '[formSuffix]',
 })
 export class FormSuffixDirective {
-
-    constructor(
-        private _element: ElementRef
-    ) { }
+    constructor(private _element: ElementRef) {}
 
     get element(): ElementRef {
         return this._element;
     }
-
 }

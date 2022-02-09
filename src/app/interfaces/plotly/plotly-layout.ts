@@ -1,6 +1,4 @@
-
 export class PlotlyLayout {
-
     constructor(
         public title: string = null,
         public showlegend: boolean = false,
@@ -16,9 +14,10 @@ export class PlotlyLayout {
         public plot_bgcolor: string = null,
         public autosize: boolean = null,
         public margin = {
-            l: 80, b: 80, r: 80, t: 80,
+            l: 80,
+            b: 80,
+            r: 80,
+            t: 80,
         }
-    ) {
-    }
-
+    ) {}
 }

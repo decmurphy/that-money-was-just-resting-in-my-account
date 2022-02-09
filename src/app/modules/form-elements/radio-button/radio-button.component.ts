@@ -6,31 +6,25 @@ import { UtilityService } from '../../../services/utility.service';
     selector: 'fc-radio-button',
     templateUrl: './radio-button.component.html',
     styleUrls: ['./radio-button.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RadioButtonComponent implements OnInit {
-
     id: string;
     name: string;
-    disabled: boolean = false;
+    disabled = false;
 
-    selectionChange = (event: any) => { }
+    selectionChange = (event: any) => {};
 
     @Input() value: string | number;
-    @Input() checked: boolean = false;
+    @Input() checked = false;
 
-    constructor(
-        private cd: ChangeDetectorRef,
-        private utils: UtilityService
-    ) {
-     }
+    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
 
     ngOnInit(): void {
-        this.id = this.utils.newID("rbtn");
+        this.id = this.utils.newID('rbtn');
     }
 
     detectChanges() {
         this.cd.detectChanges();
     }
-
 }

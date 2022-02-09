@@ -1,6 +1,4 @@
-
 export class MonthData {
-
     constructor(
         public month: number,
         public payment: number,
@@ -10,6 +8,5 @@ export class MonthData {
         public expenditures: number,
         public incomes: number[],
         public pensionContribs: number[]
-    ) { }
-
+    ) {}
 }

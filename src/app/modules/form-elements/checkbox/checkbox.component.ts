@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { UtilityService } from '../../../services/utility.service';
@@ -11,37 +19,33 @@ import { UtilityService } from '../../../services/utility.service';
     selector: 'fc-checkbox',
     templateUrl: './checkbox.component.html',
     styleUrls: ['./checkbox.component.scss'],
-    providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        multi: true,
-        useExisting: CheckboxComponent
-    }],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: CheckboxComponent,
+        },
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckboxComponent implements OnInit, ControlValueAccessor {
-
     id: string;
 
-    @Input() checked: boolean = false;
-    @Input() disabled: boolean = false;
+    @Input() checked = false;
+    @Input() disabled = false;
     @Output() toggle: EventEmitter<boolean> = new EventEmitter();
 
     touched = false;
     onChange = (checked: boolean) => {};
     onTouched = () => {};
 
-    constructor(
-        private cd: ChangeDetectorRef,
-        private utils: UtilityService
-    ) {
-    }
+    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
 
     ngOnInit(): void {
-        this.id = this.utils.newID("cbx");
+        this.id = this.utils.newID('cbx');
     }
 
     selectionChange(event: any): void {
-
         this.markAsTouched();
 
         this.checked = event.target.checked;
@@ -50,18 +54,17 @@ export class CheckboxComponent implements OnInit, ControlValueAccessor {
         this.toggle.emit(this.checked);
 
         this.cd.detectChanges();
-
     }
 
     writeValue(checked: boolean): void {
         this.checked = checked;
     }
 
-    registerOnChange(onChange: (checked: boolean) => {}): void {
+    registerOnChange(onChange: (checked: boolean) => unknown): void {
         this.onChange = onChange;
     }
 
-    registerOnTouched(onTouched: () => {}): void {
+    registerOnTouched(onTouched: () => unknown): void {
         this.onTouched = onTouched;
     }
 
@@ -75,5 +78,4 @@ export class CheckboxComponent implements OnInit, ControlValueAccessor {
     setDisabledState(disabled: boolean): void {
         this.disabled = disabled;
     }
-
 }

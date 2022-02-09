@@ -1,21 +1,30 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { UtilityService } from '../../../services/utility.service';
 
 @Component({
-  selector: 'fc-slider',
-  templateUrl: './slider.component.html',
-  styleUrls: ['./slider.component.scss'],
-  providers: [{
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: SliderComponent
-  }],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'fc-slider',
+    templateUrl: './slider.component.html',
+    styleUrls: ['./slider.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: SliderComponent,
+        },
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SliderComponent implements OnInit {
-
     id: string;
 
     @Input() min: number;
@@ -23,7 +32,7 @@ export class SliderComponent implements OnInit {
     @Input() step: number;
 
     @Input() value: number;
-    @Input() disabled: boolean = false;
+    @Input() disabled = false;
     @Output() sliderChange: EventEmitter<number> = new EventEmitter();
     @Output() sliderInput: EventEmitter<number> = new EventEmitter();
 
@@ -31,63 +40,54 @@ export class SliderComponent implements OnInit {
     onChange = (value: number) => {};
     onTouched = () => {};
 
-    constructor(
-        private cd: ChangeDetectorRef,
-        private utils: UtilityService
-    ) {
+    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
+
+    ngOnInit(): void {
+        this.id = this.utils.newID('sldr');
     }
 
-  ngOnInit(): void {
-    this.id = this.utils.newID("sldr");
-}
+    onSliderChange(event: any): void {
+        this.markAsTouched();
 
-  onSliderChange(event: any): void {
+        this.value = event.target.valueAsNumber;
+        this.onChange(this.value);
 
-      this.markAsTouched();
+        this.sliderChange.emit(this.value);
 
-      this.value = event.target.valueAsNumber;
-      this.onChange(this.value);
+        this.cd.detectChanges();
+    }
 
-      this.sliderChange.emit(this.value);
+    onSliderInput(event: any): void {
+        this.markAsTouched();
 
-      this.cd.detectChanges();
+        this.value = event.target.valueAsNumber;
+        this.onChange(this.value);
 
-  }
+        this.sliderInput.emit(this.value);
 
-  onSliderInput(event: any): void {
+        this.cd.detectChanges();
+    }
 
-    this.markAsTouched();
+    writeValue(value: number): void {
+        this.value = value;
+    }
 
-    this.value = event.target.valueAsNumber;
-    this.onChange(this.value);
+    registerOnChange(onChange: (value: number) => unknown): void {
+        this.onChange = onChange;
+    }
 
-    this.sliderInput.emit(this.value);
+    registerOnTouched(onTouched: () => unknown): void {
+        this.onTouched = onTouched;
+    }
 
-    this.cd.detectChanges();
+    markAsTouched(): void {
+        if (!this.touched) {
+            this.onTouched();
+            this.touched = true;
+        }
+    }
 
-  }
-
-  writeValue(value: number): void {
-      this.value = value;
-  }
-
-  registerOnChange(onChange: (value: number) => {}): void {
-      this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => {}): void {
-      this.onTouched = onTouched;
-  }
-
-  markAsTouched(): void {
-      if (!this.touched) {
-          this.onTouched();
-          this.touched = true;
-      }
-  }
-
-  setDisabledState(disabled: boolean): void {
-      this.disabled = disabled;
-  }
-
+    setDisabledState(disabled: boolean): void {
+        this.disabled = disabled;
+    }
 }

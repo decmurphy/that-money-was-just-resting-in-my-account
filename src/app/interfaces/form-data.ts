@@ -1,14 +1,13 @@
-import { AbstractControl, FormBuilder, FormGroup } from "@angular/forms";
-import { FormErrorProvider } from "./form-error-provider";
-import { Formable } from "./formable";
-import { Expenditures } from "./expenditures";
-import { MaritalStatus } from "./marital-status";
-import { Mortgage } from "./mortgage";
-import { Strategy } from "./strategy";
-import { TaxPayer } from "./tax-payer";
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { FormErrorProvider } from './form-error-provider';
+import { Formable } from './formable';
+import { Expenditures } from './expenditures';
+import { MaritalStatus } from './marital-status';
+import { Mortgage } from './mortgage';
+import { Strategy } from './strategy';
+import { TaxPayer } from './tax-payer';
 
 export class FormData implements Formable {
-
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();
 
     constructor(
@@ -18,11 +17,9 @@ export class FormData implements Formable {
         public expenditures: Expenditures = new Expenditures(),
         public mortgage: Mortgage = new Mortgage(),
         public strategy: Strategy = new Strategy()
-    ) {
-    }
+    ) {}
 
     static create(fd: FormData): FormData {
-
         return new FormData(
             TaxPayer.create(fd.tp1),
             TaxPayer.create(fd.tp2),
@@ -31,7 +28,6 @@ export class FormData implements Formable {
             Mortgage.create(fd.mortgage),
             Strategy.create(fd.strategy)
         );
-
     }
 
     toFormGroup(fb: FormBuilder): FormGroup {
@@ -41,12 +37,11 @@ export class FormData implements Formable {
             maritalStatus: this.maritalStatus.toFormGroup(fb),
             expenditures: this.expenditures.toFormGroup(fb),
             mortgage: this.mortgage.toFormGroup(fb),
-            strategy: this.strategy.toFormGroup(fb)
+            strategy: this.strategy.toFormGroup(fb),
         });
     }
 
     getError(control: AbstractControl): string {
         return this.formErrorProvider.getError(control);
     }
-
 }

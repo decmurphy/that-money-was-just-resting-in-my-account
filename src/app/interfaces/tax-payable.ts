@@ -1,30 +1,23 @@
-import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { FormErrorProvider } from "./form-error-provider";
-import { Formable } from "./formable";
-import { RequiredNumber } from "../validators/required-number.directive";
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormErrorProvider } from './form-error-provider';
+import { Formable } from './formable';
+import { RequiredNumber } from '../validators/required-number.directive';
 
 export class TaxPayable implements Formable {
-
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();
 
     constructor(
         public usc: number = null,
         public prsi: number = null,
         public incomeTax: number = null,
-        public taxCredits: number = null,
-    ) {
-    }
+        public taxCredits: number = null
+    ) {}
 
     static create(model: TaxPayable): TaxPayable {
         if (model == null) {
             return new TaxPayable();
         }
-        return new TaxPayable(
-            model.usc,
-            model.prsi,
-            model.incomeTax,
-            model.taxCredits
-        );
+        return new TaxPayable(model.usc, model.prsi, model.incomeTax, model.taxCredits);
     }
 
     toFormGroup(formBuilder: FormBuilder): FormGroup {
@@ -39,5 +32,4 @@ export class TaxPayable implements Formable {
     getError(control: AbstractControl): string {
         return this.formErrorProvider.getError(control);
     }
-
 }

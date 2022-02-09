@@ -2,15 +2,14 @@ import { Injectable } from '@angular/core';
 import { AppServicesModule } from '../modules/app-services.module';
 
 @Injectable({
-    providedIn: AppServicesModule
+    providedIn: AppServicesModule,
 })
 export class LocalStorageService {
-
     supported: boolean;
     storage: Storage;
 
     constructor() {
-        this.supported = Storage !== void (0);
+        this.supported = Storage !== void 0;
         this.storage = window.localStorage;
     }
 
@@ -33,5 +32,4 @@ export class LocalStorageService {
     get(key: string): string {
         return this.storage.getItem(key);
     }
-
 }

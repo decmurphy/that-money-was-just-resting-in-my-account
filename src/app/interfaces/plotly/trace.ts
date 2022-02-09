@@ -1,6 +1,4 @@
-
 export class Trace {
-
     constructor(
         public simulationId: string = null,
         public resourceId: string = null,
@@ -8,13 +6,10 @@ export class Trace {
         public type: string = null,
         public active: boolean = null,
         public data: TraceData = null
-    ) {
-    }
-
+    ) {}
 }
 
 export class TraceData {
-
     constructor(
         public name: string = null,
         public x: number[] = null,
@@ -23,9 +18,7 @@ export class TraceData {
         public mode: string = null,
         public type: string = null,
         public marker: any = {
-            size: 5
+            size: 5,
         }
-    ) {
-    }
-
+    ) {}
 }

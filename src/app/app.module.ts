@@ -23,44 +23,33 @@ import { MortgageSummaryPipe } from './pipes/mortgage-summary.pipe';
 import { AppServicesModule } from './modules/app-services.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 
-
 @NgModule({
-  declarations: [
-    AppComponent,
-    SummaryPipe,
-    SalarySummaryPipe,
-    PensionSummaryPipe,
-    MortgageSummaryPipe
-  ],
-  imports: [
-    BrowserModule,
-    ServiceWorkerModule.register('ngsw-worker.js?version=13', {
-      enabled: environment.production,
-      // Register the ServiceWorker as soon as the app is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    }),
-    NoopAnimationsModule,
+    declarations: [AppComponent, SummaryPipe, SalarySummaryPipe, PensionSummaryPipe, MortgageSummaryPipe],
+    imports: [
+        BrowserModule,
+        ServiceWorkerModule.register('ngsw-worker.js?version=13', {
+            enabled: environment.production,
+            // Register the ServiceWorker as soon as the app is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000',
+        }),
+        NoopAnimationsModule,
 
-    FormsModule,
-    ReactiveFormsModule,
-    FormElementsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        FormElementsModule,
 
-    MatTableModule,
-    MatPaginatorModule,
-    DragDropModule,
+        MatTableModule,
+        MatPaginatorModule,
+        DragDropModule,
 
-    PlotlyModule,
-    ChartModule,
-    OverlayModule,
+        PlotlyModule,
+        ChartModule,
+        OverlayModule,
 
-    AppServicesModule
-  ],
-  providers: [
-    CurrencyPipe
-  ],
-  bootstrap: [
-    AppComponent
-  ]
+        AppServicesModule,
+    ],
+    providers: [CurrencyPipe],
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

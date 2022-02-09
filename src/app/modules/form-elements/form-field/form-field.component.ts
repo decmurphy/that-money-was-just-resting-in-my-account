@@ -14,7 +14,6 @@ import { FormSuffixDirective } from '../directives/form-suffix.directive';
     // changeDetection: ChangeDetectionStrategy.OnPush // don't do it cap
 })
 export class FormFieldComponent implements OnInit, AfterContentInit {
-
     @ContentChild(FormInputDirective) formInput: FormInputDirective;
     @ContentChild(FormLabelDirective) formLabel: FormLabelDirective;
     @ContentChild(FormErrorDirective) formError: FormErrorDirective;
@@ -23,18 +22,15 @@ export class FormFieldComponent implements OnInit, AfterContentInit {
 
     inputId: string;
 
-    constructor(
-        private utils: UtilityService
-    ) { }
+    constructor(private utils: UtilityService) {}
 
     ngOnInit(): void {
-        this.inputId = this.utils.newID("input");
+        this.inputId = this.utils.newID('input');
     }
 
     ngAfterContentInit(): void {
-
         if (this.formInput == null) {
-            throw new Error("FormField requires a formInput child");
+            throw new Error('FormField requires a formInput child');
         }
 
         /*
@@ -50,7 +46,5 @@ export class FormFieldComponent implements OnInit, AfterContentInit {
         if (inputEl.placeholder == null || inputEl.placeholder == '') {
             inputEl.placeholder = this.formLabel.element.nativeElement.innerHTML;
         }
-
     }
-
 }

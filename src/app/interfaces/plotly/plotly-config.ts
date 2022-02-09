@@ -1,7 +1,6 @@
-import { PlotlyAxis } from "./plotly-axis";
+import { PlotlyAxis } from './plotly-axis';
 
 export class PlotlyConfig {
-
     constructor(
         public id: string = null,
         public title: string = null,
@@ -12,7 +11,5 @@ export class PlotlyConfig {
         public y: PlotlyAxis[] = null,
         public z: PlotlyAxis = null,
         public margin: any = null
-    ) {
-    }
-
+    ) {}
 }
