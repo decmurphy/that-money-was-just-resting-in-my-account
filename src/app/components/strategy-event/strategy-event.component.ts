@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { Subscription, takeUntil, tap } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/subscription-handler';
 import { TaxPayer } from 'app/interfaces/tax-payer';
@@ -23,7 +23,6 @@ export class StrategyEventComponent
     editing = false;
     event: StrategyEvent;
     form: FormGroup;
-    formValueChangesSub: Subscription;
 
     tp1: TaxPayer;
     tp2: TaxPayer;
@@ -70,20 +69,14 @@ export class StrategyEventComponent
         this.form = this.event.toFormGroup(this.fb);
         this.form.updateValueAndValidity();
         this.form.markAllAsTouched();
-
-        if (this.formValueChangesSub != null) {
-            this.formValueChangesSub.unsubscribe();
-        }
-
-        this.formValueChangesSub = this.form.valueChanges
-            .pipe(
-                takeUntil(this.ngUnsubscribe),
-                tap((fv) => this.dataService.setEvent(this.eventIdx, fv))
-            )
-            .subscribe((fv) => {});
     }
 
     delete(): void {
         this.onDelete.emit(this.eventIdx);
+    }
+
+    saveEvent(): void {
+        this.dataService.setEvent(this.eventIdx, this.form.getRawValue());
+        this.editing = false;
     }
 }

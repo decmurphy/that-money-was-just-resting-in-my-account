@@ -66,7 +66,7 @@ export class StrategyComponent extends SubscriptionHandler implements OnInit {
                 location.previousIndex,
                 location.currentIndex
             );
-            this.resetForm();
+            this.dataService.setStrategy(this.data);
         }
     }
 }

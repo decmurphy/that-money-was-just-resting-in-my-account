@@ -1,7 +1,10 @@
 <ng-container *ngIf="editing; then eventTmpl; else summaryTmpl"></ng-container>
 
 <ng-template #eventTmpl>
-    <form [formGroup]="form">
+    <form
+        [formGroup]="form"
+        class="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3"
+    >
         <fc-form-field>
             <span formLabel>After Months</span>
             <input formInput type="number" formControlName="afterMonths" />
@@ -44,48 +47,52 @@
             <input formInput type="number" formControlName="value" />
             <span formError *ngIf="form.get('value').invalid"> </span>
         </fc-form-field>
+        <div class="flex items-center justify-end">
+            <button
+                *ngIf="!form.valid"
+                class="btn h-8 w-8 p-1"
+                (click)="delete()"
+            >
+                <svg
+                    class="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    ></path>
+                </svg>
+            </button>
+            <button
+                [ngClass]="{
+                    disabled: !form.valid
+                }"
+                [disabled]="!form.valid"
+                class="btn h-8 w-8 p-1"
+                (click)="saveEvent()"
+            >
+                <svg
+                    class="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                </svg>
+            </button>
+        </div>
     </form>
-    <div class="flex items-center justify-end">
-        <button *ngIf="!form.valid" class="btn h-8 w-8 p-1" (click)="delete()">
-            <svg
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                ></path>
-            </svg>
-        </button>
-        <button
-            [ngClass]="{
-                disabled: !form.valid
-            }"
-            [disabled]="!form.valid"
-            class="btn h-8 w-8 p-1"
-            (click)="editing = false"
-        >
-            <svg
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-            </svg>
-        </button>
-    </div>
 </ng-template>
 
 <ng-template #summaryTmpl>

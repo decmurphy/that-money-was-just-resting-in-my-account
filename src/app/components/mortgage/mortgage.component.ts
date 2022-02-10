@@ -1,8 +1,8 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { Subscription, takeUntil, tap } from 'rxjs';
+import { Observable, Subscription, map, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/subscription-handler';
 import { DataService } from 'app/services/data.service';
@@ -19,7 +19,13 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
     formValueChangesSub: Subscription;
     data: Mortgage;
 
-    constructor(private fb: FormBuilder, private dataService: DataService) {
+    xl$: Observable<boolean>;
+
+    constructor(
+        private fb: FormBuilder,
+        private dataService: DataService,
+        private breakpointObserver: BreakpointObserver
+    ) {
         super();
     }
 
@@ -31,6 +37,10 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
                 this.data = data.mortgage;
                 this.resetForm();
             });
+
+        this.xl$ = this.breakpointObserver
+            .observe(['(min-width: 1280px)']) // screen:lg
+            .pipe(map((state: BreakpointState) => state.matches));
     }
 
     resetForm(): void {

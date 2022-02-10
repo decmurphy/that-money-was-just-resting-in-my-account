@@ -1,8 +1,7 @@
-import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { Observable, Subscription, map, takeUntil, tap } from 'rxjs';
+import { Subscription, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/subscription-handler';
 import { TaxPayer } from 'app/interfaces/tax-payer';
@@ -16,6 +15,7 @@ import { DataService } from 'app/services/data.service';
 export class TaxpayerComponent extends SubscriptionHandler implements OnInit {
     @Input() taxpayerIndex: number;
     @Output() onDelete: EventEmitter<number> = new EventEmitter();
+
     editing = false;
     form: FormGroup;
     formValueChangesSub: Subscription;
@@ -23,13 +23,8 @@ export class TaxpayerComponent extends SubscriptionHandler implements OnInit {
 
     tpk: string;
     otherTaxpayerExists: boolean;
-    lg$: Observable<boolean>;
 
-    constructor(
-        private fb: FormBuilder,
-        private breakpointObserver: BreakpointObserver,
-        private dataService: DataService
-    ) {
+    constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
     }
 
@@ -44,10 +39,6 @@ export class TaxpayerComponent extends SubscriptionHandler implements OnInit {
                 this.otherTaxpayerExists = data[otherKey] != null;
                 this.resetForm();
             });
-
-        this.lg$ = this.breakpointObserver
-            .observe(['(min-width: 1024px)']) // screen:lg
-            .pipe(map((state: BreakpointState) => state.matches));
     }
 
     resetForm(): void {
