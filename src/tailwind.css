@@ -31,11 +31,11 @@
     */
 
     .slider {
-        @apply h-0.5 cursor-pointer appearance-none rounded-full bg-accent disabled:bg-slate-400;
+        @apply h-0.5 cursor-pointer appearance-none rounded-full bg-sky-900 disabled:bg-slate-400;
     }
 
     .slider-thumb {
-        @apply h-5 w-5 cursor-grab appearance-none rounded-full border-4 border-sky-300 bg-accent shadow-xl;
+        @apply h-5 w-5 cursor-grab appearance-none rounded-full border-4 border-sky-300 bg-sky-300 shadow-xl;
     }
 
     .slider-thumb-active {
@@ -127,59 +127,9 @@
     caption {
         @apply text-xs xl:text-sm;
     }
-
-    a[href^="http"] {
-        @apply text-accent hover:underline;
-    }
 }
 
 @layer components {
-    /*
-        Convert a chevron-right icon into an arrow-right icon on hover.
-        Translate and delayed opacity transitions, reversed transitions on unhover
-        See buttons on /home for reference.
-        • Must add .absolute to svgs and put them centered in a div.relative
-        • Must add .animated-icon-link to button/link
-    */
-
-    .animated-icon-link .chevron-right {
-        transition: opacity 150ms linear 0s, transform 150ms linear 150ms;
-    }
-    .animated-icon-link .arrow-right {
-        transition: opacity 150ms linear 0s;
-        opacity: 0;
-    }
-    .animated-icon-link:hover .chevron-right {
-        transition: transform 150ms linear 0s, opacity 150ms linear 150ms;
-        transform: translateX(6px);
-        opacity: 0;
-    }
-    .animated-icon-link:hover .arrow-right {
-        transition-delay: 150ms;
-        opacity: 1;
-    }
-
-    .loader {
-        @apply relative left-1/2 top-1/2 -mt-20 -ml-20 block h-40 w-40 rounded-full border-4 border-solid border-transparent;
-        border-top-color: #9370db;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-    }
-    .loader:before {
-        @apply absolute inset-1.5 rounded-full border-4 border-solid border-transparent;
-        content: "";
-        border-top-color: #409be5;
-        -webkit-animation: spin 3s linear infinite;
-        animation: spin 3s linear infinite;
-    }
-    .loader:after {
-        @apply absolute inset-4 rounded-full border-4 border-solid border-transparent;
-        content: "";
-        border-top-color: #ff00ff;
-        -webkit-animation: spin 1.5s linear infinite;
-        animation: spin 1.5s linear infinite;
-    }
-
     /*
         Buttons
     */
@@ -187,34 +137,17 @@
     .btn {
         @apply flex
             cursor-pointer rounded-lg
-            bg-transparent py-2 px-4 text-sky-200 shadow-lg shadow-noche-800/50
-            transition-opacity-colors hover:bg-sky-200 hover:text-noche-800 focus:outline-none
+            bg-transparent py-2 px-4 text-sky-800
+            transition-opacity-colors hover:bg-sky-200 focus:outline-none
             active:bg-sky-200/90;
     }
 
-    .btn.no-hover {
-        @apply hover:bg-transparent hover:text-sky-100 active:bg-transparent;
-    }
-
-    .btn.dark {
-        @apply bg-noche-600 text-sky-100 hover:bg-noche-500 active:bg-noche-600;
-    }
-
     .btn.primary {
-        @apply bg-sky-300 text-noche-800 hover:bg-sky-200 active:bg-sky-300;
+        @apply bg-sky-300 text-sky-800 hover:bg-sky-200 active:bg-sky-300;
     }
 
     .btn.accent {
-        @apply bg-accent/90 text-noche-800 hover:bg-accent/100 active:bg-accent/80;
-    }
-
-    .btn.fab {
-        @apply box-content h-6 w-6 rounded-full p-4 shadow-2xl
-            transition-transform hover:scale-105;
-    }
-    .btn.pill {
-        @apply flex flex-row items-center rounded-full
-            transition-opacity-transform hover:scale-105;
+        @apply bg-sky-900/90 text-sky-800 hover:bg-sky-900/100 active:bg-sky-900/80;
     }
 
     /*
@@ -235,12 +168,8 @@
         Misc
     */
 
-    .hero {
-        @apply font-heading text-7xl font-semibold leading-tight tracking-tighter xl:text-8xl;
-    }
-
     .list-element {
-        @apply flex h-auto min-h-[5rem] cursor-pointer flex-row items-center justify-between rounded-lg border-l-4 border-sky-400/0 bg-noche-700 px-4 hover:rounded-l-none hover:border-sky-400/100 hover:bg-noche-600;
+        @apply flex h-auto min-h-[5rem] cursor-pointer flex-row items-center justify-between rounded-lg border-l-4 border-sky-400/0 bg-sky-800 px-4 text-sky-100 hover:rounded-l-none hover:border-sky-400/100 hover:bg-sky-700;
     }
 }
 
@@ -250,16 +179,11 @@
     */
 
     .background-gradient {
-        background-image: radial-gradient(
-                circle at top right,
-                theme("colors.noche.700"),
-                transparent
-            ),
-            radial-gradient(
-                circle at bottom left,
-                rgba(0, 0, 0, 0.95),
-                transparent
-            );
+        background-image: linear-gradient(
+            120deg,
+            theme("colors.red.200"),
+            theme("colors.sky.200")
+        );
     }
 
     .disabled {

@@ -1,26 +1,28 @@
 <div class="grid w-full grid-cols-2 gap-2">
-    <div class="grid grid-cols-2 gap-2 rounded border px-4 py-2">
+    <div class="grid grid-cols-2 gap-2 rounded border border-sky-800 px-4 py-2">
         <div class="col-span-full">
             <h5>Monthly Household Summary</h5>
         </div>
 
         <span>Income</span>
-        <span>{{
+        <span class="font-mono">{{
             (data.tp1.income.net + data.tp2?.income.net) / 12.0
                 | currency: "EUR"
         }}</span>
 
         <span>Expenditures</span>
-        <span>{{
+        <span class="font-mono">{{
             data.expenditures.monthly + data.expenditures.yearly / 12.0
                 | currency: "EUR"
         }}</span>
 
         <span>Mortgage</span>
-        <span>{{ data.mortgage.monthlyRepayments | currency: "EUR" }}</span>
+        <span class="font-mono">{{
+            data.mortgage.monthlyRepayments | currency: "EUR"
+        }}</span>
 
         <span>Savings /month</span>
-        <span>
+        <span class="font-mono">
             {{
                 (data.tp1.income.net +
                     data.tp2?.income.net -
@@ -32,7 +34,7 @@
         </span>
 
         <span>Savings /year</span>
-        <span>
+        <span class="font-mono">
             {{
                 data.tp1.income.net +
                     data.tp2?.income.net -
@@ -45,20 +47,20 @@
 
     <div
         *ngIf="monthData"
-        class="grid grid-cols-2 gap-2 rounded border px-4 py-2"
+        class="grid grid-cols-2 gap-2 rounded border border-sky-800 px-4 py-2"
     >
         <div class="col-span-full">
             <h5>Mortgage Summary</h5>
         </div>
 
         <span>Mortgage Term</span>
-        <span
+        <span class="font-mono"
             >{{ math.floor(mortgageTerm / 12) }}y,
             {{ mortgageTerm % 12 }}m</span
         >
 
         <span>Interest Paid</span>
-        <span>{{
+        <span class="font-mono">{{
             monthData[monthData.length - 1].cumulativeInterest | currency: "EUR"
         }}</span>
     </div>

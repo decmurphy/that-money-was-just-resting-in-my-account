@@ -1,7 +1,10 @@
 <ng-container *ngIf="editing; then formTmpl; else summaryTmpl"></ng-container>
 
 <ng-template #formTmpl>
-    <form [formGroup]="form" class="w-full space-y-2 rounded border px-4 py-2">
+    <form
+        [formGroup]="form"
+        class="w-full space-y-2 rounded border border-sky-800 px-4 py-2"
+    >
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <fc-form-field>
                 <span formLabel>Name</span>
@@ -17,7 +20,7 @@
             <ng-container formGroupName="income">
                 <fc-form-field>
                     <span formLabel>Income</span>
-                    <span formPrefix>€</span>
+                    <p class="text-sky-100" formPrefix>€</p>
                     <input formInput type="number" formControlName="gross" />
                     <span formError *ngIf="income.get('gross').invalid"> </span>
                 </fc-form-field>
@@ -49,39 +52,39 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-2">
             <div class="grid grid-cols-2 gap-y-0 gap-x-4">
                 <span class="text-left lg:text-right">Tax Credits</span>
-                <span class="text-right lg:text-left">{{
+                <span class="text-right font-mono lg:text-left">{{
                     data.taxPayable.taxCredits | currency: "EUR"
                 }}</span>
 
                 <span class="text-left lg:text-right">Net Tax</span>
-                <span class="text-right lg:text-left">{{
+                <span class="text-right font-mono lg:text-left">{{
                     data.taxPayable.incomeTax - data.taxPayable.taxCredits
                         | currency: "EUR"
                 }}</span>
 
                 <span class="text-left lg:text-right">PRSI</span>
-                <span class="text-right lg:text-left">{{
+                <span class="text-right font-mono lg:text-left">{{
                     data.taxPayable.prsi | currency: "EUR"
                 }}</span>
 
                 <span class="text-left lg:text-right">USC</span>
-                <span class="text-right lg:text-left">{{
+                <span class="text-right font-mono lg:text-left">{{
                     data.taxPayable.usc | currency: "EUR"
                 }}</span>
             </div>
 
             <div class="grid grid-cols-2 gap-y-0 gap-x-4">
                 <span class="text-left lg:text-right">Pension</span>
-                <span class="text-right lg:text-left">{{
+                <span class="text-right font-mono lg:text-left">{{
                     data.pension.amount | currency: "EUR"
                 }}</span>
 
                 <span class="text-left lg:text-right">Net Income</span>
-                <span class="text-right lg:text-left"
+                <span class="text-right font-mono lg:text-left"
                     >{{ data.income.net | currency: "EUR" }} / year</span
                 >
 
-                <span class="col-start-2 text-right lg:text-left"
+                <span class="col-start-2 text-right font-mono lg:text-left"
                     >{{ data.income.net / 12.0 | currency: "EUR" }} /
                     month</span
                 >
@@ -131,7 +134,7 @@
                 disabled: !otherTaxpayerExists
             }"
             [disabled]="!otherTaxpayerExists"
-            class="btn h-8 w-8 p-1"
+            class="btn primary h-8 w-8 p-1"
             (click)="delete()"
         >
             <svg

@@ -1,5 +1,5 @@
-<div class="w-full space-y-4 rounded border px-4 py-2">
-    <h6>Mortgage</h6>
+<div class="w-full space-y-4 rounded border border-sky-800 px-4 py-2">
+    <h5>Mortgage</h5>
     <p>
         The Amount field should be the amount of money to be borrowed from the
         bank - NOT the price of the property
@@ -21,7 +21,10 @@
 </div>
 
 <ng-template #formTmpl>
-    <form [formGroup]="form" class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <form
+        [formGroup]="form"
+        class="grid grid-cols-2 gap-2 font-bold sm:grid-cols-4"
+    >
         <ng-container *ngIf="(xl$ | async) === true">
             <span class="col-span-1 text-right">Amount</span>
             <fc-slider
@@ -32,7 +35,7 @@
                 [step]="5000"
                 >Mortgage Amount</fc-slider
             >
-            <span class="col-span-1 text-left">{{
+            <span class="col-span-1 text-left font-mono">{{
                 data.amount | currency: "EUR"
             }}</span>
 
@@ -45,7 +48,7 @@
                 [step]="0.01"
                 >APRC</fc-slider
             >
-            <span class="col-span-1 text-left">{{ data.aprc }}%</span>
+            <span class="col-span-1 text-left font-mono">{{ data.aprc }}%</span>
 
             <span class="col-span-1 text-right">Repayments</span>
             <fc-slider
@@ -57,7 +60,7 @@
             >
                 Monthly Repayments</fc-slider
             >
-            <span class="col-span-1 text-left">{{
+            <span class="col-span-1 text-left font-mono">{{
                 data.monthlyRepayments | currency: "EUR"
             }}</span>
         </ng-container>
@@ -109,7 +112,10 @@
 </ng-template>
 
 <ng-template #summaryTmpl>
-    <div class="list-element flex w-full items-center" (click)="editing = true">
+    <div
+        class="list-element flex w-full items-center font-bold"
+        (click)="editing = true"
+    >
         <div class="flex grow flex-col">
             <h6>
                 {{ data | mortgageSummary: 1 }}
@@ -121,7 +127,7 @@
                 {{ data | mortgageSummary: 3 }}
             </p>
         </div>
-        <button class="btn h-8 w-8 p-1" (click)="editing = true">
+        <button class="btn primary h-8 w-8 p-1" (click)="editing = true">
             <svg
                 class="h-6 w-6"
                 fill="none"

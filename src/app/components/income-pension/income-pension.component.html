@@ -1,6 +1,9 @@
-<form [formGroup]="form" class="w-full space-y-4 rounded border px-4 py-2">
+<form
+    [formGroup]="form"
+    class="w-full space-y-4 rounded border border-sky-800 px-4 py-2"
+>
     <div class="flex flex-row justify-between">
-        <h6>Incomes, Taxes & Pensions</h6>
+        <h5>Incomes, Taxes & Pensions</h5>
         <button
             [ngClass]="{ disabled: tp2Exists }"
             [disabled]="tp2Exists"
@@ -54,12 +57,12 @@
     </div>
 
     <fc-taxpayer
-        class="flex"
+        class="flex font-bold"
         [taxpayerIndex]="0"
         (onDelete)="removeTaxpayer($event)"
     ></fc-taxpayer>
     <fc-taxpayer
-        class="flex"
+        class="flex font-bold"
         *ngIf="tp2Exists"
         [taxpayerIndex]="1"
         (onDelete)="removeTaxpayer($event)"

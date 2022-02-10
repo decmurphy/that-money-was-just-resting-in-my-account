@@ -1,12 +1,14 @@
 <div
-    class="relative h-[60px] min-w-[210px] rounded-md border-2 border-rose-400/0 bg-slate-700 px-3 pt-3"
+    class="relative h-[60px] min-w-[210px] rounded-md border-2 border-rose-400/0 bg-sky-900 px-3 pt-3 text-sky-100"
     [ngClass]="{
         'border-rose-400/100': formError != null
     }"
 >
-    <div class="relative flex h-full w-full max-w-full flex-row whitespace-nowrap">
+    <div
+        class="relative flex h-full w-full max-w-full flex-row whitespace-nowrap"
+    >
         <!-- Prefix -->
-        <div *ngIf="formPrefix" class="mt-2 -ml-2 mr-1">
+        <div *ngIf="formPrefix" class="mt-2 -ml-2 mr-1 text-sky-100">
             <ng-content select="[formPrefix]"></ng-content>
         </div>
 
@@ -22,7 +24,10 @@
         </div>
 
         <!-- Suffix -->
-        <div *ngIf="formSuffix" class="flex h-9 items-end justify-center">
+        <div
+            *ngIf="formSuffix"
+            class="flex h-9 items-end justify-center text-sky-100"
+        >
             <ng-content select="[formSuffix]"></ng-content>
         </div>
     </div>

@@ -1,5 +1,8 @@
-<form [formGroup]="form" class="w-full space-y-4 rounded border px-4 py-2">
-    <h6>Expenditures</h6>
+<form
+    [formGroup]="form"
+    class="w-full space-y-4 rounded border border-sky-800 px-4 py-2"
+>
+    <h5>Expenditures</h5>
     <p>
         Monthly expenditures are everything EXCEPT for mortgage payments. That
         is covered in the
@@ -27,9 +30,10 @@
             [step]="100"
             >Monthly</fc-slider
         >
-        <span class="col-span-2 text-right lg:col-span-1 lg:text-left">{{
-            data.monthly | currency: "EUR"
-        }}</span>
+        <span
+            class="col-span-2 text-right font-mono lg:col-span-1 lg:text-left"
+            >{{ data.monthly | currency: "EUR" }}</span
+        >
 
         <span class="col-span-2 text-left lg:col-span-1 lg:text-right"
             >Annual</span
@@ -42,8 +46,9 @@
             [step]="100"
             >Yearly</fc-slider
         >
-        <span class="col-span-2 text-right lg:col-span-1 lg:text-left">{{
-            data.yearly | currency: "EUR"
-        }}</span>
+        <span
+            class="col-span-2 text-right font-mono lg:col-span-1 lg:text-left"
+            >{{ data.yearly | currency: "EUR" }}</span
+        >
     </div>
 </form>

@@ -7,8 +7,8 @@ import { PlotlyLayout } from './plotly-layout';
     providedIn: PlotlyModule,
 })
 export class PlotlyLayoutFactory {
-    fontColor = '#fafafa';
-    gridColor = '#41576f';
+    fontColor = '#1a1a1a';
+    gridColor = '#1a1a1a';
 
     constructor() {}
 
@@ -21,7 +21,9 @@ export class PlotlyLayoutFactory {
             case 'contour':
                 return this.getContourLayout(plotConfig);
             default:
-                throw new Error(`PlotlyLayoutFactory not configured for type: ${plotConfig.type}`);
+                throw new Error(
+                    `PlotlyLayoutFactory not configured for type: ${plotConfig.type}`
+                );
         }
     }
 
@@ -30,7 +32,7 @@ export class PlotlyLayoutFactory {
             plotConfig.title,
             false,
             {
-                family: 'Josefin Sans',
+                family: 'Montserrat',
                 size: 15,
                 color: this.fontColor,
             },
@@ -49,7 +51,7 @@ export class PlotlyLayoutFactory {
                 range: plotConfig.y[0].range,
             },
             null,
-            'rgba(255, 255, 255, 0.0)',
+            'rgba(10, 10, 10, 0.0)',
             'rgba(255, 0, 0, 0.0)',
             true,
             plotConfig.margin || { l: 80, b: 80, r: 80, t: 80 }
@@ -61,7 +63,7 @@ export class PlotlyLayoutFactory {
             plotConfig.title,
             false,
             {
-                family: 'Josefin Sans',
+                family: 'Montserrat',
                 size: 15,
                 color: this.fontColor,
             },
@@ -103,7 +105,7 @@ export class PlotlyLayoutFactory {
             plotConfig.title,
             false,
             {
-                family: 'Josefin Sans',
+                family: 'Montserrat',
                 size: 15,
                 color: this.fontColor,
             },

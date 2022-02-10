@@ -10,11 +10,13 @@
     <label
         [for]="id"
         class="block h-4 cursor-pointer overflow-hidden rounded-full"
-        [ngClass]="checked ? 'bg-accent bg-opacity-50' : 'bg-sky-300 bg-opacity-50'"
+        [ngClass]="
+            checked ? 'bg-sky-900 bg-opacity-50' : 'bg-sky-300 bg-opacity-50'
+        "
     >
         <span
             class="transition-position absolute -top-1 block h-6 w-6 rounded-full duration-150 ease-out"
-            [ngClass]="checked ? 'left-4 bg-accent' : '-left-2 bg-sky-300'"
+            [ngClass]="checked ? 'left-4 bg-sky-900' : '-left-2 bg-sky-300'"
         >
         </span>
     </label>

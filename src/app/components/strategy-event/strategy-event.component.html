@@ -73,7 +73,7 @@
                     disabled: !form.valid
                 }"
                 [disabled]="!form.valid"
-                class="btn h-8 w-8 p-1"
+                class="btn primary h-8 w-8 p-1"
                 (click)="saveEvent()"
             >
                 <svg
@@ -97,7 +97,7 @@
 
 <ng-template #summaryTmpl>
     <div
-        class="col-span-full flex h-full w-full items-center"
+        class="col-span-full flex h-full w-full items-center font-bold"
         (click)="editing = true"
     >
         <p class="flex grow">
@@ -107,7 +107,7 @@
             cdkDragHandle
             viewBox="0 0 20 20"
             fill="currentColor"
-            class="menu-alt4 h-6 w-6"
+            class="h-6 w-6"
         >
             <path
                 fill-rule="evenodd"
@@ -115,7 +115,7 @@
                 clip-rule="evenodd"
             ></path>
         </svg>
-        <button class="btn h-8 w-8 p-1" (click)="delete()">
+        <button class="btn primary h-8 w-8 p-1" (click)="delete()">
             <svg
                 class="h-6 w-6"
                 fill="none"

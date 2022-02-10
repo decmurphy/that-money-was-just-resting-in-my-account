@@ -28,7 +28,13 @@ export class PlotlyService {
         return this.plotlyLayoutFactory.getLayout(plotConfig);
     }
 
-    makeGenericPlot(element: any, title: string, xTitle: string, yTitle: string, data: GenericPlotData[]) {
+    makeGenericPlot(
+        element: any,
+        title: string,
+        xTitle: string,
+        yTitle: string,
+        data: GenericPlotData[]
+    ) {
         const layout = this.getLayout({
             title: title,
             type: 'lines',

@@ -1,13 +1,35 @@
-<button #selectButton class="flex w-full justify-between pt-3" type="button" (click)="openOptions()">
-    <ng-container *ngIf="value !== undefined; then chosenOption; else noChosenOption"></ng-container>
-    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+<button
+    #selectButton
+    class="flex w-full justify-between pt-3"
+    type="button"
+    (click)="openOptions()"
+>
+    <ng-container
+        *ngIf="value !== undefined; then chosenOption; else noChosenOption"
+    ></ng-container>
+    <svg
+        class="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+        ></path>
     </svg>
 </button>
-<fc-overlay (click)="closeOptions()" [active]="!optionsHidden" [visible]="false"></fc-overlay>
+<fc-overlay
+    (click)="closeOptions()"
+    [active]="!optionsHidden"
+    [visible]="false"
+></fc-overlay>
 <div
     #optionsContainer
-    class="fixed z-50 max-h-64 overflow-x-hidden overflow-y-scroll bg-noche-500 text-slate-100"
+    class="fixed z-50 max-h-64 overflow-x-hidden overflow-y-scroll bg-sky-800 text-slate-100"
     [ngClass]="{
         hidden: optionsHidden
     }"
