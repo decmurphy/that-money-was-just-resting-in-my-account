@@ -7,8 +7,8 @@ import { PlotlyLayout } from './plotly-layout';
     providedIn: PlotlyModule,
 })
 export class PlotlyLayoutFactory {
-    fontColor = '#1a1a1a';
-    gridColor = '#1a1a1a';
+    fontColor = '#0c4a6e';
+    gridColor = '#bbbbbb';
 
     constructor() {}
 

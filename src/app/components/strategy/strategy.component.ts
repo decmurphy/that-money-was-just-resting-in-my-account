@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Subscription, takeUntil, tap } from 'rxjs';
 
-import { SubscriptionHandler } from 'app/interfaces/subscription-handler';
+import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { StrategyEvent } from 'app/interfaces/strategy-event';
-import { Strategy } from 'app/interfaces/strategy';
+import { StrategyEvent } from 'app/interfaces/v1/strategy-event';
+import { Strategy } from 'app/interfaces/v1/strategy';
 
 @Component({
     selector: 'fc-strategy',

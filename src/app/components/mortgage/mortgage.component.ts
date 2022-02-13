@@ -4,9 +4,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Observable, Subscription, map, takeUntil, tap } from 'rxjs';
 
-import { SubscriptionHandler } from 'app/interfaces/subscription-handler';
+import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { Mortgage } from 'app/interfaces/mortgage';
+import { Mortgage } from 'app/interfaces/v1/mortgage';
 
 @Component({
     selector: 'fc-mortgage',

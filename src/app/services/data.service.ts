@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Expenditures } from 'app/interfaces/expenditures';
-import { FormData } from 'app/interfaces/form-data';
-import { GenericPlotData } from 'app/interfaces/generic-plot-data';
-import { MaritalStatus } from 'app/interfaces/marital-status';
-import { MonthData } from 'app/interfaces/month-data';
-import { Mortgage } from 'app/interfaces/mortgage';
-import { Strategy } from 'app/interfaces/strategy';
-import { StrategyEvent } from 'app/interfaces/strategy-event';
-import { TaxPayer } from 'app/interfaces/tax-payer';
+import { Expenditures } from 'app/interfaces/v1/expenditures';
+import { FormData } from 'app/interfaces/v1/form-data';
+import { GenericPlotData } from 'app/interfaces/plotly/generic-plot-data';
+import { MaritalStatus } from 'app/interfaces/v1/marital-status';
+import { MonthData } from 'app/interfaces/v1/month-data';
+import { Mortgage } from 'app/interfaces/v1/mortgage';
+import { Strategy } from 'app/interfaces/v1/strategy';
+import { StrategyEvent } from 'app/interfaces/v1/strategy-event';
+import { TaxPayer } from 'app/interfaces/v1/tax-payer';
 import { AppServicesModule } from 'app/modules/app-services.module';
 import { Observable, ReplaySubject } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
@@ -330,6 +330,14 @@ export class DataService {
                     formData.mortgage.monthlyRepayments,
                 0
             );
+
+            const monthlyExpenditures = formData.expenditures.monthlyItems
+                .map((item) => item.amount)
+                .reduce((acc, cur) => acc + cur, 0.0);
+            const yearlyExpenditures = formData.expenditures.yearlyItems
+                .map((item) => item.amount)
+                .reduce((acc, cur) => acc + cur, 0.0);
+
             const mortgageMonth = new MonthData(
                 monthIdx,
                 Math.min(
@@ -339,8 +347,7 @@ export class DataService {
                 interestAdded,
                 cumulativeInterest,
                 remaining,
-                formData.expenditures.monthly +
-                    formData.expenditures.yearly / 12.0,
+                monthlyExpenditures + yearlyExpenditures / 12.0,
                 [
                     formData.tp1.income.net / 12.0,
                     formData.tp2 ? formData.tp2.income.net / 12.0 : 0,

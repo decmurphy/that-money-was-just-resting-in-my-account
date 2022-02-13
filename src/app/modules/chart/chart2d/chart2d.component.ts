@@ -11,7 +11,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 
-import { GenericPlotData } from '../../../interfaces/generic-plot-data';
+import { GenericPlotData } from '../../../interfaces/plotly/generic-plot-data';
 import { PlotlyService } from '../../../services/plotly.service';
 
 @Component({

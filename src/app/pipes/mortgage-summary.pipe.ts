@@ -17,7 +17,12 @@ export class MortgageSummaryPipe implements PipeTransform {
     ): string {
         switch (part) {
             case 1:
-                return `${this.currencyPipe.transform(mortgage.amount, 'EUR', 'symbol', '1.0-0')}`;
+                return `${this.currencyPipe.transform(
+                    mortgage.amount,
+                    'EUR',
+                    'symbol',
+                    '1.0-0'
+                )}`;
             case 2:
                 return `APRC: ${mortgage.aprc}%`;
             case 3:

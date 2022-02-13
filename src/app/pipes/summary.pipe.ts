@@ -1,8 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { TaxPayer } from 'app/interfaces/tax-payer';
-import { FormData } from '../interfaces/form-data';
-import { StrategyEvent } from '../interfaces/strategy-event';
+import { TaxPayer } from 'app/interfaces/v1/tax-payer';
+import { StrategyEvent } from '../interfaces/v1/strategy-event';
 
 @Pipe({
     name: 'summary',

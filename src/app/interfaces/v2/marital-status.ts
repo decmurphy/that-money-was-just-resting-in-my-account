@@ -1,15 +1,14 @@
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FormErrorProvider } from './form-error-provider';
-import { Formable } from './formable';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormWithErrors } from '../forms/form-with-errors';
 
-export class MaritalStatus implements Formable {
-    private formErrorProvider: FormErrorProvider = new FormErrorProvider();
-
+export class MaritalStatus extends FormWithErrors {
     constructor(
         public married: boolean = false,
         public assessmentMode: string = '0',
         public isAssessor: boolean = false
-    ) {}
+    ) {
+        super();
+    }
 
     static create(ms: MaritalStatus): MaritalStatus {
         if (ms == null) {
@@ -24,9 +23,5 @@ export class MaritalStatus implements Formable {
             assessmentMode: [this.assessmentMode, [Validators.required]],
             isAssessor: [this.isAssessor, [Validators.required]],
         });
-    }
-
-    getError(control: AbstractControl): string {
-        return this.formErrorProvider.getError(control);
     }
 }

@@ -4,8 +4,8 @@ import {
     FormBuilder,
     FormGroup,
 } from '@angular/forms';
-import { FormErrorProvider } from './form-error-provider';
-import { Formable } from './formable';
+import { FormErrorProvider } from '../forms/form-error-provider';
+import { Formable } from 'app/interfaces/forms/formable';
 import { FormData } from './form-data';
 import { StrategyEvent } from './strategy-event';
 

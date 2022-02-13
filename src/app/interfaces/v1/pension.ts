@@ -1,13 +1,12 @@
 import {
     AbstractControl,
     FormBuilder,
-    FormControl,
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { FormErrorProvider } from './form-error-provider';
-import { Formable } from './formable';
-import { RequiredNumber } from '../validators/required-number.directive';
+import { FormErrorProvider } from 'app/interfaces/forms/form-error-provider';
+import { Formable } from 'app/interfaces/forms/formable';
+import { RequiredNumber } from 'app/validators/required-number.directive';
 
 export class Pension implements Formable {
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();

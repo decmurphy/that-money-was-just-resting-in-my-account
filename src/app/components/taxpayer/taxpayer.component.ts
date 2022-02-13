@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Subscription, takeUntil, tap } from 'rxjs';
 
-import { SubscriptionHandler } from 'app/interfaces/subscription-handler';
-import { TaxPayer } from 'app/interfaces/tax-payer';
+import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
+import { TaxPayer } from 'app/interfaces/v1/tax-payer';
 
 @Component({
     selector: 'fc-taxpayer',

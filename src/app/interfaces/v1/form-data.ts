@@ -1,11 +1,11 @@
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
-import { FormErrorProvider } from './form-error-provider';
-import { Formable } from './formable';
-import { Expenditures } from './expenditures';
-import { MaritalStatus } from './marital-status';
-import { Mortgage } from './mortgage';
-import { Strategy } from './strategy';
-import { TaxPayer } from './tax-payer';
+import { FormErrorProvider } from 'app/interfaces/forms/form-error-provider';
+import { Formable } from 'app/interfaces/forms/formable';
+import { Expenditures } from 'app/interfaces/v1/expenditures';
+import { MaritalStatus } from 'app/interfaces/v1/marital-status';
+import { Mortgage } from 'app/interfaces/v1/mortgage';
+import { Strategy } from 'app/interfaces/v1/strategy';
+import { TaxPayer } from 'app/interfaces/v1/tax-payer';
 
 export class FormData implements Formable {
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();

@@ -7,7 +7,7 @@ import { PlotlyLayoutFactory } from '../interfaces/plotly/plotly-layout.factory'
 import { PlotlyConfig } from '../interfaces/plotly/plotly-config';
 import { Trace } from '../interfaces/plotly/trace';
 import { PlotlyLayout } from '../interfaces/plotly/plotly-layout';
-import { GenericPlotData } from '../interfaces/generic-plot-data';
+import { GenericPlotData } from '../interfaces/plotly/generic-plot-data';
 
 @Injectable({
     providedIn: PlotlyModule,

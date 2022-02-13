@@ -30,6 +30,8 @@ import { StrategyEventComponent } from './components/strategy-event/strategy-eve
 import { TaxpayerComponent } from './components/taxpayer/taxpayer.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { TableComponent } from './components/table/table.component';
+import { NamedAmountComponent } from './components/named-amount/named-amount.component';
+import { SumPipe } from './pipes/sum.pipe';
 
 @NgModule({
     declarations: [
@@ -46,6 +48,8 @@ import { TableComponent } from './components/table/table.component';
         TaxpayerComponent,
         SummaryComponent,
         TableComponent,
+        NamedAmountComponent,
+        SumPipe,
     ],
     imports: [
         BrowserModule,

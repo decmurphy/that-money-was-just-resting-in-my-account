@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { takeUntil } from 'rxjs';
 
-import { SubscriptionHandler } from 'app/interfaces/subscription-handler';
-import { TaxPayer } from 'app/interfaces/tax-payer';
+import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { StrategyEvent } from 'app/interfaces/strategy-event';
-import { KeyVal } from 'app/interfaces/keyval';
+import { KeyVal } from 'app/interfaces/misc/keyval';
+import { StrategyEvent } from 'app/interfaces/v1/strategy-event';
+import { TaxPayer } from 'app/interfaces/v1/tax-payer';
 
 @Component({
     selector: 'fc-strategy-event',

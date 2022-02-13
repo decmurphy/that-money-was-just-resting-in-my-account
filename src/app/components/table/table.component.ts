@@ -4,8 +4,8 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { takeUntil } from 'rxjs';
 
-import { MonthData } from 'app/interfaces/month-data';
-import { SubscriptionHandler } from 'app/interfaces/subscription-handler';
+import { MonthData } from 'app/interfaces/v1/month-data';
+import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
 
 @Component({

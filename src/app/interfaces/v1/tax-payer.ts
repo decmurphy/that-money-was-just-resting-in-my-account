@@ -1,17 +1,19 @@
 import {
     AbstractControl,
+    FormArray,
     FormBuilder,
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { FormErrorProvider } from './form-error-provider';
-import { Formable } from './formable';
-import { RequiredNumber } from '../validators/required-number.directive';
-import { Income } from './income';
-import { MaritalStatus } from './marital-status';
-import { Pension } from './pension';
-import { Tax } from './tax';
-import { TaxPayable } from './tax-payable';
+import { FormErrorProvider } from 'app/interfaces/forms/form-error-provider';
+import { Formable } from 'app/interfaces/forms/formable';
+import { RequiredNumber } from 'app/validators/required-number.directive';
+import { Income } from 'app/interfaces/v1/income';
+import { MaritalStatus } from 'app/interfaces/v1/marital-status';
+import { Pension } from 'app/interfaces/v1/pension';
+import { Tax } from 'app/interfaces/tax/tax';
+import { TaxPayable } from 'app/interfaces/v1/tax-payable';
+import { BenefitInKind } from 'app/interfaces/v1/benefit-in-kind';
 
 export class TaxPayer implements Formable {
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();
@@ -21,6 +23,7 @@ export class TaxPayer implements Formable {
         public yearOfBirth: number = null,
         public income: Income = new Income(),
         public pension: Pension = new Pension(),
+        public benefitInKind: BenefitInKind[] = [],
         public paye: boolean = true,
         public maritalStatus: MaritalStatus = new MaritalStatus(),
         public taxPayable: TaxPayable = new TaxPayable()
@@ -36,6 +39,7 @@ export class TaxPayer implements Formable {
             tp.yearOfBirth,
             Income.create(tp.income),
             Pension.create(tp.pension),
+            (tp.benefitInKind || []).map((bik) => BenefitInKind.create(bik)),
             tp.paye,
             MaritalStatus.create(tp.maritalStatus),
             TaxPayable.create(tp.taxPayable)
@@ -56,6 +60,9 @@ export class TaxPayer implements Formable {
             ],
             income: this.income.toFormGroup(formBuilder),
             pension: this.pension.toFormGroup(formBuilder),
+            benefitInKind: new FormArray(
+                this.benefitInKind.map((bik) => bik.toFormGroup(formBuilder))
+            ),
             paye: [this.paye, [Validators.required]],
             maritalStatus: this.maritalStatus.toFormGroup(formBuilder),
             taxPayable: this.taxPayable.toFormGroup(formBuilder),
@@ -142,22 +149,34 @@ export class TaxPayer implements Formable {
     }
 
     getUSCChargeable(): number {
-        return Tax.getTaxPayable(this.income.gross, Tax.usc);
+        return Tax.getTaxPayable(
+            this.income.gross + this.getAllBIKs(),
+            Tax.uscBands
+        );
     }
 
     getPRSIChargeable(): number {
-        return Tax.getTaxPayable(this.income.gross, Tax.prsi);
+        return Tax.getTaxPayable(
+            this.income.gross + this.getAllBIKs(),
+            Tax.prsiBands
+        );
     }
 
     /*
-        Don't forget to remove pension contrib from income before calculating income tax
+        Don't forget to add all BIKs and remove pension contrib from income before calculating income tax
     */
     getIncomeTaxChargeable_Single(): number {
         const bracket = Tax.incomeTax.single;
         return Tax.getTaxPayable(
-            this.income.gross - this.pension.amount,
-            bracket.bands
+            this.income.gross + this.getAllBIKs() - this.pension.amount,
+            bracket
         );
+    }
+
+    getAllBIKs(): number {
+        return this.benefitInKind
+            .map((bik) => bik.amount)
+            .reduce((acc, cur) => acc + cur, 0);
     }
 
     /*
@@ -171,19 +190,23 @@ export class TaxPayer implements Formable {
 
         const band1 =
             taxpayer1.income.gross >= taxpayer2.income.gross
-                ? brackets.assessor.bands
-                : brackets.lower.bands;
+                ? brackets.assessor
+                : brackets.lower;
         const band2 =
             taxpayer1.income.gross < taxpayer2.income.gross
-                ? brackets.assessor.bands
-                : brackets.lower.bands;
+                ? brackets.assessor
+                : brackets.lower;
 
         const incomeTax1 = Tax.getTaxPayable(
-            taxpayer1.income.gross - taxpayer1.pension.amount,
+            taxpayer1.income.gross +
+                taxpayer1.getAllBIKs() -
+                taxpayer1.pension.amount,
             band1
         );
         const incomeTax2 = Tax.getTaxPayable(
-            taxpayer2.income.gross - taxpayer2.pension.amount,
+            taxpayer2.income.gross +
+                taxpayer2.getAllBIKs() -
+                taxpayer2.pension.amount,
             band2
         );
 

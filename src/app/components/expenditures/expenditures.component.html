@@ -18,37 +18,48 @@
         year. The cost is divided into 12 and split evenly across the months of
         the year
     </p>
-    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <span class="col-span-2 text-left lg:col-span-1 lg:text-right"
-            >Monthly</span
-        >
-        <fc-slider
-            class="col-span-2"
-            formControlName="monthly"
-            [min]="0"
-            [max]="5000"
-            [step]="100"
-            >Monthly</fc-slider
-        >
-        <span
-            class="col-span-2 text-right font-mono lg:col-span-1 lg:text-left"
-            >{{ data.monthly | currency: "EUR" }}</span
-        >
 
-        <span class="col-span-2 text-left lg:col-span-1 lg:text-right"
-            >Annual</span
+    <div
+        cdkDropList
+        [cdkDropListData]="data.monthlyItems"
+        (cdkDropListDropped)="dropMonthlyItem($event)"
+        class="mt-2 w-full space-y-2"
+        formArrayName="monthlyItems"
+    >
+        <div
+            cdkDrag
+            *ngFor="let item of data.monthlyItems; let i = index"
+            class="list-element px-4 py-2"
+            [formGroupName]="i"
         >
-        <fc-slider
-            class="col-span-2"
-            formControlName="yearly"
-            [min]="0"
-            [max]="5000"
-            [step]="100"
-            >Yearly</fc-slider
+            <fc-named-amount
+                class="h-full w-full"
+                [item]="item"
+                (onDelete)="deleteMonthlyItem(i)"
+            ></fc-named-amount>
+            <span *cdkDragPreview></span>
+        </div>
+    </div>
+
+    <div
+        cdkDropList
+        [cdkDropListData]="data.yearlyItems"
+        (cdkDropListDropped)="dropYearlyItem($event)"
+        class="mt-2 w-full space-y-2"
+        formArrayName="yearlyItems"
+    >
+        <div
+            cdkDrag
+            *ngFor="let item of data.yearlyItems; let i = index"
+            class="list-element px-4 py-2"
+            [formGroupName]="i"
         >
-        <span
-            class="col-span-2 text-right font-mono lg:col-span-1 lg:text-left"
-            >{{ data.yearly | currency: "EUR" }}</span
-        >
+            <fc-named-amount
+                class="h-full w-full"
+                [item]="item"
+                (onDelete)="deleteYearlyItem(i)"
+            ></fc-named-amount>
+            <span *cdkDragPreview></span>
+        </div>
     </div>
 </form>

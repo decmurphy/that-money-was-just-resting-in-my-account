@@ -17,7 +17,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { Observable, interval, map, shareReplay, takeUntil } from 'rxjs';
 
-import { SubscriptionHandler } from '../../../interfaces/subscription-handler';
+import { SubscriptionHandler } from '../../../interfaces/misc/subscription-handler';
 import { UtilityService } from '../../../services/utility.service';
 import { OptgroupComponent } from '../optgroup/optgroup.component';
 import { OptionComponent } from '../option/option.component';
@@ -35,7 +35,10 @@ import { OptionComponent } from '../option/option.component';
     ],
     // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectComponent extends SubscriptionHandler implements OnInit, AfterContentInit, ControlValueAccessor {
+export class SelectComponent
+    extends SubscriptionHandler
+    implements OnInit, AfterContentInit, ControlValueAccessor
+{
     id: string;
     containerTransform = 0;
     optionsContainerScroll = 0;
@@ -77,10 +80,14 @@ export class SelectComponent extends SubscriptionHandler implements OnInit, Afte
         );
 
         if (this.options.length > 0 && this.optGroups.length > 0) {
-            throw new Error('Can pass either fc-option[] or fc-optgroup[] to fc-select - but not both');
+            throw new Error(
+                'Can pass either fc-option[] or fc-optgroup[] to fc-select - but not both'
+            );
         }
         if (this.options.length == 0 && this.optGroups.length == 0) {
-            throw new Error('Must pass one of fc-option[] or fc-optgroup[] to fc-select');
+            throw new Error(
+                'Must pass one of fc-option[] or fc-optgroup[] to fc-select'
+            );
         }
 
         this.initialiseOptionStates();
@@ -151,7 +158,8 @@ export class SelectComponent extends SubscriptionHandler implements OnInit, Afte
     openOptions() {
         this.optionsHidden = false;
         this.cd.detectChanges();
-        this.optionsContainer.nativeElement.scrollTop = this.optionsContainerScroll;
+        this.optionsContainer.nativeElement.scrollTop =
+            this.optionsContainerScroll;
         this.cd.detectChanges();
         this.focusSelectedOrFirst();
     }
@@ -181,7 +189,9 @@ export class SelectComponent extends SubscriptionHandler implements OnInit, Afte
     initialiseOptionStates(): void {
         this.getAllOptions().forEach((opt) => {
             opt.multiple = this.multiple;
-            opt.click.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => this.onOptionClick(val));
+            opt.click
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((val) => this.onOptionClick(val));
             opt.detectChanges();
         });
     }
@@ -196,9 +206,13 @@ export class SelectComponent extends SubscriptionHandler implements OnInit, Afte
     updateLabel(): void {
         if (this.value) {
             const allOptions = this.getAllOptions();
-            const chosenOptions = allOptions.filter((opt) => this.optIsSelected(opt));
+            const chosenOptions = allOptions.filter((opt) =>
+                this.optIsSelected(opt)
+            );
             if (chosenOptions) {
-                this.chosenOptionLabel = chosenOptions.map((co) => co.getLabelContent().trim()).join(', ');
+                this.chosenOptionLabel = chosenOptions
+                    .map((co) => co.getLabelContent().trim())
+                    .join(', ');
             }
         }
     }
@@ -206,7 +220,9 @@ export class SelectComponent extends SubscriptionHandler implements OnInit, Afte
     updateContainerTransform(): void {
         if (this.value) {
             const allOptions = this.getAllOptions();
-            const chosenOptions = allOptions.filter((opt) => this.optIsSelected(opt));
+            const chosenOptions = allOptions.filter((opt) =>
+                this.optIsSelected(opt)
+            );
             const indexOfChosenOption = allOptions.indexOf(chosenOptions[0]);
 
             /*
@@ -216,13 +232,17 @@ export class SelectComponent extends SubscriptionHandler implements OnInit, Afte
             let indexOfChosenGroup = -1;
             if (this.optGroups.length > 0) {
                 const groupOfChosenOption = this.optGroups.find(
-                    (grp) => grp.options.toArray().indexOf(chosenOptions[0]) > -1
+                    (grp) =>
+                        grp.options.toArray().indexOf(chosenOptions[0]) > -1
                 );
-                indexOfChosenGroup = this.optGroups.toArray().indexOf(groupOfChosenOption);
+                indexOfChosenGroup = this.optGroups
+                    .toArray()
+                    .indexOf(groupOfChosenOption);
             }
 
             if (indexOfChosenOption > -1) {
-                this.containerTransform = -48 * (indexOfChosenOption + indexOfChosenGroup + 1);
+                this.containerTransform =
+                    -48 * (indexOfChosenOption + indexOfChosenGroup + 1);
                 /*
                     Entire container is 264px high
                     If we're trying to transform by more than half of that, stop at half and start scrolling inside the box the rest of the way
@@ -240,7 +260,9 @@ export class SelectComponent extends SubscriptionHandler implements OnInit, Afte
 
     focusSelectedOrFirst(): void {
         const allOptions = this.getAllOptions();
-        const chosenOptions = this.value ? allOptions.filter((opt) => this.optIsSelected(opt)) : allOptions;
+        const chosenOptions = this.value
+            ? allOptions.filter((opt) => this.optIsSelected(opt))
+            : allOptions;
         if (chosenOptions?.length > 0) {
             chosenOptions[0].getInput().nativeElement.focus();
         }

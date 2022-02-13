@@ -1,6 +1,6 @@
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
-import { FormErrorProvider } from '../interfaces/form-error-provider';
-import { Formable } from '../interfaces/formable';
+import { FormErrorProvider } from '../forms/form-error-provider';
+import { Formable } from '../forms/formable';
 
 export class KeyVal implements Formable {
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();

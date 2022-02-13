@@ -4,10 +4,11 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { FormErrorProvider } from './form-error-provider';
-import { Formable } from './formable';
-import { RequiredNumber } from '../validators/required-number.directive';
-import { FormData } from './form-data';
+import { FormErrorProvider } from 'app/interfaces/forms/form-error-provider';
+import { Formable } from 'app/interfaces/forms/formable';
+import { FormData } from 'app/interfaces/v1/form-data';
+import { NamedAmount } from 'app/interfaces/v1/named-amount';
+import { RequiredNumber } from 'app/validators/required-number.directive';
 
 export class StrategyEvent implements Formable {
     private formErrorProvider: FormErrorProvider = new FormErrorProvider();
@@ -215,14 +216,44 @@ export class StrategyEvent implements Formable {
                 }
                 break;
             case 'monthlyExpenditure':
-                formData.expenditures.monthly =
-                    this._newValue ||
-                    formData.expenditures.monthly + this._deltaValue;
+                switch (this.operation) {
+                    case 'add':
+                        formData.expenditures.monthlyItems.push(
+                            new NamedAmount('New Amount', this._deltaValue)
+                        );
+                        break;
+                    case 'subtract':
+                        formData.expenditures.monthlyItems.push(
+                            new NamedAmount('New Amount', -this._deltaValue)
+                        );
+                        break;
+                    case 'to':
+                    default:
+                        throw new Error('What');
+                }
+                // formData.expenditures.monthly =
+                //     this._newValue ||
+                //     formData.expenditures.monthly + this._deltaValue;
                 break;
             case 'yearlyExpenditure':
-                formData.expenditures.yearly =
-                    this._newValue ||
-                    formData.expenditures.yearly + this._deltaValue;
+                switch (this.operation) {
+                    case 'add':
+                        formData.expenditures.yearlyItems.push(
+                            new NamedAmount('New Amount', this._deltaValue)
+                        );
+                        break;
+                    case 'subtract':
+                        formData.expenditures.yearlyItems.push(
+                            new NamedAmount('New Amount', -this._deltaValue)
+                        );
+                        break;
+                    case 'to':
+                    default:
+                        throw new Error('What');
+                }
+                // formData.expenditures.yearly =
+                //     this._newValue ||
+                //     formData.expenditures.yearly + this._deltaValue;
                 break;
             case 'mortgageAPRC':
                 formData.mortgage.aprc = this._newValue;

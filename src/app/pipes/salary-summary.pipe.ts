@@ -1,6 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { TaxPayer } from '../interfaces/tax-payer';
+import { TaxPayer } from 'app/interfaces/v1/tax-payer';
 
 @Pipe({
     name: 'salarySummary',
@@ -14,6 +14,11 @@ export class SalarySummaryPipe implements PipeTransform {
             'EUR',
             'symbol',
             '1.0-0'
-        )} gross / ${this.currencyPipe.transform(tp.income.net, 'EUR', 'symbol', '1.0-0')} net`;
+        )} gross / ${this.currencyPipe.transform(
+            tp.income.net,
+            'EUR',
+            'symbol',
+            '1.0-0'
+        )} net`;
     }
 }
