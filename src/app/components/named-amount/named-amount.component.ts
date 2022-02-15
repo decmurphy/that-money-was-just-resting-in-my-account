@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NamedAmount } from 'app/interfaces/v1/named-amount';
+import { NamedAmount } from 'app/interfaces/v2/named-amount';
 
 @Component({
     selector: 'fc-named-amount',

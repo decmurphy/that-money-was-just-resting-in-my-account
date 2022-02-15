@@ -4,36 +4,28 @@ import { FormWithErrors } from '../forms/form-with-errors';
 
 export class TaxPayable extends FormWithErrors {
     constructor(
-        public gross: number = null,
-        public net: number = null,
         public usc: number = null,
         public prsi: number = null,
-        public incomeTax: number = null
+        public incomeTax: number = null,
+        public taxCreditsUsed: number = null
     ) {
         super();
-    }
-
-    static gross(gross: number): TaxPayable {
-        return new TaxPayable(gross);
     }
 
     static create(model: TaxPayable): TaxPayable {
         if (model == null) {
             return new TaxPayable();
         }
-        return new TaxPayable(model.usc, model.prsi, model.incomeTax);
+        return new TaxPayable(
+            model.usc,
+            model.prsi,
+            model.incomeTax,
+            model.taxCreditsUsed
+        );
     }
 
     toFormGroup(formBuilder: FormBuilder): FormGroup {
         return formBuilder.group({
-            gross: [
-                this.gross,
-                [Validators.required, RequiredNumber, Validators.min(0)],
-            ],
-            net: [
-                this.net,
-                [Validators.required, RequiredNumber, Validators.min(0)],
-            ],
             usc: [
                 this.usc,
                 [Validators.required, RequiredNumber, Validators.min(0)],
@@ -44,6 +36,10 @@ export class TaxPayable extends FormWithErrors {
             ],
             incomeTax: [
                 this.incomeTax,
+                [Validators.required, RequiredNumber, Validators.min(0)],
+            ],
+            taxCreditsUsed: [
+                this.taxCreditsUsed,
                 [Validators.required, RequiredNumber, Validators.min(0)],
             ],
         });

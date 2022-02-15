@@ -32,6 +32,12 @@ import { SummaryComponent } from './components/summary/summary.component';
 import { TableComponent } from './components/table/table.component';
 import { NamedAmountComponent } from './components/named-amount/named-amount.component';
 import { SumPipe } from './pipes/sum.pipe';
+import { AllIncomesPipe } from './pipes/all-incomes.pipe';
+import { FilterByNotInPipe } from './pipes/filter-by-not-in.pipe';
+import { ChipComponent } from './components/layout/chip/chip.component';
+import { ContainsPipe } from './pipes/contains.pipe';
+import { IndexOfPipe } from './pipes/index-of.pipe';
+import { ConcatPipe } from './pipes/concat.pipe';
 
 @NgModule({
     declarations: [
@@ -50,6 +56,12 @@ import { SumPipe } from './pipes/sum.pipe';
         TableComponent,
         NamedAmountComponent,
         SumPipe,
+        AllIncomesPipe,
+        FilterByNotInPipe,
+        ChipComponent,
+        ContainsPipe,
+        IndexOfPipe,
+        ConcatPipe,
     ],
     imports: [
         BrowserModule,

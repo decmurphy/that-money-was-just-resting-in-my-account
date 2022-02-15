@@ -1,4 +1,5 @@
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UtilityService } from 'app/services/utility.service';
 import { FormWithErrors } from '../forms/form-with-errors';
 import { Tax } from '../tax/tax';
 import { Employment } from './employment';
@@ -9,42 +10,42 @@ import { TaxPayable } from './tax-payable';
 
 export class TaxPayer extends FormWithErrors {
     constructor(
+        private _id: string = null,
         public details: PersonalDetails = new PersonalDetails(),
-        public employment: Employment = null,
+        public employment: Employment = Employment.unemployed(),
         public otherIncomes: Income[] = [],
         public taxPayable: TaxPayable = new TaxPayable(),
         public taxCredits: TaxCredit[] = []
     ) {
         super();
+        this._id = this._id || UtilityService.newID('txpyr');
+    }
+
+    get id(): string {
+        return this._id;
     }
 
     refreshTaxCredits() {
         const taxCredits = [];
 
-        if (!this.details.maritalStatus.married) {
-            taxCredits.push(TaxCredit.singlePerson());
-        } else if (this.details.maritalStatus.isAssessor) {
-            taxCredits.push(TaxCredit.marriedOrCivilPartner());
-        }
+        taxCredits.push(TaxCredit.personalTaxCredit());
 
-        if (this.employment) {
-            if (this.employment.paye) {
-                taxCredits.push(TaxCredit.paye());
-            }
-            this.employment.benefitInKind
-                .filter((bik) => bik.taxCredit != null)
-                .forEach((bik) => taxCredits.push(bik.taxCredit));
+        if (this.employment.paye) {
+            taxCredits.push(TaxCredit.paye());
         }
+        this.employment.benefitInKind
+            .filter((bik) => bik.taxCredit != null)
+            .forEach((bik) => taxCredits.push(bik.taxCredit));
 
         this.taxCredits = taxCredits;
     }
 
     calculateTaxAndPension(year: number): void {
-        this.taxPayable.gross = 0;
+        let gross = 0;
+
         this.taxPayable.incomeTax = 0;
         this.taxPayable.prsi = 0;
         this.taxPayable.usc = 0;
-        this.taxPayable.net = 0;
 
         this.refreshTaxCredits();
 
@@ -60,143 +61,92 @@ export class TaxPayer extends FormWithErrors {
         /*
             Tax, Income and Pension from Employment
         */
-        if (this.employment) {
-            const ageThisYear = year - this.details.yearOfBirth;
-            this.employment.calculateTaxAndPension(incomeTaxBands, ageThisYear);
-            /*
-                Tally
-            */
-            this.taxPayable.gross += this.employment.income.taxPayable.gross;
-            this.taxPayable.incomeTax +=
-                this.employment.income.taxPayable.incomeTax;
-            this.taxPayable.prsi += this.employment.income.taxPayable.prsi;
-            this.taxPayable.usc += this.employment.income.taxPayable.usc;
-            this.taxPayable.net += this.employment.income.taxPayable.net;
+        const ageThisYear = year - this.details.yearOfBirth;
+        this.employment.calculateTaxAndPension(incomeTaxBands, ageThisYear);
+        gross += this.employment.income.gross;
 
-            console.log('Employment Tax');
-            console.log(this.employment.income.taxPayable);
-        }
-
-        // TODO could be cleaner
         /*
             Tax and Income from other Income Streams
         */
-        this.otherIncomes.forEach((i) => {
-            let taxableIncome;
-            /*
-                Income Tax
-            */
-            taxableIncome = i.taxPayable.gross;
-            if (i.taxRelief.it.reliefIsProvided) {
-                if (
-                    i.taxRelief.it.reliefAppliesIfExceeded ||
-                    taxableIncome < i.taxRelief.it.amount
-                ) {
-                    taxableIncome = Math.max(
-                        0,
-                        i.taxPayable.gross - i.taxRelief.it.amount
-                    );
-                }
-            }
-            i.taxPayable.incomeTax = Tax.getMarginalTaxPayable(
-                taxableIncome,
-                incomeTaxBands,
-                this.taxPayable.gross
-            );
-
-            /*
-                PRSI
-            */
-            taxableIncome = i.taxPayable.gross;
-            if (i.taxRelief.prsi.reliefIsProvided) {
-                if (
-                    i.taxRelief.prsi.reliefAppliesIfExceeded ||
-                    taxableIncome < i.taxRelief.prsi.amount
-                ) {
-                    taxableIncome = Math.max(
-                        0,
-                        i.taxPayable.gross - i.taxRelief.prsi.amount
-                    );
-                }
-            }
-            i.taxPayable.prsi = Tax.getMarginalTaxPayable(
-                taxableIncome,
-                Tax.prsiBands,
-                this.taxPayable.gross
-            );
-
-            /*
-                USC
-            */
-            taxableIncome = i.taxPayable.gross;
-            if (i.taxRelief.usc.reliefIsProvided) {
-                if (
-                    i.taxRelief.usc.reliefAppliesIfExceeded ||
-                    taxableIncome < i.taxRelief.usc.amount
-                ) {
-                    taxableIncome = Math.max(
-                        0,
-                        i.taxPayable.gross - i.taxRelief.usc.amount
-                    );
-                }
-            }
-            i.taxPayable.usc = Tax.getMarginalTaxPayable(
-                taxableIncome,
-                Tax.uscBands,
-                this.taxPayable.gross
-            );
-
-            i.taxPayable.net =
-                i.taxPayable.gross -
-                i.taxPayable.usc -
-                i.taxPayable.incomeTax -
-                i.taxPayable.prsi;
-
-            /*
-                Tally
-            */
-            this.taxPayable.gross += i.taxPayable.gross;
-            this.taxPayable.incomeTax += i.taxPayable.incomeTax;
-            this.taxPayable.prsi += i.taxPayable.prsi;
-            this.taxPayable.usc += i.taxPayable.usc;
-            this.taxPayable.net += i.taxPayable.net;
-
-            console.log(`${i.name} Tax`);
-            console.log(i.taxPayable);
+        [...this.employment.ancillary, ...this.otherIncomes].forEach((i) => {
+            i.calculateTax(incomeTaxBands, gross);
+            gross += i.gross;
         });
 
         /*
-            Last thing always. Do the Tax Credits
+            Apply Tax Credits
         */
-
-        this.taxCredits.forEach((tc) => {
-            console.log(`Tax Credit: ${tc.name}, €${tc.amount}`);
-        });
-
-        const allTaxCreditsAmount = this.taxCredits
-            .map((tc) => tc.amount)
-            .reduce((acc, cur) => acc + cur, 0);
-
-        const applicableTaxCredits = Math.min(
-            this.taxPayable.incomeTax,
-            allTaxCreditsAmount
+        let unusedTaxCredits = UtilityService.sum(
+            this.taxCredits.map((tc) => (tc.value ? tc.value(this) : 0))
         );
 
-        this.taxPayable.incomeTax -= applicableTaxCredits;
-        this.taxPayable.net += applicableTaxCredits;
+        this.getAllIncomes().forEach((inc) => {
+            const taxCreditsToUse = Math.min(
+                inc.taxPayable.incomeTax,
+                unusedTaxCredits
+            );
+            inc.net += taxCreditsToUse;
+            inc.taxPayable.incomeTax -= taxCreditsToUse;
+            inc.taxPayable.taxCreditsUsed = taxCreditsToUse;
+            unusedTaxCredits -= taxCreditsToUse;
+        });
 
-        console.log(`Total Tax`);
-        console.log(this.taxPayable);
-
-        console.log(`Pension`);
-        console.log(this.employment.pension.summary);
+        /*
+            Tally
+        */
+        this.taxPayable.incomeTax = UtilityService.sum(
+            this.getAllIncomes().map((i) => i.taxPayable.incomeTax)
+        );
+        this.taxPayable.prsi = UtilityService.sum(
+            this.getAllIncomes().map((i) => i.taxPayable.prsi)
+        );
+        this.taxPayable.usc = UtilityService.sum(
+            this.getAllIncomes().map((i) => i.taxPayable.usc)
+        );
+        this.taxPayable.taxCreditsUsed = UtilityService.sum(
+            this.getAllIncomes().map((i) => i.taxPayable.taxCreditsUsed)
+        );
 
         /*
             Fin.
         */
     }
 
+    getAllIncomes(): Income[] {
+        return [
+            this.employment.income,
+            ...this.employment.ancillary,
+            ...this.otherIncomes,
+        ];
+    }
+
+    static create(model: TaxPayer): TaxPayer {
+        if (model == null) {
+            return null;
+        }
+
+        return new TaxPayer(
+            model._id,
+            PersonalDetails.create(model.details),
+            Employment.create(model.employment),
+            model.otherIncomes.map((i) => Income.create(i)),
+            TaxPayable.create(model.taxPayable),
+            model.taxCredits.map((tc) => TaxCredit.create(tc))
+        );
+    }
+
     toFormGroup(formBuilder: FormBuilder): FormGroup {
-        return formBuilder.group({});
+        return formBuilder.group({
+            _id: [this._id],
+            details: this.details.toFormGroup(formBuilder),
+            employment: this.employment.toFormGroup(formBuilder),
+            otherIncomes: new FormArray(
+                this.otherIncomes.map((i) => i.toFormGroup(formBuilder))
+            ),
+            taxPayable: this.taxPayable.toFormGroup(formBuilder),
+            taxCredits: new FormArray(
+                this.taxCredits.map((tc) => tc.toFormGroup(formBuilder))
+            ),
+        });
     }
 }

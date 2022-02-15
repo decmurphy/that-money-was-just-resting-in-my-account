@@ -40,10 +40,10 @@ export class SliderComponent implements OnInit {
     onChange = (value: number) => {};
     onTouched = () => {};
 
-    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
+    constructor(private cd: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        this.id = this.utils.newID('sldr');
+        this.id = UtilityService.newID('sldr');
     }
 
     onSliderChange(event: any): void {

@@ -5,9 +5,9 @@
     <div class="flex flex-row justify-between">
         <h5>Incomes, Taxes & Pensions</h5>
         <button
-            [ngClass]="{ disabled: tp2Exists }"
-            [disabled]="tp2Exists"
-            class="btn h-8 w-8 p-1"
+            [ngClass]="{ disabled: taxpayers.length > 1 }"
+            [disabled]="taxpayers.length > 1"
+            class="btn light p-1"
             (click)="addTaxpayer()"
         >
             <svg
@@ -41,7 +41,7 @@
         in the graphs and data
     </p>
     <div
-        *ngIf="tp2Exists"
+        *ngIf="taxpayers.length > 1"
         class="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-1 2xl:grid-cols-3"
     >
         <fc-checkbox formControlName="married">Married</fc-checkbox>
@@ -52,19 +52,18 @@
         >
             <fc-radio-button value="0"> Joint Assessed </fc-radio-button>
             <fc-radio-button value="1"> Separate Assessed </fc-radio-button>
-            <!-- <fc-radio-button value='2'>Separate Treatment</fc-radio-button> -->
         </fc-radio-group>
     </div>
 
     <fc-taxpayer
-        class="flex font-bold"
-        [taxpayerIndex]="0"
+        class="relative flex font-bold"
+        [taxpayerIdx]="0"
         (onDelete)="removeTaxpayer($event)"
     ></fc-taxpayer>
     <fc-taxpayer
         class="flex font-bold"
-        *ngIf="tp2Exists"
-        [taxpayerIndex]="1"
+        *ngIf="taxpayers.length > 1"
+        [taxpayerIdx]="1"
         (onDelete)="removeTaxpayer($event)"
     ></fc-taxpayer>
 </form>

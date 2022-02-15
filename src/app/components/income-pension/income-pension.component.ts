@@ -5,7 +5,8 @@ import { Subscription, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { MaritalStatus } from 'app/interfaces/v1/marital-status';
+import { MaritalStatus } from 'app/interfaces/v2/marital-status';
+import { TaxPayer } from 'app/interfaces/v2/tax-payer';
 
 @Component({
     selector: 'fc-income-pension',
@@ -18,8 +19,8 @@ export class IncomePensionComponent
 {
     form: FormGroup;
     formValueChangesSub: Subscription;
+    taxpayers: TaxPayer[];
     data: MaritalStatus;
-    tp2Exists: boolean;
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
@@ -31,7 +32,7 @@ export class IncomePensionComponent
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
                 this.data = data.maritalStatus;
-                this.tp2Exists = data.tp2 != null;
+                this.taxpayers = data.taxpayers;
                 this.resetForm();
             });
     }
@@ -58,7 +59,7 @@ export class IncomePensionComponent
         this.dataService.addTaxpayer();
     }
 
-    removeTaxpayer(i: number): void {
-        this.dataService.removeTaxpayer(i == 0 ? 'tp1' : 'tp2');
+    removeTaxpayer(idx: number): void {
+        this.dataService.removeTaxpayer(idx);
     }
 }

@@ -39,10 +39,10 @@ export class CheckboxComponent implements OnInit, ControlValueAccessor {
     onChange = (checked: boolean) => {};
     onTouched = () => {};
 
-    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
+    constructor(private cd: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        this.id = this.utils.newID('cbx');
+        this.id = UtilityService.newID('cbx');
     }
 
     selectionChange(event: any): void {

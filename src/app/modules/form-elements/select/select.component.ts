@@ -62,15 +62,14 @@ export class SelectComponent
 
     constructor(
         @Optional() @Attribute('multiple') public multiple: any,
-        private cd: ChangeDetectorRef,
-        private utils: UtilityService
+        private cd: ChangeDetectorRef
     ) {
         super();
         this.multiple = this.multiple === '' ? true : false;
     }
 
     ngOnInit(): void {
-        this.id = this.utils.newID('slct');
+        this.id = UtilityService.newID('slct');
     }
 
     ngAfterContentInit(): void {

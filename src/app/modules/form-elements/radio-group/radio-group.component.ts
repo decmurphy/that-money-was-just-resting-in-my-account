@@ -31,7 +31,9 @@ import { RadioButtonComponent } from '../radio-button/radio-button.component';
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RadioGroupComponent implements OnInit, AfterContentInit, OnChanges, ControlValueAccessor {
+export class RadioGroupComponent
+    implements OnInit, AfterContentInit, OnChanges, ControlValueAccessor
+{
     @ContentChildren(RadioButtonComponent)
     radioButtons: QueryList<RadioButtonComponent>;
 
@@ -39,23 +41,31 @@ export class RadioGroupComponent implements OnInit, AfterContentInit, OnChanges,
 
     @Input() value: string | number;
     @Input() disabled = false;
-    @Output() radioGroupChange: EventEmitter<string | number> = new EventEmitter();
+    @Output() radioGroupChange: EventEmitter<string | number> =
+        new EventEmitter();
 
     touched = false;
     onChange = (value: string | number) => {};
     onTouched = () => {};
 
-    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
+    constructor(private cd: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        this.name = this.utils.newID('rgrp');
+        this.name = UtilityService.newID('rgrp');
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes['disabled'] && changes['disabled'].currentValue !== changes['disabled'].previousValue) {
+        if (
+            changes['disabled'] &&
+            changes['disabled'].currentValue !==
+                changes['disabled'].previousValue
+        ) {
             this.setDisabledState(changes['disabled'].currentValue);
         }
-        if (changes['value'] && changes['value'].currentValue !== changes['value'].previousValue) {
+        if (
+            changes['value'] &&
+            changes['value'].currentValue !== changes['value'].previousValue
+        ) {
             this.writeValue(changes['value'].currentValue);
         }
     }

@@ -1,140 +1,26 @@
-<ng-container *ngIf="editing; then formTmpl; else summaryTmpl"></ng-container>
-
-<ng-template #formTmpl>
-    <form
-        [formGroup]="form"
-        class="w-full space-y-2 rounded border border-sky-800 px-4 py-2"
-    >
-        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <fc-form-field>
-                <span formLabel>Name</span>
-                <input formInput type="text" formControlName="name" />
-                <span formError *ngIf="form.get('name').invalid"> </span>
-            </fc-form-field>
-            <fc-form-field>
-                <span formLabel>Birth Year</span>
-                <input formInput type="number" formControlName="yearOfBirth" />
-                <span formError *ngIf="form.get('yearOfBirth').invalid"> </span>
-            </fc-form-field>
-
-            <ng-container formGroupName="income">
-                <fc-form-field>
-                    <span formLabel>Income</span>
-                    <p class="text-sky-100" formPrefix>€</p>
-                    <input formInput type="number" formControlName="gross" />
-                    <span formError *ngIf="income.get('gross').invalid"> </span>
-                </fc-form-field>
-            </ng-container>
-            <div class="flex items-center justify-center">
-                <fc-checkbox formControlName="paye">PAYE</fc-checkbox>
-            </div>
-
-            <ng-container formGroupName="pension">
-                <fc-form-field>
-                    <span formLabel>Pension Contributions</span>
-                    <span formSuffix>%</span>
-                    <input
-                        formInput
-                        type="number"
-                        formControlName="percentage"
-                        [disabled]="data.pension.max"
-                    />
-                    <span formError *ngIf="pension.get('percentage').invalid">
-                    </span>
-                </fc-form-field>
-                <div class="flex items-center justify-center">
-                    <fc-checkbox formControlName="max"
-                        >Max Out Pension</fc-checkbox
-                    >
-                </div>
-            </ng-container>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-2">
-            <div class="grid grid-cols-2 gap-y-0 gap-x-4">
-                <span class="text-left lg:text-right">Tax Credits</span>
-                <span class="text-right font-mono lg:text-left">{{
-                    data.taxPayable.taxCredits | currency: "EUR"
-                }}</span>
-
-                <span class="text-left lg:text-right">Net Tax</span>
-                <span class="text-right font-mono lg:text-left">{{
-                    data.taxPayable.incomeTax - data.taxPayable.taxCredits
-                        | currency: "EUR"
-                }}</span>
-
-                <span class="text-left lg:text-right">PRSI</span>
-                <span class="text-right font-mono lg:text-left">{{
-                    data.taxPayable.prsi | currency: "EUR"
-                }}</span>
-
-                <span class="text-left lg:text-right">USC</span>
-                <span class="text-right font-mono lg:text-left">{{
-                    data.taxPayable.usc | currency: "EUR"
-                }}</span>
-            </div>
-
-            <div class="grid grid-cols-2 gap-y-0 gap-x-4">
-                <span class="text-left lg:text-right">Pension</span>
-                <span class="text-right font-mono lg:text-left">{{
-                    data.pension.amount | currency: "EUR"
-                }}</span>
-
-                <span class="text-left lg:text-right">Net Income</span>
-                <span class="text-right font-mono lg:text-left"
-                    >{{ data.income.net | currency: "EUR" }} / year</span
-                >
-
-                <span class="col-start-2 text-right font-mono lg:text-left"
-                    >{{ data.income.net / 12.0 | currency: "EUR" }} /
-                    month</span
-                >
-
-                <span class="h-4"></span>
-                <span class="h-4"></span>
-            </div>
-        </div>
-
-        <div class="flex w-full justify-end">
-            <button class="btn h-8 w-8 p-1" (click)="editing = false">
-                <svg
-                    class="h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                </svg>
-            </button>
-        </div>
-    </form>
-</ng-template>
-
-<ng-template #summaryTmpl>
+<div class="relative z-0 w-full">
     <div
-        class="list-element flex h-full w-full items-center"
-        (click)="editing = true"
+        class="peer list-element relative z-10 flex w-full items-center"
+        [ngClass]="{
+            'sticky top-0 rounded-b-none': editing
+        }"
+        (click)="editing = !editing"
     >
         <div class="flex grow flex-col">
-            <h6>{{ data.name }}</h6>
+            <h6>{{ data.details.name }}</h6>
             <p class="ml-4">
                 {{ data | salarySummary }}
             </p>
             <p class="ml-4">
-                {{ data | pensionSummary }}
+                {{ data.employment.pension | pensionSummary }}
             </p>
         </div>
         <button
             [ngClass]="{
-                disabled: !otherTaxpayerExists
+                disabled: taxpayers.length == 1
             }"
-            [disabled]="!otherTaxpayerExists"
-            class="btn primary h-8 w-8 p-1"
+            [disabled]="taxpayers.length == 1"
+            class="btn primary p-1"
             (click)="delete()"
         >
             <svg
@@ -152,5 +38,512 @@
                 ></path>
             </svg>
         </button>
+        <div
+            class="rotate-0 p-1 transition-transform"
+            [ngClass]="{
+                'rotate-180': editing
+            }"
+        >
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                ></path>
+            </svg>
+        </div>
     </div>
+    <form
+        *ngIf="form"
+        [formGroup]="form"
+        class="relative z-0 -mt-4 min-h-0 w-full space-y-2 overflow-hidden rounded-b-lg border-4 border-y-0 border-sky-800 px-4 pb-4 transition-all peer-hover:border-l-sky-500 peer-hover:border-b-sky-600 peer-hover:border-r-sky-700"
+        [ngClass]="{
+            'h-0 py-0': !editing,
+            'h-[calc(100%-4rem)] border-b-4 pt-8': editing
+        }"
+    >
+        <h5>Personal Details</h5>
+        <div
+            class="grid grid-cols-1 gap-2 sm:grid-cols-2"
+            formGroupName="details"
+        >
+            <fc-form-field>
+                <span formLabel>Name</span>
+                <input formInput type="text" formControlName="name" />
+                <span formError *ngIf="details.get('name').invalid"> </span>
+            </fc-form-field>
+            <fc-form-field>
+                <span formLabel>Birth Year</span>
+                <input formInput type="number" formControlName="yearOfBirth" />
+                <span formError *ngIf="details.get('yearOfBirth').invalid">
+                </span>
+            </fc-form-field>
+        </div>
+
+        <div
+            class="-ml-4 w-[calc(100%+4rem)] border-2 border-b border-sky-800"
+        ></div>
+
+        <h5>Employment</h5>
+        <div
+            class="grid grid-cols-1 gap-2 sm:grid-cols-2"
+            formGroupName="employment"
+        >
+            <ng-container formGroupName="income">
+                <fc-form-field>
+                    <span formLabel>Salary</span>
+                    <p class="text-sky-100" formPrefix>€</p>
+                    <input formInput type="number" formControlName="gross" />
+                    <span formError *ngIf="income.get('gross').invalid"> </span>
+                </fc-form-field>
+            </ng-container>
+            <div class="flex items-center justify-center">
+                <fc-checkbox formControlName="paye">PAYE</fc-checkbox>
+            </div>
+        </div>
+
+        <div>
+            <h6>Ancillary Income</h6>
+            <div class="my-4">
+                <ng-container
+                    *ngTemplateOutlet="
+                        ancillarySuggestionsTmpl;
+                        context: { data: data, form: form }
+                    "
+                ></ng-container>
+            </div>
+        </div>
+
+        <div>
+            <h6>Benefit In Kind</h6>
+            <div class="my-4">
+                <ng-container
+                    *ngTemplateOutlet="
+                        bikSuggestionsTmpl;
+                        context: { data: data, form: form }
+                    "
+                ></ng-container>
+            </div>
+        </div>
+
+        <div
+            class="-ml-4 w-[calc(100%+4rem)] border-2 border-b border-sky-800"
+        ></div>
+
+        <div>
+            <h6>Pension</h6>
+            <div class="my-4">
+                <ng-container
+                    *ngTemplateOutlet="
+                        pensionSuggestionsTmpl;
+                        context: { data: data, form: form }
+                    "
+                ></ng-container>
+            </div>
+        </div>
+
+        <div
+            class="-ml-4 w-[calc(100%+4rem)] border-2 border-b border-sky-800"
+        ></div>
+
+        <div>
+            <h6>Additional Incomes</h6>
+            <div class="my-4">
+                <ng-container
+                    *ngTemplateOutlet="
+                        incomeSuggestionsTmpl;
+                        context: { data: data, form: form }
+                    "
+                ></ng-container>
+            </div>
+        </div>
+
+        <div
+            class="-ml-4 w-[calc(100%+4rem)] border-2 border-b border-sky-800"
+        ></div>
+
+        <div>
+            <h6>Tax Credits</h6>
+            <div class="my-4">
+                <ng-container
+                    *ngTemplateOutlet="
+                        taxCreditSuggestionsTmpl;
+                        context: { data: data }
+                    "
+                ></ng-container>
+            </div>
+        </div>
+
+        <div
+            class="-ml-4 w-[calc(100%+4rem)] border-2 border-b border-sky-800"
+        ></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-2">
+            <div class="grid grid-cols-2 gap-y-0 gap-x-4">
+                <span class="text-left lg:text-right">Tax Credits</span>
+                <span class="text-right font-mono lg:text-left">{{
+                    data.taxPayable.taxCreditsUsed | currency: "EUR"
+                }}</span>
+
+                <span class="text-left lg:text-right">Net Tax</span>
+                <span class="text-right font-mono lg:text-left">{{
+                    data.taxPayable.incomeTax | currency: "EUR"
+                }}</span>
+
+                <span class="text-left lg:text-right">PRSI</span>
+                <span class="text-right font-mono lg:text-left">{{
+                    data.taxPayable.prsi | currency: "EUR"
+                }}</span>
+
+                <span class="text-left lg:text-right">USC</span>
+                <span class="text-right font-mono lg:text-left">{{
+                    data.taxPayable.usc | currency: "EUR"
+                }}</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-y-0 gap-x-4">
+                <span class="text-left lg:text-right">Pension</span>
+                <span class="text-right font-mono lg:text-left">{{
+                    (data.employment.pension
+                        ? data.employment.pension.summary.amount
+                        : 0
+                    ) | currency: "EUR"
+                }}</span>
+
+                <span class="text-left lg:text-right">Net Income</span>
+                <span class="text-right font-mono lg:text-left"
+                    >{{ [data] | allIncomes | sum: "net" | currency: "EUR" }} /
+                    year</span
+                >
+
+                <span class="col-start-2 text-right font-mono lg:text-left"
+                    >{{
+                        ([data] | allIncomes | sum: "net") / 12.0
+                            | currency: "EUR"
+                    }}
+                    / month</span
+                >
+
+                <span class="h-4"></span>
+                <span class="h-4"></span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<ng-template #pensionSuggestionsTmpl let-data="data" let-form="form">
+    <div class="flex flex-wrap gap-1">
+        <fc-chip
+            *ngFor="let suggestion of pensionSuggestions"
+            [hidden]="
+                data.employment.pension &&
+                data.employment.pension.id != suggestion.id
+            "
+            [active]="data.employment.pension?.id == suggestion.id"
+            [editable]="true"
+            [title]="suggestion.name"
+            (onAdd)="addPension(suggestion)"
+            (onDelete)="removePension()"
+        >
+            <ng-container
+                *ngTemplateOutlet="
+                    editPensionTmpl;
+                    context: { form: form, data: data }
+                "
+            ></ng-container>
+        </fc-chip>
+    </div>
+</ng-template>
+
+<ng-template #incomeSuggestionsTmpl let-form="form" let-data="data">
+    <div class="flex flex-wrap gap-1">
+        <fc-chip
+            *ngFor="
+                let suggestion of data.otherIncomes;
+                let i = index;
+                trackBy: trackIncome
+            "
+            [active]="true"
+            [editable]="true"
+            [title]="suggestion.name"
+            (onDelete)="removeIncome(suggestion)"
+        >
+            <ng-container
+                *ngTemplateOutlet="
+                    editIncomeTmpl;
+                    context: {
+                        form: form,
+                        data: data,
+                        index: i
+                    }
+                "
+            ></ng-container>
+        </fc-chip>
+        <fc-chip
+            *ngFor="
+                let suggestion of incomeSuggestions
+                    | filterByNotIn: data.otherIncomes;
+                trackBy: trackIncome
+            "
+            [title]="suggestion.name"
+            (onAdd)="addIncome(suggestion)"
+        >
+        </fc-chip>
+    </div>
+</ng-template>
+
+<ng-template #ancillarySuggestionsTmpl let-form="form" let-data="data">
+    <div class="flex flex-wrap gap-1">
+        <fc-chip
+            *ngFor="
+                let suggestion of data.employment.ancillary;
+                let i = index;
+                trackBy: trackIncome
+            "
+            [active]="true"
+            [editable]="true"
+            [title]="suggestion.name"
+            (onDelete)="removeAncillary(suggestion)"
+        >
+            <ng-container
+                *ngTemplateOutlet="
+                    editAncillaryTmpl;
+                    context: {
+                        form: form,
+                        data: data,
+                        index: i
+                    }
+                "
+            ></ng-container>
+        </fc-chip>
+        <fc-chip
+            *ngFor="
+                let suggestion of ancillarySuggestions
+                    | filterByNotIn: data.employment.ancillary
+            "
+            [title]="suggestion.name"
+            (onAdd)="addAncillary(suggestion)"
+        >
+        </fc-chip>
+    </div>
+</ng-template>
+
+<ng-template #bikSuggestionsTmpl let-form="form" let-data="data">
+    <div class="flex flex-wrap gap-1">
+        <fc-chip
+            *ngFor="
+                let suggestion of data.employment.benefitInKind;
+                let i = index;
+                trackBy: trackBenefitInKind
+            "
+            [active]="true"
+            [editable]="true"
+            [title]="suggestion.name"
+            (onDelete)="removeBIK(suggestion)"
+        >
+            <ng-container
+                *ngTemplateOutlet="
+                    editBIKTmpl;
+                    context: {
+                        form: form,
+                        data: data,
+                        index: i
+                    }
+                "
+            >
+            </ng-container>
+        </fc-chip>
+        <fc-chip
+            *ngFor="
+                let suggestion of bikSuggestions
+                    | filterByNotIn: data.employment.benefitInKind
+            "
+            [title]="suggestion.name"
+            (onAdd)="addBIK(suggestion)"
+        >
+        </fc-chip>
+    </div>
+</ng-template>
+
+<ng-template #taxCreditSuggestionsTmpl let-data="data">
+    <div class="flex flex-wrap gap-1">
+        <fc-chip
+            *ngFor="let suggestion of taxCreditSuggestions"
+            [active]="data.taxCredits | contains: suggestion"
+            [title]="suggestion.name"
+        ></fc-chip>
+    </div>
+</ng-template>
+
+<ng-template #editPensionTmpl let-form="form" let-data="data">
+    <form [formGroup]="form" class="my-4 flex flex-col gap-2">
+        <ng-container formGroupName="employment">
+            <ng-container
+                *ngIf="data.employment.pension"
+                formGroupName="pension"
+            >
+                <fc-form-field
+                    *ngIf="data.employment.pension.id !== 'pensn_noncontri'"
+                >
+                    <span formLabel>Employer Contribution</span>
+                    <span formSuffix>%</span>
+                    <input
+                        formInput
+                        type="number"
+                        formControlName="employerContribPercent"
+                    />
+                    <span
+                        formError
+                        *ngIf="pension.get('employerContribPercent').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+                <fc-form-field [hidden]="data.employment.pension.maxTaxFree">
+                    <span formLabel>Personal Contribution</span>
+                    <span formSuffix>%</span>
+                    <input
+                        formInput
+                        type="number"
+                        formControlName="personalContribPercent"
+                    />
+                    <span
+                        formError
+                        *ngIf="pension.get('personalContribPercent').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+                <div
+                    *ngIf="data.employment.pension.id !== 'pensn_noncontri'"
+                    class="flex items-center justify-center"
+                >
+                    <fc-checkbox formControlName="maxTaxFree"
+                        >Maximise Tax Free Contributions</fc-checkbox
+                    >
+                </div>
+                <fc-form-field>
+                    <span formLabel>Annual Growth Rate (Estimate)</span>
+                    <span formSuffix>%</span>
+                    <input
+                        formInput
+                        type="number"
+                        formControlName="annualGrowthRate"
+                    />
+                    <span
+                        formError
+                        *ngIf="pension.get('annualGrowthRate').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+            </ng-container>
+        </ng-container>
+    </form>
+</ng-template>
+
+<ng-template #editBIKTmpl let-form="form" let-data="data" let-i="index">
+    <form [formGroup]="form" class="my-4 flex flex-col gap-2">
+        <ng-container formGroupName="employment">
+            <ng-container formArrayName="benefitInKind">
+                <ng-container
+                    *ngIf="data.employment.benefitInKind[i]"
+                    [formGroupName]="i"
+                >
+                    <!-- <fc-form-field>
+                        <span formLabel>Name</span>
+                        <input formInput type="text" formControlName="name" />
+                        <span
+                            formError
+                            *ngIf="benefitInKind.at(i).get('name').invalid"
+                        >
+                        </span>
+                    </fc-form-field> -->
+                    <fc-form-field>
+                        <span formLabel>Gross</span>
+                        <span formPrefix>€</span>
+                        <input
+                            formInput
+                            type="number"
+                            formControlName="amount"
+                        />
+                        <span
+                            formError
+                            *ngIf="benefitInKind.at(i).get('amount').invalid"
+                        >
+                        </span>
+                    </fc-form-field>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </form>
+</ng-template>
+
+<ng-template #editIncomeTmpl let-form="form" let-data="data" let-i="index">
+    <form [formGroup]="form" class="my-4 flex flex-col gap-2">
+        <ng-container formArrayName="otherIncomes">
+            <ng-container *ngIf="data.otherIncomes[i]" [formGroupName]="i">
+                <fc-form-field *ngIf="data.otherIncomes[i].editable">
+                    <span formLabel>Name</span>
+                    <input formInput type="text" formControlName="name" />
+                    <span
+                        formError
+                        *ngIf="otherIncomes.at(i).get('name').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+                <fc-form-field>
+                    <span formLabel>Gross</span>
+                    <span formPrefix>€</span>
+                    <input formInput type="number" formControlName="gross" />
+                    <span
+                        formError
+                        *ngIf="otherIncomes.at(i).get('gross').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+            </ng-container>
+        </ng-container>
+    </form>
+</ng-template>
+
+<ng-template #editAncillaryTmpl let-data="data" let-form="form" let-i="index">
+    <form [formGroup]="form" class="my-4 flex flex-col gap-2">
+        <ng-container formGroupName="employment">
+            <ng-container formArrayName="ancillary">
+                <ng-container
+                    *ngIf="data.employment.ancillary[i]"
+                    [formGroupName]="i"
+                >
+                    <!-- <fc-form-field>
+                        <span formLabel>Name</span>
+                        <input formInput type="string" formControlName="name" />
+                        <span
+                            formError
+                            *ngIf="ancillary.at(i).get('name').invalid"
+                        >
+                        </span>
+                    </fc-form-field> -->
+                    <fc-form-field>
+                        <span formLabel>Gross</span>
+                        <span formPrefix>€</span>
+                        <input
+                            formInput
+                            type="number"
+                            formControlName="gross"
+                        />
+                        <span
+                            formError
+                            *ngIf="ancillary.at(i).get('gross').invalid"
+                        >
+                        </span>
+                    </fc-form-field>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </form>
 </ng-template>

@@ -1,6 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { TaxPayer } from 'app/interfaces/v1/tax-payer';
+import { Pension } from 'app/interfaces/v2/pension';
 
 @Pipe({
     name: 'pensionSummary',
@@ -8,11 +8,16 @@ import { TaxPayer } from 'app/interfaces/v1/tax-payer';
 export class PensionSummaryPipe implements PipeTransform {
     constructor(private currencyPipe: CurrencyPipe) {}
 
-    transform(tp: TaxPayer): string {
+    transform(pension: Pension): string {
+        if (pension == null) {
+            return ``;
+        }
         return `Pension: ${
-            tp.pension.max ? 'Max' : tp.pension.percentage + '%'
+            pension.employerContribPercent +
+            pension.personalContribPercent +
+            '%'
         } / ${this.currencyPipe.transform(
-            tp.pension.amount,
+            pension.summary.amount,
             'EUR',
             'symbol',
             '1.0-0'

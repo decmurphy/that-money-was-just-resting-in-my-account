@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnInit,
+} from '@angular/core';
 
 import { UtilityService } from '../../../services/utility.service';
 
@@ -18,10 +24,10 @@ export class RadioButtonComponent implements OnInit {
     @Input() value: string | number;
     @Input() checked = false;
 
-    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
+    constructor(private cd: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        this.id = this.utils.newID('rbtn');
+        this.id = UtilityService.newID('rbtn');
     }
 
     detectChanges() {

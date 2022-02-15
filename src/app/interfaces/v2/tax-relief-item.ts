@@ -25,6 +25,18 @@ export class TaxReliefItem extends FormWithErrors {
         });
     }
 
+    static create(model: TaxReliefItem): TaxReliefItem {
+        if (model == null) {
+            return null;
+        }
+
+        return new TaxReliefItem(
+            model.reliefIsProvided,
+            model.amount,
+            model.reliefAppliesIfExceeded
+        );
+    }
+
     static noRelief(): TaxReliefItem {
         return new TaxReliefItem(false, 0);
     }

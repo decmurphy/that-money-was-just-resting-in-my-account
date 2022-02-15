@@ -24,4 +24,12 @@ export class MaritalStatus extends FormWithErrors {
             isAssessor: [this.isAssessor, [Validators.required]],
         });
     }
+
+    getPersonalTaxCreditAmount(): number {
+        if (this.married && this.assessmentMode === '0' && this.isAssessor) {
+            return 3400;
+        } else {
+            return 1700;
+        }
+    }
 }

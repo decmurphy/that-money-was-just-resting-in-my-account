@@ -19,6 +19,18 @@ export class TaxRelief extends FormWithErrors {
         });
     }
 
+    static create(model: TaxRelief): TaxRelief {
+        if (model == null) {
+            return null;
+        }
+
+        return new TaxRelief(
+            TaxReliefItem.create(model.it),
+            TaxReliefItem.create(model.usc),
+            TaxReliefItem.create(model.prsi)
+        );
+    }
+
     static noRelief(): TaxRelief {
         return new TaxRelief(
             TaxReliefItem.noRelief(),

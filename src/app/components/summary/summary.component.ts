@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 import { takeUntil } from 'rxjs';
 
-import { MonthData } from 'app/interfaces/v1/month-data';
+import { MonthData } from 'app/interfaces/v2/month-data';
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { FormData } from 'app/interfaces/v1/form-data';
+import { FormData } from 'app/interfaces/v2/form-data';
 
 @Component({
     selector: 'fc-summary',

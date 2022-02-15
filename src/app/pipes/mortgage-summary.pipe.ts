@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
+import { Mortgage } from 'app/interfaces/v2/mortgage';
 
 @Pipe({
     name: 'mortgageSummary',
@@ -7,14 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class MortgageSummaryPipe implements PipeTransform {
     constructor(private currencyPipe: CurrencyPipe) {}
 
-    transform(
-        mortgage: {
-            amount: number;
-            aprc: number;
-            monthlyRepayments: number;
-        },
-        part: 1 | 2 | 3
-    ): string {
+    transform(mortgage: Mortgage, part: 1 | 2 | 3): string {
         switch (part) {
             case 1:
                 return `${this.currencyPipe.transform(

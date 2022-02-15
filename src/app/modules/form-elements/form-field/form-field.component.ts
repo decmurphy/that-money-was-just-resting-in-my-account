@@ -1,4 +1,9 @@
-import { AfterContentInit, Component, ContentChild, OnInit } from '@angular/core';
+import {
+    AfterContentInit,
+    Component,
+    ContentChild,
+    OnInit,
+} from '@angular/core';
 import { UtilityService } from '../../../services/utility.service';
 
 import { FormErrorDirective } from '../directives/form-error.directive';
@@ -22,10 +27,10 @@ export class FormFieldComponent implements OnInit, AfterContentInit {
 
     inputId: string;
 
-    constructor(private utils: UtilityService) {}
+    constructor() {}
 
     ngOnInit(): void {
-        this.inputId = this.utils.newID('input');
+        this.inputId = UtilityService.newID('input');
     }
 
     ngAfterContentInit(): void {
@@ -44,7 +49,8 @@ export class FormFieldComponent implements OnInit, AfterContentInit {
             Yo dawg, your input doesn't have a placeholder so we used the formLabel as a placeholder for your placeholder
         */
         if (inputEl.placeholder == null || inputEl.placeholder == '') {
-            inputEl.placeholder = this.formLabel.element.nativeElement.innerHTML;
+            inputEl.placeholder =
+                this.formLabel.element.nativeElement.innerHTML;
         }
     }
 }

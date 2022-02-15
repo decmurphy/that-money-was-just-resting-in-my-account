@@ -5,8 +5,8 @@ import { Subscription, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { Expenditures } from 'app/interfaces/v1/expenditures';
-import { NamedAmount } from 'app/interfaces/v1/named-amount';
+import { Expenditures } from 'app/interfaces/v2/expenditures';
+import { NamedAmount } from 'app/interfaces/v2/named-amount';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({

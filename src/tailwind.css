@@ -137,17 +137,25 @@
     .btn {
         @apply flex
             cursor-pointer rounded-lg
-            bg-transparent py-2 px-4 text-sky-800
-            transition-opacity-colors hover:bg-sky-200 focus:outline-none
+            bg-transparent py-2 px-4 text-sky-200
+            transition-opacity-colors hover:bg-sky-200 hover:text-sky-800 focus:outline-none
             active:bg-sky-200/90;
     }
 
-    .btn.primary {
-        @apply bg-sky-300 text-sky-800 hover:bg-sky-200 active:bg-sky-300;
+    .btn.light {
+        @apply text-sky-800 hover:bg-sky-200 active:bg-sky-200;
     }
 
-    .btn.accent {
-        @apply bg-sky-900/90 text-sky-800 hover:bg-sky-900/100 active:bg-sky-900/80;
+    .btn.primary {
+        @apply bg-sky-300 text-sky-800 hover:bg-sky-400 active:bg-sky-300;
+    }
+
+    .chip {
+        @apply flex h-fit cursor-pointer items-center rounded-3xl bg-sky-300 py-2 px-4 font-bold text-sky-900 shadow-lg transition-all duration-300 hover:bg-sky-400;
+    }
+
+    .chip.dark {
+        @apply bg-sky-800 text-sky-100 hover:bg-sky-900;
     }
 
     /*
@@ -169,7 +177,7 @@
     */
 
     .list-element {
-        @apply flex h-auto min-h-[5rem] cursor-pointer flex-row items-center justify-between rounded-lg border-l-4 border-sky-400/0 bg-sky-800 px-4 text-sky-100 hover:rounded-l-none hover:border-sky-400/100 hover:bg-sky-700;
+        @apply flex h-auto min-h-[5rem] cursor-pointer flex-row items-center justify-between rounded-lg border-l-4 border-sky-400/0 bg-sky-800 px-4 text-sky-100 transition-opacity-colors hover:rounded-l-none hover:border-sky-500/100 hover:bg-sky-700;
     }
 }
 

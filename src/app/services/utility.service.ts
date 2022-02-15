@@ -8,7 +8,7 @@ import { AppServicesModule } from '../modules/app-services.module';
 export class UtilityService {
     constructor() {}
 
-    newID(prefix = '') {
+    static newID(prefix = '') {
         if (prefix != '') {
             if (prefix.length < 3 || prefix.length > 5) {
                 throw new Error(
@@ -17,5 +17,9 @@ export class UtilityService {
             }
         }
         return prefix + '_' + Math.random().toString(36).substring(2, 11);
+    }
+
+    static sum(arr: number[]): number {
+        return arr.reduce((acc, cur) => acc + cur, 0.0);
     }
 }

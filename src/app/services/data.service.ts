@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Expenditures } from 'app/interfaces/v1/expenditures';
-import { FormData } from 'app/interfaces/v1/form-data';
+import { Expenditures } from 'app/interfaces/v2/expenditures';
+import { FormData } from 'app/interfaces/v2/form-data';
 import { GenericPlotData } from 'app/interfaces/plotly/generic-plot-data';
-import { MaritalStatus } from 'app/interfaces/v1/marital-status';
-import { MonthData } from 'app/interfaces/v1/month-data';
-import { Mortgage } from 'app/interfaces/v1/mortgage';
-import { Strategy } from 'app/interfaces/v1/strategy';
-import { StrategyEvent } from 'app/interfaces/v1/strategy-event';
-import { TaxPayer } from 'app/interfaces/v1/tax-payer';
+import { MaritalStatus } from 'app/interfaces/v2/marital-status';
+import { MonthData } from 'app/interfaces/v2/month-data';
+import { Mortgage } from 'app/interfaces/v2/mortgage';
+import { Strategy } from 'app/interfaces/v2/strategy';
+import { StrategyEvent } from 'app/interfaces/v2/strategy-event';
+import { TaxPayer } from 'app/interfaces/v2/tax-payer';
 import { AppServicesModule } from 'app/modules/app-services.module';
 import { Observable, ReplaySubject } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
+import { UtilityService } from './utility.service';
 
 @Injectable({
     providedIn: AppServicesModule,
@@ -31,7 +32,7 @@ export class DataService {
         new ReplaySubject();
 
     constructor(private ls: LocalStorageService) {
-        this.dataLSKey = 'mortgageCalcConfig';
+        this.dataLSKey = 'mortgageCalcConfigV2';
         const mccString = this.ls.get(this.dataLSKey);
         const mcc = JSON.parse(mccString) || new FormData();
         this.setData(mcc);
@@ -76,15 +77,12 @@ export class DataService {
     }
 
     addTaxpayer() {
-        this.data.tp2 = new TaxPayer();
+        this.data.taxpayers.push(new TaxPayer());
         this.setData(this.data);
     }
 
-    removeTaxpayer(key: string): void {
-        if (key == 'tp1') {
-            this.data.tp1 = this.data.tp2;
-        }
-        this.data.tp2 = null;
+    removeTaxpayer(idx: number): void {
+        this.data.taxpayers.splice(idx, 1);
         this.setData(this.data);
     }
 
@@ -93,8 +91,8 @@ export class DataService {
         this.setData(this.data);
     }
 
-    setTaxpayer(key: string, model: TaxPayer): void {
-        this.data[key] = model;
+    setTaxpayer(idx: number, model: TaxPayer): void {
+        this.data.taxpayers[idx] = model;
         this.setData(this.data);
     }
 
@@ -250,69 +248,33 @@ export class DataService {
             if (strategy.events.length > 0 || monthIdx === 0) {
                 // console.log(monthIdx, formData.tp1.income);
 
-                strategy.setMonth(monthIdx);
-                strategy.apply(formData);
-
-                /*
-                    Calculate Pension Contribution
-                */
-                formData.tp1.calculatePensionContribution(_date.getFullYear());
-                if (formData.tp2) {
-                    formData.tp2.calculatePensionContribution(
-                        _date.getFullYear()
-                    );
-                }
+                strategy.apply(formData, monthIdx);
 
                 /*
                     Set Marital Status
                 */
-                if (formData.tp2) {
+                if (formData.taxpayers.length == 2) {
                     const tp1IsAssessor =
-                        formData.tp1.income.gross > formData.tp2.income.gross;
-                    formData.tp1.maritalStatus = MaritalStatus.create({
-                        ...formData.maritalStatus,
-                        isAssessor: tp1IsAssessor,
-                    } as MaritalStatus);
-                    formData.tp2.maritalStatus = MaritalStatus.create({
-                        ...formData.maritalStatus,
-                        isAssessor: !tp1IsAssessor,
-                    } as MaritalStatus);
+                        formData.taxpayers[0].employment.income.gross >
+                        formData.taxpayers[1].employment.income.gross;
+                    formData.taxpayers[0].details.maritalStatus =
+                        MaritalStatus.create({
+                            ...formData.maritalStatus,
+                            isAssessor: tp1IsAssessor,
+                        } as MaritalStatus);
+                    formData.taxpayers[1].details.maritalStatus =
+                        MaritalStatus.create({
+                            ...formData.maritalStatus,
+                            isAssessor: !tp1IsAssessor,
+                        } as MaritalStatus);
                 }
 
                 /*
-                    Calculate Income Tax
+                    Calculate Pension Contribution
                 */
-                if (
-                    formData.maritalStatus.married &&
-                    +formData.maritalStatus.assessmentMode === 0
-                ) {
-                    const [tp1_incomeTax, tp2_incomeTax] =
-                        TaxPayer.getIncomeTaxChargeable_JointAssessed(
-                            formData.tp1,
-                            formData.tp2
-                        );
-                    formData.tp1.taxPayable.incomeTax = tp1_incomeTax;
-                    if (formData.tp2) {
-                        formData.tp2.taxPayable.incomeTax = tp2_incomeTax;
-                    }
-                } else {
-                    formData.tp1.taxPayable.incomeTax =
-                        formData.tp1.getIncomeTaxChargeable_Single();
-                    if (formData.tp2) {
-                        formData.tp2.taxPayable.incomeTax =
-                            formData.tp2.getIncomeTaxChargeable_Single();
-                    }
-                }
-
-                /*
-                    Calculate all other taxes
-                */
-                formData.tp1.calculateNetIncome();
-                if (formData.tp2) {
-                    formData.tp2.calculateNetIncome();
-                }
-
-                // console.log(monthIdx, formData.tp1.pension.amount, formData.tp1.income.net);
+                formData.taxpayers.forEach((tp) =>
+                    tp.calculateTaxAndPension(_date.getFullYear())
+                );
             }
 
             /*
@@ -348,14 +310,15 @@ export class DataService {
                 cumulativeInterest,
                 remaining,
                 monthlyExpenditures + yearlyExpenditures / 12.0,
-                [
-                    formData.tp1.income.net / 12.0,
-                    formData.tp2 ? formData.tp2.income.net / 12.0 : 0,
-                ],
-                [
-                    formData.tp1.pension.amount / 12.0,
-                    formData.tp2 ? formData.tp2.pension.amount / 12.0 : 0,
-                ]
+                formData.taxpayers.map(
+                    (tp) =>
+                        UtilityService.sum(
+                            tp.getAllIncomes().map((i) => i.net)
+                        ) / 12.0
+                ),
+                formData.taxpayers.map(
+                    (tp) => tp.employment.pension?.summary.amount / 12.0
+                )
             );
 
             if (mortgageMonth.remaining > mortgageToRepay) {

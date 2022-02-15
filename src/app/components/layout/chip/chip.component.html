@@ -1,0 +1,61 @@
+<div class="chip relative flex-col" [ngClass]="{ dark: active === true }">
+    <div class="flex w-full" (click)="chipClick()">
+        <button
+            *ngIf="onAdd.observed || onDelete.observed"
+            class="btn mr-1 p-1"
+            [ngClass]="{
+                light: !active
+            }"
+            (click)="mainAction(); $event.stopPropagation()"
+        >
+            <svg
+                class="h-6 w-6 transition-transform duration-500"
+                [ngClass]="{ 'rotate-45': active === true }"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+            </svg>
+        </button>
+        <span class="flex max-w-xs grow truncate p-1">{{ title }}</span>
+        <div
+            *ngIf="active && editable"
+            class="ml-4 p-1 transition-transform"
+            [ngClass]="{
+                'rotate-0': !(active && editable && editing),
+                'rotate-180': active && editable && editing
+            }"
+        >
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                ></path>
+            </svg>
+        </div>
+    </div>
+    <div
+        class="relative h-auto w-auto overflow-hidden border-sky-100 transition-all duration-300"
+        [ngClass]="{
+            'max-h-0 max-w-0 border-0': !(active && editable && editing),
+            'mt-2 max-h-96 max-w-xs border-t': active && editable && editing
+        }"
+    >
+        <ng-content></ng-content>
+    </div>
+</div>

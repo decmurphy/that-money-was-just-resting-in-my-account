@@ -23,10 +23,10 @@ export class SlideToggleComponent implements OnInit {
     // can have multiple slide-toggles in one page, so need to make sure they all have different id/name/for attributes so they don't clash and interact with each other. UUID is surely overkill, but that's how i like it
     id: string;
 
-    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
+    constructor(private cd: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        this.id = this.utils.newID('tgl');
+        this.id = UtilityService.newID('tgl');
     }
 
     change($event) {

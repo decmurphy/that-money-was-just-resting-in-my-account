@@ -6,8 +6,7 @@
 
         <span>Income</span>
         <span class="font-mono">{{
-            (data.tp1.income.net + data.tp2?.income.net) / 12.0
-                | currency: "EUR"
+            (data.taxpayers | allIncomes | sum: "net") / 12.0 | currency: "EUR"
         }}</span>
 
         <span>Expenditures</span>
@@ -24,8 +23,7 @@
         <span>Savings /month</span>
         <span class="font-mono">
             {{
-                (data.tp1.income.net +
-                    data.tp2?.income.net -
+                ((data.taxpayers | allIncomes | sum: "net") -
                     (data.expenditures.monthlyItems | sum) * 12.0 -
                     (data.expenditures.yearlyItems | sum) -
                     data.mortgage.monthlyRepayments * 12.0) /
@@ -36,8 +34,7 @@
         <span>Savings /year</span>
         <span class="font-mono">
             {{
-                data.tp1.income.net +
-                    data.tp2?.income.net -
+                (data.taxpayers | allIncomes | sum: "net") -
                     (data.expenditures.monthlyItems | sum) * 12.0 -
                     (data.expenditures.yearlyItems | sum) -
                     data.mortgage.monthlyRepayments * 12.0 | currency: "EUR"

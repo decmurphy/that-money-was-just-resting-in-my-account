@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { TaxPayer } from 'app/interfaces/v1/tax-payer';
-import { StrategyEvent } from '../interfaces/v1/strategy-event';
+import { TaxPayer } from 'app/interfaces/v2/tax-payer';
+import { StrategyEvent } from '../interfaces/v2/strategy-event';
 
 @Pipe({
     name: 'summary',
@@ -35,13 +35,13 @@ export class SummaryPipe implements PipeTransform {
             if (taxpayer != null) {
                 switch (ev.operation) {
                     case 'add':
-                        summary += `${taxpayer.name} increases ${formattedQuantity} by ${formattedValue}`;
+                        summary += `${taxpayer.details.name} increases ${formattedQuantity} by ${formattedValue}`;
                         break;
                     case 'subtract':
-                        summary += `${taxpayer.name} decreases ${formattedQuantity} by ${formattedValue}`;
+                        summary += `${taxpayer.details.name} decreases ${formattedQuantity} by ${formattedValue}`;
                         break;
                     case 'to':
-                        summary += `${taxpayer.name} changes ${formattedQuantity} to ${formattedValue}`;
+                        summary += `${taxpayer.details.name} changes ${formattedQuantity} to ${formattedValue}`;
                         break;
                 }
             } else {

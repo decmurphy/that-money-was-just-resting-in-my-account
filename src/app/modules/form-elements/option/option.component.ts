@@ -29,10 +29,10 @@ export class OptionComponent implements OnInit {
     @Input() disabled = false;
     @Output() click: EventEmitter<any> = new EventEmitter();
 
-    constructor(private cd: ChangeDetectorRef, private utils: UtilityService) {}
+    constructor(private cd: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        this.id = this.utils.newID('opt');
+        this.id = UtilityService.newID('opt');
     }
 
     selectionChange() {

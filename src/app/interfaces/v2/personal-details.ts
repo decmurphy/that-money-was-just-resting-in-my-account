@@ -27,4 +27,16 @@ export class PersonalDetails extends FormWithErrors {
             maritalStatus: this.maritalStatus.toFormGroup(formBuilder),
         });
     }
+
+    static create(model: PersonalDetails): PersonalDetails {
+        if (model == null) {
+            return null;
+        }
+
+        return new PersonalDetails(
+            model.name,
+            model.yearOfBirth,
+            MaritalStatus.create(model.maritalStatus)
+        );
+    }
 }

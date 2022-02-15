@@ -15,4 +15,12 @@ export class PensionSummary extends FormWithErrors {
             ],
         });
     }
+
+    static create(model: PensionSummary): PensionSummary {
+        if (model == null) {
+            return null;
+        }
+
+        return new PensionSummary(model.amount);
+    }
 }

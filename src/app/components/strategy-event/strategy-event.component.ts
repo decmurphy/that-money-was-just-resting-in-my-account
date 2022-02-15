@@ -6,8 +6,8 @@ import { takeUntil } from 'rxjs';
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
 import { KeyVal } from 'app/interfaces/misc/keyval';
-import { StrategyEvent } from 'app/interfaces/v1/strategy-event';
-import { TaxPayer } from 'app/interfaces/v1/tax-payer';
+import { StrategyEvent } from 'app/interfaces/v2/strategy-event';
+import { TaxPayer } from 'app/interfaces/v2/tax-payer';
 
 @Component({
     selector: 'fc-strategy-event',
@@ -40,11 +40,10 @@ export class StrategyEventComponent
             .getData()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
-                this.tp1 = data.tp1;
-                this.tp2 = data.tp2;
+                this.tp1 = data.taxpayers[0];
+                this.tp2 = data.taxpayers[1];
                 this.event = data.strategy.events[this.eventIdx];
-                this.selectedTp =
-                    this.event.taxpayer === '0' ? this.tp1 : this.tp2;
+                this.selectedTp = data.taxpayers[this.event.taxpayerIdx];
                 this.resetForm();
             });
 
