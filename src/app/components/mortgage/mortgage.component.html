@@ -25,12 +25,17 @@
         [formGroup]="form"
         class="grid grid-cols-2 gap-2 font-bold sm:grid-cols-4"
     >
+        <fc-form-field class="col-span-2">
+            <span formLabel>Start After Months</span>
+            <input formInput type="number" formControlName="startAfterMonth" />
+            <span formError *ngIf="form.get('startAfterMonth').invalid"> </span>
+        </fc-form-field>
         <ng-container *ngIf="(xl$ | async) === true">
-            <span class="col-span-1 text-right">Amount</span>
+            <span class="col-span-1 col-start-1 text-right">Amount</span>
             <fc-slider
                 class="col-span-2"
                 formControlName="amount"
-                [min]="200000"
+                [min]="100000"
                 [max]="700000"
                 [step]="5000"
                 >Mortgage Amount</fc-slider
@@ -54,7 +59,7 @@
             <fc-slider
                 class="col-span-2"
                 formControlName="monthlyRepayments"
-                [min]="1000"
+                [min]="500"
                 [max]="6000"
                 [step]="50"
             >
@@ -91,7 +96,7 @@
         </ng-container>
 
         <div class="col-span-full flex w-full justify-end">
-            <button class="btn h-8 w-8 p-1" (click)="editing = false">
+            <button class="btn light p-1" (click)="editing = false">
                 <svg
                     class="h-6 w-6"
                     fill="none"
@@ -127,7 +132,7 @@
                 {{ data | mortgageSummary: 3 }}
             </p>
         </div>
-        <button class="btn primary h-8 w-8 p-1" (click)="editing = true">
+        <button class="btn dark p-1" (click)="editing = true">
             <svg
                 class="h-6 w-6"
                 fill="none"

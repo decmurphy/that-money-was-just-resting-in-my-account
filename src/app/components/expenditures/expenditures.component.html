@@ -5,13 +5,11 @@
     <h5>Expenditures</h5>
     <p>
         Monthly expenditures are everything EXCEPT for mortgage payments. That
-        is covered in the
-        <b>Mortgage</b>
-        section below
+        is covered in the <b>Mortgage</b> section below.
     </p>
     <p>
         Include here things like petrol, insurance, groceries, other monthly
-        bills
+        bills. If you are paying rent, include that here too.
     </p>
     <p>
         Annual expenditures are things like car tax which are only paid once per
@@ -19,47 +17,153 @@
         the year
     </p>
 
-    <div
-        cdkDropList
-        [cdkDropListData]="data.monthlyItems"
-        (cdkDropListDropped)="dropMonthlyItem($event)"
-        class="mt-2 w-full space-y-2"
-        formArrayName="monthlyItems"
-    >
-        <div
-            cdkDrag
-            *ngFor="let item of data.monthlyItems; let i = index"
-            class="list-element px-4 py-2"
-            [formGroupName]="i"
-        >
-            <fc-named-amount
-                class="h-full w-full"
-                [item]="item"
-                (onDelete)="deleteMonthlyItem(i)"
-            ></fc-named-amount>
-            <span *cdkDragPreview></span>
+    <div>
+        <h6>Monthly Expenditures</h6>
+        <div class="my-4">
+            <ng-container
+                *ngTemplateOutlet="
+                    monthlyExpendituresTmpl;
+                    context: { data: data, form: form }
+                "
+            ></ng-container>
         </div>
     </div>
 
-    <div
-        cdkDropList
-        [cdkDropListData]="data.yearlyItems"
-        (cdkDropListDropped)="dropYearlyItem($event)"
-        class="mt-2 w-full space-y-2"
-        formArrayName="yearlyItems"
-    >
-        <div
-            cdkDrag
-            *ngFor="let item of data.yearlyItems; let i = index"
-            class="list-element px-4 py-2"
-            [formGroupName]="i"
-        >
-            <fc-named-amount
-                class="h-full w-full"
-                [item]="item"
-                (onDelete)="deleteYearlyItem(i)"
-            ></fc-named-amount>
-            <span *cdkDragPreview></span>
+    <div>
+        <h6>Annual Expenditures</h6>
+        <div class="my-4">
+            <ng-container
+                *ngTemplateOutlet="
+                    annualExpendituresTmpl;
+                    context: { data: data, form: form }
+                "
+            ></ng-container>
         </div>
     </div>
 </form>
+
+<ng-template #monthlyExpendituresTmpl let-form="form" let-data="data">
+    <div class="flex flex-wrap gap-1">
+        <fc-chip
+            *ngFor="
+                let suggestion of data.monthlyItems;
+                let i = index;
+                trackBy: trackNamedAmount
+            "
+            [active]="true"
+            [editable]="true"
+            title="{{ suggestion.name }} - {{
+                suggestion.amount | currency: 'EUR'
+            }}"
+            (onDelete)="removeMonthlyItem(suggestion)"
+        >
+            <ng-container
+                *ngTemplateOutlet="
+                    editMonthlyExpenditureTmpl;
+                    context: {
+                        form: form,
+                        data: data,
+                        index: i
+                    }
+                "
+            ></ng-container>
+        </fc-chip>
+        <fc-chip title="New Item" (onAdd)="addMonthlyItem()"> </fc-chip>
+    </div>
+</ng-template>
+
+<ng-template #annualExpendituresTmpl let-form="form" let-data="data">
+    <div class="flex flex-wrap gap-1">
+        <fc-chip
+            *ngFor="
+                let suggestion of data.yearlyItems;
+                let i = index;
+                trackBy: trackNamedAmount
+            "
+            [active]="true"
+            [editable]="true"
+            title="{{ suggestion.name }} - {{
+                suggestion.amount | currency: 'EUR'
+            }}"
+            (onDelete)="removeYearlyItem(suggestion)"
+        >
+            <ng-container
+                *ngTemplateOutlet="
+                    editAnnualExpenditureTmpl;
+                    context: {
+                        form: form,
+                        data: data,
+                        index: i
+                    }
+                "
+            ></ng-container>
+        </fc-chip>
+        <fc-chip title="New Item" (onAdd)="addYearlyItem()"> </fc-chip>
+    </div>
+</ng-template>
+
+<ng-template
+    #editMonthlyExpenditureTmpl
+    let-form="form"
+    let-data="data"
+    let-i="index"
+>
+    <form [formGroup]="form" class="my-4 flex flex-col gap-2">
+        <ng-container formArrayName="monthlyItems">
+            <ng-container *ngIf="data.monthlyItems[i]" [formGroupName]="i">
+                <fc-form-field>
+                    <span formLabel>Name</span>
+                    <input formInput type="text" formControlName="name" />
+                    <span
+                        formError
+                        *ngIf="monthlyItems.at(i).get('name').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+                <fc-form-field>
+                    <span formLabel>Amount</span>
+                    <span formPrefix>€</span>
+                    <input formInput type="number" formControlName="amount" />
+                    <span
+                        formError
+                        *ngIf="monthlyItems.at(i).get('amount').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+            </ng-container>
+        </ng-container>
+    </form>
+</ng-template>
+
+<ng-template
+    #editAnnualExpenditureTmpl
+    let-form="form"
+    let-data="data"
+    let-i="index"
+>
+    <form [formGroup]="form" class="my-4 flex flex-col gap-2">
+        <ng-container formArrayName="yearlyItems">
+            <ng-container *ngIf="data.yearlyItems[i]" [formGroupName]="i">
+                <fc-form-field>
+                    <span formLabel>Name</span>
+                    <input formInput type="text" formControlName="name" />
+                    <span
+                        formError
+                        *ngIf="yearlyItems.at(i).get('name').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+                <fc-form-field>
+                    <span formLabel>Amount</span>
+                    <span formPrefix>€</span>
+                    <input formInput type="number" formControlName="amount" />
+                    <span
+                        formError
+                        *ngIf="yearlyItems.at(i).get('amount').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+            </ng-container>
+        </ng-container>
+    </form>
+</ng-template>

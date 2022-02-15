@@ -136,32 +136,52 @@ export class DataService {
         // again with the strategy for the graphs, and save this one
         const monthData = this.populateData(fv, this.data.strategy);
 
-        const liabilityGrowth = [];
-        const savingsGrowth = [];
-        const pensionGrowth = [];
+        const pensionMpr = fv.taxpayers
+            .map((tp) =>
+                tp.employment.pension
+                    ? tp.employment.pension.annualGrowthRate
+                    : 0
+            )
+            .map((apr) => this.aprToMpr(apr));
+
+        const liabilities = [];
+        const savingsFund = [];
+        const pensionFund = fv.taxpayers.map((tp, i) => [] as number[]);
         monthData.forEach((mm, i) => {
             /*
                 Calculate Savings/Liabilities
             */
-            const savingsDelta =
-                mm.incomes.reduce((acc, cur) => acc + cur, 0.0) -
-                mm.expenditures -
-                mm.payment;
-            const pensionDelta = mm.pensionContribs.reduce(
-                (acc, cur) => acc + cur,
-                0.0
-            );
 
             if (i == 0) {
-                liabilityGrowth[i] = -mm.remaining;
-                savingsGrowth[i] = 0;
-                pensionGrowth[i] = 0;
+                liabilities[i] = -mm.remaining;
+                savingsFund[i] = 0;
+                fv.taxpayers.forEach((tp, j) => pensionFund[j].push(0));
             } else {
-                liabilityGrowth[i] = -mm.remaining;
-                savingsGrowth[i] = savingsGrowth[i - 1] + savingsDelta;
-                pensionGrowth[i] = pensionGrowth[i - 1] + pensionDelta;
+                // const liabilitiesDelta = -mm.remaining;
+
+                liabilities[i] = -mm.remaining;
+
+                const savingsDelta =
+                    mm.incomes.reduce((acc, cur) => acc + cur, 0.0) -
+                    mm.expenditures -
+                    mm.payment;
+
+                savingsFund[i] = savingsFund[i - 1] + savingsDelta;
+
+                const pensionDelta = fv.taxpayers.map((tp, j) => {
+                    const pensionInterest =
+                        pensionFund[j][i - 1] * pensionMpr[j];
+                    const pensionContrib = mm.pensionContribs[j];
+                    return pensionInterest + pensionContrib;
+                });
+
+                fv.taxpayers.forEach((tp, j) =>
+                    pensionFund[j].push(pensionFund[j][i - 1] + pensionDelta[j])
+                );
             }
         });
+
+        // console.log(pensionFund);
 
         /*
             Set Month Data
@@ -171,38 +191,56 @@ export class DataService {
         /*
             Build Graphs
         */
-        this.setNetWorthData([
+        const netWorthData = [];
+        fv.taxpayers.forEach((tp, i) => {
+            netWorthData.push({
+                mode: 'lines',
+                name: `${tp.details.name} Pension Fund`,
+                x: this.monthData.map((mm) => mm.month / 12.0),
+                y: pensionFund[i],
+            });
+        });
+
+        const combinedPensionFund = [];
+        for (let i = 0; i < this.monthData.length; i++) {
+            const combinedContribs = UtilityService.sum(
+                fv.taxpayers.map((tp, j) => pensionFund[j][i])
+            );
+            combinedPensionFund.push(combinedContribs);
+        }
+
+        netWorthData.push(
             {
                 mode: 'lines',
-                name: 'Net Worth',
+                name: 'Combined Net Worth',
                 x: this.monthData.map((mm) => mm.month / 12.0),
-                y: liabilityGrowth.map(
-                    (v, i) =>
-                        v +
-                        fv.mortgage.amount +
-                        savingsGrowth[i] +
-                        pensionGrowth[i]
+                y: this.monthData.map(
+                    (mm, i) =>
+                        liabilities[i] +
+                        (i >= fv.mortgage.startAfterMonth
+                            ? fv.mortgage.amount
+                            : 0) +
+                        savingsFund[i] +
+                        combinedPensionFund[i]
                 ),
             },
             {
                 mode: 'lines',
-                name: 'Savings',
+                name: 'Combined Savings',
                 x: this.monthData.map((mm) => mm.month / 12.0),
-                y: savingsGrowth,
+                y: savingsFund,
             },
             {
                 mode: 'lines',
-                name: 'Pension',
+                name: 'Combined Liabilities',
                 x: this.monthData.map((mm) => mm.month / 12.0),
-                y: pensionGrowth,
-            },
-            {
-                mode: 'lines',
-                name: 'Liabilities',
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: liabilityGrowth,
-            },
-        ]);
+                y: liabilities,
+            }
+        );
+
+        // console.log(netWorthData);
+
+        this.setNetWorthData(netWorthData);
 
         this.setMortgageData([
             {
@@ -233,10 +271,12 @@ export class DataService {
     }
 
     populateData(formData: FormData, strategy = new Strategy()): MonthData[] {
-        let mortgageToRepay = formData.mortgage.amount;
+        let mortgageToRepay = 0;
         const mortgageMonths = [] as MonthData[];
         let monthIdx = 0;
+        let mortgagePayment = 0;
         let cumulativeInterest = 0;
+        let interestAdded = 0;
 
         const now = new Date();
 
@@ -280,35 +320,44 @@ export class DataService {
             /*
                 Calculate Mortgage Lifecycle
             */
-            const monthlyInterestRate =
-                Math.pow((100 + formData.mortgage.aprc) / 100.0, 1 / 12) - 1;
+            interestAdded = 0;
+            mortgagePayment = 0;
 
-            const interestAdded = mortgageToRepay * monthlyInterestRate;
-            cumulativeInterest += interestAdded;
+            if (monthIdx < formData.mortgage.startAfterMonth) {
+                mortgageToRepay = 0;
+            } else if (monthIdx === formData.mortgage.startAfterMonth) {
+                mortgageToRepay = formData.mortgage.amount;
+            }
 
-            const remaining = Math.max(
-                mortgageToRepay +
-                    interestAdded -
-                    formData.mortgage.monthlyRepayments,
-                0
+            if (monthIdx >= formData.mortgage.startAfterMonth) {
+                const mortgageMPR = this.aprToMpr(formData.mortgage.aprc);
+
+                interestAdded = mortgageToRepay * mortgageMPR;
+                cumulativeInterest += interestAdded;
+
+                mortgageToRepay += interestAdded;
+
+                mortgagePayment = Math.min(
+                    mortgageToRepay,
+                    formData.mortgage.monthlyRepayments
+                );
+            }
+
+            const monthlyExpenditures = UtilityService.sum(
+                formData.expenditures.monthlyItems.map((item) => item.amount)
+            );
+            const yearlyExpenditures = UtilityService.sum(
+                formData.expenditures.yearlyItems.map((item) => item.amount)
             );
 
-            const monthlyExpenditures = formData.expenditures.monthlyItems
-                .map((item) => item.amount)
-                .reduce((acc, cur) => acc + cur, 0.0);
-            const yearlyExpenditures = formData.expenditures.yearlyItems
-                .map((item) => item.amount)
-                .reduce((acc, cur) => acc + cur, 0.0);
+            // console.log(monthIdx, mortgageToRepay, mortgagePayment);
 
             const mortgageMonth = new MonthData(
                 monthIdx,
-                Math.min(
-                    mortgageToRepay + interestAdded,
-                    formData.mortgage.monthlyRepayments
-                ),
+                mortgagePayment,
                 interestAdded,
                 cumulativeInterest,
-                remaining,
+                mortgageToRepay - mortgagePayment,
                 monthlyExpenditures + yearlyExpenditures / 12.0,
                 formData.taxpayers.map(
                     (tp) =>
@@ -316,22 +365,30 @@ export class DataService {
                             tp.getAllIncomes().map((i) => i.net)
                         ) / 12.0
                 ),
-                formData.taxpayers.map(
-                    (tp) => tp.employment.pension?.summary.amount / 12.0
+                formData.taxpayers.map((tp) =>
+                    tp.employment.pension
+                        ? tp.employment.pension.summary.amount / 12.0
+                        : 0
                 )
             );
 
             if (mortgageMonth.remaining > mortgageToRepay) {
+                throw new Error('Impossible Mortgage');
                 return [];
-                // throw new Error('Impossible Mortgage');
             }
 
             mortgageToRepay = mortgageMonth.remaining;
             mortgageMonths.push(mortgageMonth);
 
             monthIdx++;
-        } while (mortgageToRepay > 0 || monthIdx <= 300);
+
+            // 25 years optimal. 50 absolute max, don't care how big the mortgage is
+        } while ((mortgageToRepay > 0 && monthIdx <= 600) || monthIdx <= 300);
 
         return mortgageMonths;
+    }
+
+    aprToMpr(apr: number): number {
+        return Math.pow((100 + apr) / 100.0, 1 / 12) - 1;
     }
 }

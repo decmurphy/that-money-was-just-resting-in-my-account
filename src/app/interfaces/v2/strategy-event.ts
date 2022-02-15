@@ -209,12 +209,20 @@ export class StrategyEvent extends FormWithErrors {
                 switch (this.operation) {
                     case 'add':
                         formData.expenditures.monthlyItems.push(
-                            new NamedAmount('New Amount', this._deltaValue)
+                            new NamedAmount(
+                                null,
+                                'New Amount',
+                                this._deltaValue
+                            )
                         );
                         break;
                     case 'subtract':
                         formData.expenditures.monthlyItems.push(
-                            new NamedAmount('New Amount', -this._deltaValue)
+                            new NamedAmount(
+                                null,
+                                'New Amount',
+                                -this._deltaValue
+                            )
                         );
                         break;
                     case 'to':
@@ -229,12 +237,20 @@ export class StrategyEvent extends FormWithErrors {
                 switch (this.operation) {
                     case 'add':
                         formData.expenditures.yearlyItems.push(
-                            new NamedAmount('New Amount', this._deltaValue)
+                            new NamedAmount(
+                                null,
+                                'New Amount',
+                                this._deltaValue
+                            )
                         );
                         break;
                     case 'subtract':
                         formData.expenditures.yearlyItems.push(
-                            new NamedAmount('New Amount', -this._deltaValue)
+                            new NamedAmount(
+                                null,
+                                'New Amount',
+                                -this._deltaValue
+                            )
                         );
                         break;
                     case 'to':

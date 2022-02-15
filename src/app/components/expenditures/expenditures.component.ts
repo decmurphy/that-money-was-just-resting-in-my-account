@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, TrackByFunction } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 import { Subscription, takeUntil, tap } from 'rxjs';
 
@@ -7,7 +7,6 @@ import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
 import { Expenditures } from 'app/interfaces/v2/expenditures';
 import { NamedAmount } from 'app/interfaces/v2/named-amount';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'fc-expenditures',
@@ -60,39 +59,36 @@ export class ExpendituresComponent
     }
 
     addYearlyItem() {
-        this.data.monthlyItems.push(new NamedAmount());
+        this.data.yearlyItems.push(new NamedAmount());
         this.dataService.setExpenditures(this.data);
     }
 
-    deleteMonthlyItem(i: number): void {
-        this.data.monthlyItems.splice(i, 1);
-        this.dataService.setExpenditures(this.data);
-    }
-
-    deleteYearlyItem(i: number): void {
-        this.data.yearlyItems.splice(i, 1);
-        this.dataService.setExpenditures(this.data);
-    }
-
-    dropMonthlyItem(location: CdkDragDrop<NamedAmount[]>): void {
-        if (location.previousIndex !== location.currentIndex) {
-            moveItemInArray(
-                this.data.monthlyItems,
-                location.previousIndex,
-                location.currentIndex
-            );
-            this.dataService.setExpenditures(this.data);
+    removeMonthlyItem(item: NamedAmount): void {
+        const idx = this.data.monthlyItems.indexOf(item);
+        if (idx > -1) {
+            this.data.monthlyItems.splice(idx, 1);
         }
+        this.dataService.setExpenditures(this.data);
     }
 
-    dropYearlyItem(location: CdkDragDrop<NamedAmount[]>): void {
-        if (location.previousIndex !== location.currentIndex) {
-            moveItemInArray(
-                this.data.yearlyItems,
-                location.previousIndex,
-                location.currentIndex
-            );
-            this.dataService.setExpenditures(this.data);
+    removeYearlyItem(item: NamedAmount): void {
+        const idx = this.data.yearlyItems.indexOf(item);
+        if (idx > -1) {
+            this.data.yearlyItems.splice(idx, 1);
         }
+        this.dataService.setExpenditures(this.data);
     }
+
+    get monthlyItems(): FormArray {
+        return this.form.get('monthlyItems') as FormArray;
+    }
+
+    get yearlyItems(): FormArray {
+        return this.form.get('yearlyItems') as FormArray;
+    }
+
+    trackNamedAmount: TrackByFunction<NamedAmount> = (
+        index: number,
+        item: NamedAmount
+    ) => item.id;
 }

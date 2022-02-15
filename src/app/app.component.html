@@ -6,7 +6,7 @@
     ></div>
 
     <div class="h-screen overflow-y-scroll pb-4">
-        <div class="m-4 flex justify-end">
+        <div class="absolute top-4 right-4 z-10 flex w-full justify-end">
             <div
                 class="rounded bg-slate-700 px-4 py-2 shadow-md hover:bg-slate-600"
             >
@@ -53,16 +53,16 @@
             </div>
         </div>
 
-        <div class="px-2 sm:px-4 md:px-8 xl:px-16">
+        <div class="px-2 pt-16 sm:px-4 md:px-8 xl:px-16">
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <div class="space-y-4">
+                <div class="space-y-4 lg:h-screen lg:overflow-y-scroll">
                     <fc-income-pension class="flex"></fc-income-pension>
                     <fc-expenditures class="flex"></fc-expenditures>
                     <fc-mortgage class="flex"></fc-mortgage>
                     <fc-strategy class="flex"></fc-strategy>
                 </div>
 
-                <div class="space-y-4">
+                <div class="space-y-4 lg:h-screen lg:overflow-y-scroll">
                     <fc-chart2d
                         title="Net Worth"
                         xTitle="Years"
