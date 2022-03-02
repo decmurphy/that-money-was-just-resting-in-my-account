@@ -1,58 +1,64 @@
 <ng-container *ngIf="editing; then eventTmpl; else summaryTmpl"></ng-container>
 
 <ng-template #eventTmpl>
-    <form
-        [formGroup]="form"
-        class="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3"
-    >
-        <fc-form-field>
+    <form [formGroup]="form" class="flex flex-wrap gap-1">
+        <fc-form-field class="flex grow basis-px">
             <span formLabel>After Months</span>
             <input formInput type="number" formControlName="afterMonths" />
             <span formError *ngIf="form.get('afterMonths').invalid"> </span>
         </fc-form-field>
-        <fc-form-field>
+        <fc-form-field class="flex grow basis-px">
             <span formLabel>TaxPayer</span>
-            <fc-select formInput formControlName="taxpayer">
+            <fc-select formInput formControlName="taxpayerId">
                 <fc-option [value]="null"></fc-option>
-                <fc-option [value]="'0'">{{ tp1.details.name }}</fc-option>
-                <ng-container *ngIf="tp2 != null">
-                    <fc-option [value]="'1'">{{ tp2.details.name }}</fc-option>
-                </ng-container>
+                <fc-option
+                    *ngFor="let tp of taxpayers; trackBy: trackTaxpayer"
+                    [value]="tp.id"
+                    >{{ tp.details.name }}</fc-option
+                >
             </fc-select>
-            <span formError *ngIf="form.get('taxpayer').invalid"> </span>
+            <span formError *ngIf="form.get('taxpayerId').invalid"> </span>
         </fc-form-field>
-        <fc-form-field>
+        <fc-form-field class="flex grow basis-px">
             <span formLabel>Change</span>
             <fc-select formInput formControlName="quantity">
+                <fc-option [value]="null"></fc-option>
                 <fc-option
-                    *ngFor="let quantity of eventQuantities"
-                    [value]="quantity.key"
+                    *ngFor="
+                        let quantity of eventQuantities;
+                        trackBy: trackQuantity
+                    "
+                    [value]="quantity.type"
+                    (click)="selectQuantity(quantity)"
                 >
-                    <span>{{ quantity.value }}</span>
+                    <span>{{ quantity.type }}</span>
                 </fc-option>
             </fc-select>
             <span formError *ngIf="form.get('quantity').invalid"> </span>
         </fc-form-field>
-        <fc-form-field>
+        <fc-form-field class="flex grow basis-px">
             <span formLabel>Operation</span>
             <fc-select formInput formControlName="operation">
-                <fc-option *ngFor="let op of eventOperations" [value]="op.key">
-                    <span>{{ op.value }}</span>
+                <fc-option [value]="null"></fc-option>
+                <fc-option
+                    *ngFor="
+                        let op of availableOperations;
+                        trackBy: trackOperation
+                    "
+                    [value]="op"
+                >
+                    <span>{{ op }}</span>
                 </fc-option>
             </fc-select>
             <span formError *ngIf="form.get('operation').invalid"> </span>
         </fc-form-field>
-        <fc-form-field>
+        <fc-form-field class="flex grow basis-px">
             <span formLabel>Value</span>
             <input formInput type="number" formControlName="value" />
             <span formError *ngIf="form.get('value').invalid"> </span>
         </fc-form-field>
-        <div class="flex items-center justify-end">
-            <button
-                *ngIf="!form.valid"
-                class="btn h-8 w-8 p-1"
-                (click)="delete()"
-            >
+        <div class="flex grow basis-px items-center justify-end gap-2">
+            <button *ngIf="!form.valid" class="btn dark p-1" (click)="delete()">
                 <svg
                     class="h-6 w-6"
                     fill="none"
@@ -73,7 +79,7 @@
                     disabled: !form.valid
                 }"
                 [disabled]="!form.valid"
-                class="btn primary h-8 w-8 p-1"
+                class="btn dark p-1"
                 (click)="saveEvent()"
             >
                 <svg
@@ -101,7 +107,7 @@
         (click)="editing = true"
     >
         <p class="flex grow">
-            {{ event | summary: selectedTp }}
+            {{ event | summary }}
         </p>
         <svg
             cdkDragHandle

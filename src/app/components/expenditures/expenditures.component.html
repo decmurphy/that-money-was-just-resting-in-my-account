@@ -18,7 +18,14 @@
     </p>
 
     <div>
-        <h6>Monthly Expenditures</h6>
+        <h6>
+            Monthly Expenditures -
+            {{
+                data.monthlyItems
+                    | sum: "amount"
+                    | currency: "EUR":"symbol":"1.0-0"
+            }}/month
+        </h6>
         <div class="my-4">
             <ng-container
                 *ngTemplateOutlet="
@@ -30,7 +37,14 @@
     </div>
 
     <div>
-        <h6>Annual Expenditures</h6>
+        <h6>
+            Annual Expenditures -
+            {{
+                data.yearlyItems
+                    | sum: "amount"
+                    | currency: "EUR":"symbol":"1.0-0"
+            }}/year
+        </h6>
         <div class="my-4">
             <ng-container
                 *ngTemplateOutlet="

@@ -2,7 +2,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Expenditures } from 'app/interfaces/v2/expenditures';
 import { MaritalStatus } from 'app/interfaces/v2/marital-status';
 import { Mortgage } from 'app/interfaces/v2/mortgage';
-import { Strategy } from 'app/interfaces/v2/strategy';
+import { Strategy } from 'app/interfaces/v2/strategy/strategy';
 import { TaxPayer } from 'app/interfaces/v2/tax-payer';
 import { FormWithErrors } from '../forms/form-with-errors';
 

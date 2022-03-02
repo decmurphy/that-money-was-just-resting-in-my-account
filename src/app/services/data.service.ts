@@ -5,13 +5,13 @@ import { GenericPlotData } from 'app/interfaces/plotly/generic-plot-data';
 import { MaritalStatus } from 'app/interfaces/v2/marital-status';
 import { MonthData } from 'app/interfaces/v2/month-data';
 import { Mortgage } from 'app/interfaces/v2/mortgage';
-import { Strategy } from 'app/interfaces/v2/strategy';
-import { StrategyEvent } from 'app/interfaces/v2/strategy-event';
-import { TaxPayer } from 'app/interfaces/v2/tax-payer';
+import { Strategy } from 'app/interfaces/v2/strategy/strategy';
+import { StrategyEvent } from 'app/interfaces/v2/strategy/strategy-event';
 import { AppServicesModule } from 'app/modules/app-services.module';
 import { Observable, ReplaySubject } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 import { UtilityService } from './utility.service';
+import { TaxPayer } from 'app/interfaces/v2/tax-payer';
 
 @Injectable({
     providedIn: AppServicesModule,

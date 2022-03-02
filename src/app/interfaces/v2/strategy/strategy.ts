@@ -1,7 +1,7 @@
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { FormData } from './form-data';
+import { FormData } from '../form-data';
 import { StrategyEvent } from './strategy-event';
-import { FormWithErrors } from '../forms/form-with-errors';
+import { FormWithErrors } from '../../forms/form-with-errors';
 
 export class Strategy extends FormWithErrors {
     constructor(public events: StrategyEvent[] = []) {

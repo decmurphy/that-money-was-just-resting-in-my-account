@@ -1,13 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    TrackByFunction,
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { takeUntil } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { KeyVal } from 'app/interfaces/misc/keyval';
-import { StrategyEvent } from 'app/interfaces/v2/strategy-event';
+import { StrategyEvent } from 'app/interfaces/v2/strategy/strategy-event';
 import { TaxPayer } from 'app/interfaces/v2/tax-payer';
+import { StrategyEventOperation } from 'app/interfaces/v2/strategy/strategy-event-operation';
+import { StrategyEventType } from 'app/interfaces/v2/strategy/strategy-event-type';
 
 @Component({
     selector: 'fc-strategy-event',
@@ -24,12 +32,11 @@ export class StrategyEventComponent
     event: StrategyEvent;
     form: FormGroup;
 
-    tp1: TaxPayer;
-    tp2: TaxPayer;
-    selectedTp: TaxPayer;
+    selectedQuantity: TypeAndOps;
+    availableOperations: StrategyEventOperation[];
+    taxpayers: TaxPayer[];
 
-    eventQuantities: KeyVal[];
-    eventOperations: KeyVal[];
+    eventQuantities: TypeAndOps[];
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
@@ -40,27 +47,54 @@ export class StrategyEventComponent
             .getData()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
-                this.tp1 = data.taxpayers[0];
-                this.tp2 = data.taxpayers[1];
+                this.taxpayers = data.taxpayers;
                 this.event = data.strategy.events[this.eventIdx];
-                this.selectedTp = data.taxpayers[this.event.taxpayerIdx];
                 this.resetForm();
             });
 
         this.eventQuantities = [
-            new KeyVal('pensionPercentage', 'Pension %'),
-            new KeyVal('grossIncome', 'Gross Income'),
-            new KeyVal('monthlyExpenditure', 'Monthly Exp.'),
-            new KeyVal('yearlyExpenditure', 'Yearly Exp.'),
-            new KeyVal('mortgageAPRC', 'APRC'),
-            new KeyVal('mortgageRepayment', 'Repayments'),
+            {
+                type: StrategyEventType.EMPLOYMENT_INCOME,
+                operations: [StrategyEventOperation.CHANGE],
+            },
+            {
+                type: StrategyEventType.ANCILLARY_INCOME,
+                operations: [
+                    StrategyEventOperation.CHANGE,
+                    StrategyEventOperation.ADD,
+                    StrategyEventOperation.REMOVE,
+                ],
+            },
+            {
+                type: StrategyEventType.OTHER_INCOME,
+                operations: [
+                    StrategyEventOperation.CHANGE,
+                    StrategyEventOperation.ADD,
+                    StrategyEventOperation.REMOVE,
+                ],
+            },
+            {
+                type: StrategyEventType.PENSION_EMPLOYER_CONTRIB,
+                operations: [StrategyEventOperation.CHANGE],
+            },
+            {
+                type: StrategyEventType.PENSION_PERSONAL_CONTRIB,
+                operations: [StrategyEventOperation.CHANGE],
+            },
+            {
+                type: StrategyEventType.MORTGAGE_APRC,
+                operations: [StrategyEventOperation.CHANGE],
+            },
+            {
+                type: StrategyEventType.MORTGAGE_REPAYMENT,
+                operations: [StrategyEventOperation.CHANGE],
+            },
         ];
+    }
 
-        this.eventOperations = [
-            new KeyVal('to', 'New Amount'),
-            new KeyVal('add', 'Add Amount'),
-            new KeyVal('subtract', 'Subtract Amount'),
-        ];
+    selectQuantity(quantity: TypeAndOps): void {
+        this.selectedQuantity = quantity;
+        this.availableOperations = quantity.operations;
     }
 
     resetForm(): void {
@@ -78,4 +112,24 @@ export class StrategyEventComponent
         this.dataService.setEvent(this.eventIdx, this.form.getRawValue());
         this.editing = false;
     }
+
+    trackTaxpayer: TrackByFunction<TaxPayer> = (
+        index: number,
+        item: TaxPayer
+    ) => item.id;
+
+    trackOperation: TrackByFunction<StrategyEventOperation> = (
+        index: number,
+        item: StrategyEventOperation
+    ) => index;
+
+    trackQuantity: TrackByFunction<TypeAndOps> = (
+        index: number,
+        item: TypeAndOps
+    ) => item.type;
+}
+
+export interface TypeAndOps {
+    type: StrategyEventType;
+    operations: StrategyEventOperation[];
 }
