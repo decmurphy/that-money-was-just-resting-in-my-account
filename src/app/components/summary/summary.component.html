@@ -11,8 +11,9 @@
 
         <span>Expenditures</span>
         <span class="font-mono">{{
-            (data.expenditures.monthlyItems | sum) +
-                (data.expenditures.yearlyItems | sum) / 12.0 | currency: "EUR"
+            (data.expenditures.monthlyItems | sum: "amount") +
+                (data.expenditures.yearlyItems | sum: "amount") / 12.0
+                | currency: "EUR"
         }}</span>
 
         <span>Mortgage</span>
@@ -24,8 +25,8 @@
         <span class="font-mono">
             {{
                 ((data.taxpayers | allIncomes | sum: "net") -
-                    (data.expenditures.monthlyItems | sum) * 12.0 -
-                    (data.expenditures.yearlyItems | sum) -
+                    (data.expenditures.monthlyItems | sum: "amount") * 12.0 -
+                    (data.expenditures.yearlyItems | sum: "amount") -
                     data.mortgage.monthlyRepayments * 12.0) /
                     12.0 | currency: "EUR"
             }}
@@ -35,8 +36,8 @@
         <span class="font-mono">
             {{
                 (data.taxpayers | allIncomes | sum: "net") -
-                    (data.expenditures.monthlyItems | sum) * 12.0 -
-                    (data.expenditures.yearlyItems | sum) -
+                    (data.expenditures.monthlyItems | sum: "amount") * 12.0 -
+                    (data.expenditures.yearlyItems | sum: "amount") -
                     data.mortgage.monthlyRepayments * 12.0 | currency: "EUR"
             }}
         </span>

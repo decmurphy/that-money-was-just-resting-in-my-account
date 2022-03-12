@@ -1,32 +1,37 @@
 <div
-    class="relative box-border h-screen overflow-hidden font-sans text-base font-normal slashed-zero lining-nums tabular-nums text-gray-900 antialiased"
+    class="background-gradient fixed inset-0 -z-10 box-border h-screen w-full overflow-hidden"
+></div>
+<div
+    class="relative box-border w-screen overflow-y-scroll font-sans text-base font-normal slashed-zero lining-nums tabular-nums text-gray-900 antialiased"
 >
     <div
-        class="background-gradient fixed inset-0 -z-10 box-border h-screen w-full overflow-hidden"
-    ></div>
-
-    <div class="h-screen overflow-y-scroll pb-4">
-        <div class="absolute top-4 right-4 z-10 flex w-full justify-end">
-            <div
-                class="rounded bg-slate-700 px-4 py-2 shadow-md hover:bg-slate-600"
+        class="nav-gradient flex w-full flex-row items-center justify-between py-2 px-2 shadow-lg sm:px-4 md:px-8 xl:px-16"
+    >
+        <img
+            class="h-12 rounded-lg"
+            src="/assets/icons/thelads.jpeg"
+            alt="enough of that now"
+        />
+        <div
+            class="cursor-pointer rounded-full bg-sky-100 bg-opacity-0 p-2 transition-colors hover:bg-opacity-100 hover:shadow-md"
+        >
+            <a
+                class="flex h-full w-full items-center"
+                href="https://github.com/decmurphy/that-money-was-just-resting-in-my-account"
+                aria-label="View on GitHub"
             >
-                <a
-                    class="flex h-full w-full items-center"
-                    href="https://github.com/decmurphy/that-money-was-just-resting-in-my-account"
+                <svg
+                    class="h-8 w-8 fill-slate-700 stroke-slate-700"
+                    version="1.1"
+                    id="Capa_1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 438.549 438.549"
+                    xml:space="preserve"
                 >
-                    <div class="font-bold text-sky-100">View On GitHub</div>
-                    <svg
-                        class="ml-4 h-8 w-8 fill-sky-100 stroke-sky-100"
-                        version="1.1"
-                        id="Capa_1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                        viewBox="0 0 438.549 438.549"
-                        xml:space="preserve"
-                    >
-                        <g>
-                            <path
-                                d="M409.132,114.573c-19.608-33.596-46.205-60.194-79.798-79.8C295.736,15.166,259.057,5.365,219.271,5.365
+                    <g>
+                        <path
+                            d="M409.132,114.573c-19.608-33.596-46.205-60.194-79.798-79.8C295.736,15.166,259.057,5.365,219.271,5.365
             c-39.781,0-76.472,9.804-110.063,29.408c-33.596,19.605-60.192,46.204-79.8,79.8C9.803,148.168,0,184.854,0,224.63
             c0,47.78,13.94,90.745,41.827,128.906c27.884,38.164,63.906,64.572,108.063,79.227c5.14,0.954,8.945,0.283,11.419-1.996
             c2.475-2.282,3.711-5.14,3.711-8.562c0-0.571-0.049-5.708-0.144-15.417c-0.098-9.709-0.144-18.179-0.144-25.406l-6.567,1.136
@@ -46,48 +51,47 @@
             c9.894,8.562,14.842,22.077,14.842,40.539v60.237c0,3.422,1.19,6.279,3.572,8.562c2.379,2.279,6.136,2.95,11.276,1.995
             c44.163-14.653,80.185-41.062,108.068-79.226c27.88-38.161,41.825-81.126,41.825-128.906
             C438.536,184.851,428.728,148.168,409.132,114.573z"
-                            />
-                        </g>
-                    </svg>
-                </a>
+                        />
+                    </g>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-8 px-2 sm:px-4 md:px-8 xl:px-16">
+        <div class="grid grid-cols-1 gap-4 pt-2 lg:grid-cols-2">
+            <div class="space-y-4">
+                <fc-income-pension class="flex"></fc-income-pension>
+                <fc-expenditures class="flex"></fc-expenditures>
+                <fc-mortgage class="flex"></fc-mortgage>
+                <!-- <fc-strategy class="flex"></fc-strategy> -->
+            </div>
+
+            <div class="space-y-4">
+                <fc-chart2d
+                    title="Net Worth"
+                    xTitle="Years"
+                    yTitle="Value (€)"
+                    [genericData]="netWorthData$ | async"
+                ></fc-chart2d>
+                <fc-chart2d
+                    title="Mortgage"
+                    xTitle="Years"
+                    yTitle="Value (€)"
+                    [genericData]="mortgageData$ | async"
+                ></fc-chart2d>
+
+                <fc-summary class="flex"></fc-summary>
+                <fc-table class="flex"></fc-table>
             </div>
         </div>
 
-        <div class="px-2 pt-16 sm:px-4 md:px-8 xl:px-16">
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <div class="space-y-4 lg:h-screen lg:overflow-y-scroll">
-                    <!-- <fc-strategy class="flex"></fc-strategy> -->
-                    <fc-income-pension class="flex"></fc-income-pension>
-                    <fc-expenditures class="flex"></fc-expenditures>
-                    <fc-mortgage class="flex"></fc-mortgage>
-                </div>
-
-                <div class="space-y-4 lg:h-screen lg:overflow-y-scroll">
-                    <fc-chart2d
-                        title="Net Worth"
-                        xTitle="Years"
-                        yTitle="Value (€)"
-                        [genericData]="netWorthData$ | async"
-                    ></fc-chart2d>
-                    <fc-chart2d
-                        title="Mortgage"
-                        xTitle="Years"
-                        yTitle="Value (€)"
-                        [genericData]="mortgageData$ | async"
-                    ></fc-chart2d>
-
-                    <fc-summary class="flex"></fc-summary>
-                    <fc-table class="flex"></fc-table>
-                </div>
-            </div>
-
-            <div class="divider my-16"></div>
-
-            <p class="w-full text-right text-sm xl:text-base">
-                I'm not a financial advisor. This isn't financial advice. Only a
-                fool would take anything they read on the internet as fact.
-                Always double check your numbers.
-            </p>
-        </div>
+        <p
+            class="mt-2 w-full border-t border-sky-900/50 pt-2 text-right text-sm xl:text-base"
+        >
+            I'm not a financial advisor. This isn't financial advice. Only a
+            fool would take anything they read on the internet as fact. Always
+            double check your numbers.
+        </p>
     </div>
 </div>

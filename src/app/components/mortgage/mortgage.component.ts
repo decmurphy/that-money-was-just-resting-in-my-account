@@ -18,6 +18,7 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
     form: FormGroup;
     formValueChangesSub: Subscription;
     data: Mortgage;
+    showInfo = false;
 
     xl$: Observable<boolean>;
 
@@ -59,5 +60,9 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
                 tap((fv) => this.dataService.setMortgage(fv))
             )
             .subscribe((fv) => {});
+    }
+
+    toggleInfo() {
+        this.showInfo = !this.showInfo;
     }
 }

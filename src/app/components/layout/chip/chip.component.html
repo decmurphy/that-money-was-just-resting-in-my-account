@@ -1,8 +1,8 @@
 <div class="chip relative flex-col" [ngClass]="{ dark: active === true }">
-    <div class="flex w-full" (click)="chipClick()">
+    <div class="flex w-full items-center" (click)="chipClick()">
         <button
             *ngIf="onAdd.observed || onDelete.observed"
-            class="btn mr-1 p-1"
+            class="btn p-1"
             [ngClass]="{
                 light: !active
             }"
@@ -24,10 +24,10 @@
                 ></path>
             </svg>
         </button>
-        <span class="flex max-w-xs grow truncate p-1">{{ title }}</span>
+        <span class="flex max-w-xs grow truncate px-1">{{ title }}</span>
         <div
             *ngIf="active && editable"
-            class="ml-4 p-1 transition-transform"
+            class="ml-3 p-1 transition-transform"
             [ngClass]="{
                 'rotate-0': !(active && editable && editing),
                 'rotate-180': active && editable && editing

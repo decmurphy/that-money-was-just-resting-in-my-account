@@ -117,15 +117,15 @@
     p,
     ul,
     li {
-        @apply xl:text-lg xl:leading-6;
-    }
-
-    small {
         @apply text-sm xl:text-base;
     }
 
-    caption {
+    small {
         @apply text-xs xl:text-sm;
+    }
+
+    caption {
+        @apply text-xs;
     }
 }
 
@@ -151,7 +151,7 @@
     }
 
     .chip {
-        @apply flex h-fit cursor-pointer items-center rounded-3xl bg-sky-300 py-2 px-4 font-bold text-sky-900 shadow-lg transition-all duration-300 hover:bg-sky-400;
+        @apply flex h-fit cursor-pointer items-center rounded-3xl bg-sky-300 py-1 px-2 text-sm font-bold text-sky-900 shadow-lg transition-all duration-300 hover:bg-sky-400;
     }
 
     .chip.dark {
@@ -189,8 +189,22 @@
     .background-gradient {
         background-image: linear-gradient(
             120deg,
-            theme("colors.sky.100"),
-            theme("colors.sky.200")
+            theme("colors.sky.200"),
+            theme("colors.sky.100")
+        );
+    }
+    .raised-bg-gradient {
+        background-image: linear-gradient(
+            120deg,
+            theme("colors.sky.50"),
+            theme("colors.sky.100")
+        );
+    }
+    .nav-gradient {
+        background-image: linear-gradient(
+            120deg,
+            theme("colors.sky.50"),
+            theme("colors.sky.300")
         );
     }
 

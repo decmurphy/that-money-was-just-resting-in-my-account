@@ -390,7 +390,11 @@
                 formGroupName="pension"
             >
                 <fc-form-field
-                    *ngIf="data.employment.pension.id !== 'pensn_noncontri'"
+                    *ngIf="
+                        data.employment.pension.id !== 'pensn_noncontri' &&
+                        data.employment.pension.id !== 'pensn_rac______' &&
+                        data.employment.pension.id !== 'pensn_rac______'
+                    "
                 >
                     <span formLabel>Employer Contribution</span>
                     <span formSuffix>%</span>

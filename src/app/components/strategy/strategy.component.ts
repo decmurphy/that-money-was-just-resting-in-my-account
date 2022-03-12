@@ -18,6 +18,7 @@ export class StrategyComponent extends SubscriptionHandler implements OnInit {
     form: FormGroup;
     formValueChangesSub: Subscription;
     data: Strategy;
+    showInfo = false;
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
@@ -68,5 +69,9 @@ export class StrategyComponent extends SubscriptionHandler implements OnInit {
             );
             this.dataService.setStrategy(this.data);
         }
+    }
+
+    toggleInfo() {
+        this.showInfo = !this.showInfo;
     }
 }

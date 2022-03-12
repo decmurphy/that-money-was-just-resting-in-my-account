@@ -36,12 +36,7 @@ export class Employment extends FormWithErrors {
         incomeTaxBands: TaxBand[],
         ageThisYear: number
     ): void {
-        if (this.pension) {
-            this.pension.calculateContributions(ageThisYear);
-        }
-
         /*
-            Pension
             Calculate Age-limited and Total Earnings-limited income tax relief for pensions
         */
         const pensionTaxFreeAllowance =
@@ -50,46 +45,52 @@ export class Employment extends FormWithErrors {
             100.0;
 
         /*
-            How much to add to Pension fund for this year. 
-            Tax payable also gets calculated on this amount.
+            Pension
         */
-        const employerContribution = this.pension
-            ? (this.pension.employerContribPercent * this.income.gross) / 100
-            : 0;
-        const employeeContribution = this.pension
-            ? (this.pension.personalContribPercent * this.income.gross) / 100
-            : 0;
-        const totalPensionContribution =
-            employerContribution + employeeContribution;
+        let employeeContribWithTaxRelief = 0,
+            employerContribWithTaxRelief = 0;
 
-        // console.log(`Employer Contribution: €${employerContribution}`);
-        // console.log(`Employee Contribution: €${employeeContribution}`);
-        // console.log(`Total    Contribution: €${totalPensionContribution}`);
-        // console.log(`Tax Free Allowance   : €${pensionTaxFreeAllowance}`);
+        let employerContrib = 0,
+            employeeContrib = 0;
+        if (this.pension) {
+            this.pension.calculateContributions(ageThisYear);
 
-        /*
-            Apply the tax-free limit to see how much of the pension payments are taxable
-            Let's assume that all of the employer contribs are included in the Tax Free Limit, and the
-            employer contribs are the ones that could be a surplus
-        */
-        const pensionContributionsWithIncomeTaxRelief = Math.min(
-            totalPensionContribution,
-            pensionTaxFreeAllowance
-        );
-        const personalContribWithTaxRelief =
-            pensionContributionsWithIncomeTaxRelief - employerContribution;
+            /*
+                How much to add to Pension fund for this year. 
+                Tax payable also gets calculated on this amount.
+            */
+            employerContrib =
+                (this.pension.employerContribPercent * this.income.gross) / 100;
+            employeeContrib =
+                (this.pension.personalContribPercent * this.income.gross) / 100;
 
-        // console.log(
-        //     `Contribs w/ Relief         : €${pensionContributionsWithIncomeTaxRelief}`
-        // );
-        // console.log(
-        //     `Employee Contribs w/ Relief: €${personalContribWithTaxRelief}`
-        // );
-
-        /**
-         * Only the surplus over the Tax Free Allowance is taxable
-         * Employee Contributions: Deduct from gross pay for IT, but not for PRSA/USC
-         */
+            switch (this.pension.id) {
+                case 'pensn_occptnl__':
+                case 'pensn_rac______':
+                    employeeContribWithTaxRelief = Math.min(
+                        employeeContrib,
+                        pensionTaxFreeAllowance
+                    );
+                    employerContribWithTaxRelief = employerContrib;
+                    break;
+                case 'pensn_prsa_____':
+                    employeeContribWithTaxRelief = Math.min(
+                        employeeContrib,
+                        pensionTaxFreeAllowance
+                    );
+                    employerContribWithTaxRelief = Math.min(
+                        employerContrib,
+                        Math.max(
+                            0,
+                            pensionTaxFreeAllowance -
+                                employeeContribWithTaxRelief
+                        )
+                    );
+                    break;
+                default:
+                    throw new Error(`Unknown Pension - id=${this._id}`);
+            }
+        }
 
         /*
             Gross + BIKs + Taxable Employee Pension Contribs
@@ -100,7 +101,9 @@ export class Employment extends FormWithErrors {
             Income Tax
         */
         this.income.taxPayable.incomeTax = Tax.getTaxPayable(
-            taxableIncome - personalContribWithTaxRelief,
+            taxableIncome -
+                (employerContrib - employerContribWithTaxRelief) -
+                employeeContribWithTaxRelief,
             incomeTaxBands
         );
 
@@ -124,7 +127,7 @@ export class Employment extends FormWithErrors {
             Pension
         */
         if (this.pension) {
-            this.pension.summary.amount = totalPensionContribution;
+            this.pension.summary.amount = employerContrib + employeeContrib;
         }
 
         this.income.net =
@@ -132,7 +135,7 @@ export class Employment extends FormWithErrors {
             this.income.taxPayable.usc -
             this.income.taxPayable.incomeTax -
             this.income.taxPayable.prsi -
-            employeeContribution;
+            employeeContrib;
     }
 
     static create(model: Employment): Employment {

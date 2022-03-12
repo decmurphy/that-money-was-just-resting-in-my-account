@@ -1,45 +1,84 @@
 <form
     [formGroup]="form"
-    class="w-full space-y-4 rounded border border-sky-800 px-4 py-2"
+    class="raised-bg-gradient w-full space-y-4 rounded border border-sky-800 px-4 py-2 shadow-md"
 >
     <div class="flex flex-row justify-between">
         <h5>Incomes, Taxes & Pensions</h5>
-        <button
-            [ngClass]="{ disabled: taxpayers.length > 1 }"
-            [disabled]="taxpayers.length > 1"
-            class="btn light p-1"
-            (click)="addTaxpayer()"
-        >
-            <svg
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+        <div class="flex flex-row gap-4">
+            <button class="btn light p-1" (click)="toggleInfo()">
+                <svg
+                    class="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                </svg>
+            </button>
+            <button
+                [ngClass]="{ disabled: taxpayers.length > 1 }"
+                [disabled]="taxpayers.length > 1"
+                class="btn light p-1"
+                (click)="addTaxpayer()"
             >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-            </svg>
-        </button>
+                <svg
+                    class="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                </svg>
+            </button>
+        </div>
     </div>
-    <p>
-        Add here the gross income and pension contributions for one or two
-        taxpayers
-    </p>
-    <p>
-        If there are two taxpayers, you have the option to be taxed as a married
-        couple and the higher earner will automatically be assigned the role of
-        Assessor. The data shown in the graphs will update to indicate your
-        combined Net Worth, combined Pension contributions and combined savings
-    </p>
-    <p>
-        Every time you edit a field, the changes will be immediately reflected
-        in the graphs and data
-    </p>
+    <div
+        class="overflow-hidden transition-all duration-500"
+        [ngClass]="{
+            'h-auto': showInfo,
+            'h-0': !showInfo
+        }"
+    >
+        <p>
+            Add here the gross income and pension contributions for one or two
+            taxpayers
+        </p>
+        <p>
+            If there are two taxpayers, you have the option to be taxed as a
+            married couple and the higher earner will automatically be assigned
+            the role of Assessor. The data shown in the graphs will update to
+            indicate your combined Net Worth, combined Pension contributions and
+            combined savings
+        </p>
+        <p>
+            Every time you edit a field, the changes will be immediately
+            reflected in the graphs and data
+        </p>
+    </div>
+
+    <fc-taxpayer
+        class="relative flex font-bold"
+        [taxpayerIdx]="0"
+        (onDelete)="removeTaxpayer($event)"
+    ></fc-taxpayer>
+    <fc-taxpayer
+        class="flex font-bold"
+        *ngIf="taxpayers.length > 1"
+        [taxpayerIdx]="1"
+        (onDelete)="removeTaxpayer($event)"
+    ></fc-taxpayer>
     <div
         *ngIf="taxpayers.length > 1"
         class="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-1 2xl:grid-cols-3"
@@ -54,16 +93,4 @@
             <fc-radio-button value="1"> Separate Assessed </fc-radio-button>
         </fc-radio-group>
     </div>
-
-    <fc-taxpayer
-        class="relative flex font-bold"
-        [taxpayerIdx]="0"
-        (onDelete)="removeTaxpayer($event)"
-    ></fc-taxpayer>
-    <fc-taxpayer
-        class="flex font-bold"
-        *ngIf="taxpayers.length > 1"
-        [taxpayerIdx]="1"
-        (onDelete)="removeTaxpayer($event)"
-    ></fc-taxpayer>
 </form>

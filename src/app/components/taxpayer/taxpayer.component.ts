@@ -37,11 +37,12 @@ export class TaxpayerComponent extends SubscriptionHandler implements OnInit {
     math = Math;
 
     pensionSuggestions = [
-        Pension.contributory(null, null),
-        Pension.nonContributory(null),
+        // Pension.contributory(0, 0),
+        // Pension.nonContributory(0),
+        Pension.occupational(0),
         Pension.prsa(),
         Pension.rac(),
-        Pension.taxExemptPension(),
+        // Pension.taxExemptPension(),
         // Pension.custom(),
     ];
 

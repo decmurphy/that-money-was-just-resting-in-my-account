@@ -20,6 +20,7 @@ export class ExpendituresComponent
     form: FormGroup;
     formValueChangesSub: Subscription;
     data: Expenditures;
+    showInfo = false;
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
@@ -77,6 +78,10 @@ export class ExpendituresComponent
             this.data.yearlyItems.splice(idx, 1);
         }
         this.dataService.setExpenditures(this.data);
+    }
+
+    toggleInfo() {
+        this.showInfo = !this.showInfo;
     }
 
     get monthlyItems(): FormArray {

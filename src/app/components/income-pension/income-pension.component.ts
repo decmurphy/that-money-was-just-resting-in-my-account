@@ -21,6 +21,7 @@ export class IncomePensionComponent
     formValueChangesSub: Subscription;
     taxpayers: TaxPayer[];
     data: MaritalStatus;
+    showInfo = false;
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
@@ -61,5 +62,9 @@ export class IncomePensionComponent
 
     removeTaxpayer(idx: number): void {
         this.dataService.removeTaxpayer(idx);
+    }
+
+    toggleInfo() {
+        this.showInfo = !this.showInfo;
     }
 }

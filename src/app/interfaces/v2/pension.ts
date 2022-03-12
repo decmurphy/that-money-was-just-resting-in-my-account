@@ -25,11 +25,23 @@ export class Pension extends FormWithErrors {
     }
 
     calculateContributions(ageThisYear: number): void {
-        const taxFreeAllowance =
-            Pension.getTaxFreeAllowancePercentage(ageThisYear);
         if (this.maxTaxFree) {
-            this.personalContribPercent =
-                taxFreeAllowance - this.employerContribPercent;
+            const taxFreeAllowance =
+                Pension.getTaxFreeAllowancePercentage(ageThisYear);
+            switch (this._id) {
+                case 'pensn_occptnl__':
+                    this.personalContribPercent = taxFreeAllowance;
+                    break;
+                case 'pensn_prsa_____':
+                    this.personalContribPercent =
+                        taxFreeAllowance - this.employerContribPercent;
+                    break;
+                case 'pensn_rac______':
+                    this.personalContribPercent = taxFreeAllowance;
+                    break;
+                default:
+                    throw new Error(`Unknown Pension - id=${this._id}`);
+            }
         }
     }
 
@@ -103,23 +115,33 @@ export class Pension extends FormWithErrors {
         }
     }
 
-    static contributory(
-        employeeContribution: number,
-        employerContribution: number
-    ): Pension {
-        return new Pension(
-            'pensn_contribut',
-            'Contributory Pension',
-            TaxRelief.incomeTaxRelief(),
-            employeeContribution,
-            employerContribution
-        );
-    }
+    // static contributory(
+    //     employeeContribution: number,
+    //     employerContribution: number
+    // ): Pension {
+    //     return new Pension(
+    //         'pensn_contribut',
+    //         'Contributory Pension',
+    //         TaxRelief.incomeTaxRelief(),
+    //         employeeContribution,
+    //         employerContribution
+    //     );
+    // }
 
-    static nonContributory(employerContribution: number): Pension {
+    // static nonContributory(employerContribution: number): Pension {
+    //     return new Pension(
+    //         'pensn_noncontri',
+    //         'Non-Contributory Pension',
+    //         TaxRelief.incomeTaxRelief(),
+    //         0,
+    //         employerContribution
+    //     );
+    // }
+
+    static occupational(employerContribution: number): Pension {
         return new Pension(
-            'pensn_noncontri',
-            'Non-Contributory Pension',
+            'pensn_occptnl__',
+            'Occupational',
             TaxRelief.incomeTaxRelief(),
             0,
             employerContribution
@@ -130,7 +152,7 @@ export class Pension extends FormWithErrors {
         return new Pension(
             'pensn_prsa_____',
             'PRSA',
-            TaxRelief.fullExemption(),
+            TaxRelief.incomeTaxRelief(),
             0,
             0
         );
@@ -146,27 +168,27 @@ export class Pension extends FormWithErrors {
         );
     }
 
-    static none(): Pension {
-        return new Pension(
-            'pensn_nopension',
-            'No Pension',
-            TaxRelief.noRelief(),
-            0,
-            0
-        );
-    }
+    // static none(): Pension {
+    //     return new Pension(
+    //         'pensn_nopension',
+    //         'No Pension',
+    //         TaxRelief.noRelief(),
+    //         0,
+    //         0
+    //     );
+    // }
 
-    static taxExemptPension(): Pension {
-        return new Pension(
-            'pensn_taxexempt',
-            'Tax Exempt Pension',
-            TaxRelief.fullExemption(),
-            0,
-            0
-        );
-    }
+    // static taxExemptPension(): Pension {
+    //     return new Pension(
+    //         'pensn_taxexempt',
+    //         'Tax Exempt Pension',
+    //         TaxRelief.fullExemption(),
+    //         0,
+    //         0
+    //     );
+    // }
 
-    static custom(): Pension {
-        return new Pension(null, 'Custom');
-    }
+    // static custom(): Pension {
+    //     return new Pension(null, 'Custom');
+    // }
 }

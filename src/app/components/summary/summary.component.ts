@@ -40,6 +40,7 @@ export class SummaryComponent extends SubscriptionHandler implements OnInit {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
                 this.data = data;
+                console.log(this.data);
             });
     }
 }

@@ -1,20 +1,48 @@
-<div class="w-full space-y-4 rounded border border-sky-800 px-4 py-2">
-    <h5>Mortgage</h5>
-    <p>
-        The Amount field should be the amount of money to be borrowed from the
-        bank - NOT the price of the property
-    </p>
-    <p>
-        APRC takes into account the initial fixed interest rate, any later
-        variable rate changes, and any once-off fees included in the process of
-        drawing up mortgages. Most banks will provide APRC figures for different
-        mortgage plans
-    </p>
-    <p>
-        Repayments is per month, and represents your
-        <em>initial</em> repayment amount. Any increases/decreases over time can
-        be dealt with in the <b>Timeline</b> section below
-    </p>
+<div
+    class="raised-bg-gradient w-full space-y-4 rounded border border-sky-800 px-4 py-2 shadow-md"
+>
+    <div class="flex flex-row justify-between">
+        <h5>Mortgage</h5>
+        <button class="btn light p-1" (click)="toggleInfo()">
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+            </svg>
+        </button>
+    </div>
+    <div
+        class="overflow-hidden transition-all duration-500"
+        [ngClass]="{
+            'h-auto': showInfo,
+            'h-0': !showInfo
+        }"
+    >
+        <p>
+            The Amount field should be the amount of money to be borrowed from
+            the bank - NOT the price of the property
+        </p>
+        <p>
+            APRC takes into account the initial fixed interest rate, any later
+            variable rate changes, and any once-off fees included in the process
+            of drawing up mortgages. Most banks will provide APRC figures for
+            different mortgage plans
+        </p>
+        <p>
+            Repayments is per month, and represents your
+            <em>initial</em> repayment amount. Any increases/decreases over time
+            can be dealt with in the <b>Timeline</b> section below
+        </p>
+    </div>
     <ng-container
         *ngIf="editing; then formTmpl; else summaryTmpl"
     ></ng-container>
