@@ -68,18 +68,26 @@
             </div>
 
             <div class="space-y-4">
-                <fc-chart2d
-                    title="Net Worth"
-                    xTitle="Years"
-                    yTitle="Value (€)"
-                    [genericData]="netWorthData$ | async"
-                ></fc-chart2d>
-                <fc-chart2d
-                    title="Mortgage"
-                    xTitle="Years"
-                    yTitle="Value (€)"
-                    [genericData]="mortgageData$ | async"
-                ></fc-chart2d>
+                <div
+                    class="raised-bg-gradient rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
+                >
+                    <fc-chart2d
+                        title="Net Worth"
+                        xTitle="Years"
+                        yTitle="Value (€)"
+                        [genericData]="netWorthData$ | async"
+                    ></fc-chart2d>
+                </div>
+                <div
+                    class="raised-bg-gradient rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
+                >
+                    <fc-chart2d
+                        title="Mortgage"
+                        xTitle="Years"
+                        yTitle="Value (€)"
+                        [genericData]="mortgageData$ | async"
+                    ></fc-chart2d>
+                </div>
 
                 <fc-summary class="flex"></fc-summary>
                 <fc-table class="flex"></fc-table>
