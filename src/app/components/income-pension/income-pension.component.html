@@ -1,6 +1,6 @@
 <form
     [formGroup]="form"
-    class="raised-bg-gradient w-full space-y-4 rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
+    class="raised-bg-gradient w-full rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
 >
     <div class="flex flex-row justify-between">
         <h5>Incomes, Taxes & Pensions</h5>
@@ -45,10 +45,10 @@
         </div>
     </div>
     <div
-        class="overflow-hidden transition-all duration-500"
+        class="overflow-hidden transition-all duration-700 font-normal"
         [ngClass]="{
-            'h-auto': showInfo,
-            'h-0': !showInfo
+            'max-h-0': !showInfo,
+            'max-h-[96rem]': showInfo
         }"
     >
         <p>
@@ -69,19 +69,19 @@
     </div>
 
     <fc-taxpayer
-        class="relative flex font-bold"
+        class="relative flex font-bold mt-4"
         [taxpayerIdx]="0"
         (onDelete)="removeTaxpayer($event)"
     ></fc-taxpayer>
     <fc-taxpayer
-        class="flex font-bold"
+        class="flex font-bold mt-2"
         *ngIf="taxpayers.length > 1"
         [taxpayerIdx]="1"
         (onDelete)="removeTaxpayer($event)"
     ></fc-taxpayer>
     <div
         *ngIf="taxpayers.length > 1"
-        class="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-1 2xl:grid-cols-3"
+        class="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-1 2xl:grid-cols-3 mt-4"
     >
         <fc-checkbox formControlName="married">Married</fc-checkbox>
         <fc-radio-group

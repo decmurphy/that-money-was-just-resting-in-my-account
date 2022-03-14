@@ -1,16 +1,76 @@
-<ng-container *ngIf="editing; then eventTmpl; else summaryTmpl"></ng-container>
+<div class="relative z-0 w-full">
+    <div
+        class="list-element relative z-10 flex w-full items-center font-bold"
+        [ngClass]="{
+            'sticky top-0': editing
+        }"
+    >
+        <svg
+            cdkDragHandle
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="h-6 w-6"
+        >
+            <path
+                fill-rule="evenodd"
+                d="M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clip-rule="evenodd"
+            ></path>
+        </svg>
+        <p class="flex grow ml-4">
+            {{ event | summary }}
+        </p>
+        <button
+            class="btn primary h-8 w-8 p-1 ml-2"
+            (click)="editing = !editing"
+        >
+            <div
+                class="rotate-0 transition-transform duration-300"
+                [ngClass]="{
+                    'rotate-[360deg]': editing
+                }"
+            >
+                <ng-container
+                    *ngIf="editing; then checkTmpl; else editTmpl"
+                ></ng-container>
+            </div>
+        </button>
+        <button class="btn primary h-8 w-8 p-1 ml-2" (click)="delete()">
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                ></path>
+            </svg>
+        </button>
+    </div>
 
-<ng-template #eventTmpl>
-    <form [formGroup]="form" class="flex flex-wrap gap-1">
-        <fc-form-field class="flex grow basis-px">
+    <form
+        *ngIf="form"
+        [formGroup]="form"
+        class="flex flex-wrap gap-1 relative z-0 w-full overflow-hidden border-4 border-t-0 border-sky-800 p-4 transition-all duration-500 border-b-4 rounded-b-lg"
+        [ngClass]="{
+            'max-h-0 pt-0 -mt-6': !editing,
+            'max-h-[96rem] pt-8 -mt-4': editing
+        }"
+    >
+        <fc-form-field class="flex basis-px">
             <span formLabel>After Months</span>
             <input formInput type="number" formControlName="afterMonths" />
             <span formError *ngIf="form.get('afterMonths').invalid"> </span>
         </fc-form-field>
-        <fc-form-field class="flex grow basis-px">
+        <fc-form-field class="flex basis-px">
             <span formLabel>TaxPayer</span>
             <fc-select formInput formControlName="taxpayerId">
-                <fc-option [value]="null"></fc-option>
+                <fc-option value="null">Household</fc-option>
                 <fc-option
                     *ngFor="let tp of taxpayers; trackBy: trackTaxpayer"
                     [value]="tp.id"
@@ -19,30 +79,25 @@
             </fc-select>
             <span formError *ngIf="form.get('taxpayerId').invalid"> </span>
         </fc-form-field>
-        <fc-form-field class="flex grow basis-px">
-            <span formLabel>Change</span>
-            <fc-select formInput formControlName="quantity">
-                <fc-option [value]="null"></fc-option>
+        <fc-form-field class="flex basis-px">
+            <span formLabel>Modify</span>
+            <fc-select formInput formControlName="type">
                 <fc-option
-                    *ngFor="
-                        let quantity of eventQuantities;
-                        trackBy: trackQuantity
-                    "
-                    [value]="quantity.type"
-                    (click)="selectQuantity(quantity)"
+                    *ngFor="let type of eventTypes; trackBy: trackType"
+                    [value]="type"
+                    (click)="selectType(type)"
                 >
-                    <span>{{ quantity.type }}</span>
+                    <span>{{ type }}</span>
                 </fc-option>
             </fc-select>
-            <span formError *ngIf="form.get('quantity').invalid"> </span>
+            <span formError *ngIf="form.get('type').invalid"> </span>
         </fc-form-field>
-        <fc-form-field class="flex grow basis-px">
+        <fc-form-field *ngIf="selectedType != null" class="flex basis-px">
             <span formLabel>Operation</span>
             <fc-select formInput formControlName="operation">
-                <fc-option [value]="null"></fc-option>
                 <fc-option
                     *ngFor="
-                        let op of availableOperations;
+                        let op of operations | filterOpsForType: selectedType;
                         trackBy: trackOperation
                     "
                     [value]="op"
@@ -52,12 +107,12 @@
             </fc-select>
             <span formError *ngIf="form.get('operation').invalid"> </span>
         </fc-form-field>
-        <fc-form-field class="flex grow basis-px">
+        <fc-form-field class="flex basis-px">
             <span formLabel>Value</span>
             <input formInput type="number" formControlName="value" />
             <span formError *ngIf="form.get('value').invalid"> </span>
         </fc-form-field>
-        <div class="flex grow basis-px items-center justify-end gap-2">
+        <!-- <div class="flex grow basis-px items-center justify-end gap-2">
             <button *ngIf="!form.valid" class="btn dark p-1" (click)="delete()">
                 <svg
                     class="h-6 w-6"
@@ -97,18 +152,12 @@
                     ></path>
                 </svg>
             </button>
-        </div>
+        </div> -->
     </form>
-</ng-template>
+    <!-- </ng-template> -->
 
-<ng-template #summaryTmpl>
-    <div
-        class="col-span-full flex h-full w-full items-center font-bold"
-        (click)="editing = true"
-    >
-        <p class="flex grow">
-            {{ event | summary }}
-        </p>
+    <!-- <ng-template #summaryTmpl>
+    <div class="col-span-full flex h-full w-full items-center font-bold">
         <svg
             cdkDragHandle
             viewBox="0 0 20 20"
@@ -121,7 +170,26 @@
                 clip-rule="evenodd"
             ></path>
         </svg>
-        <button class="btn primary h-8 w-8 p-1" (click)="delete()">
+        <p class="flex grow ml-4">
+            {{ event | summary }}
+        </p>
+        <button class="btn primary h-8 w-8 p-1 ml-2" (click)="editing = true">
+            <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                ></path>
+            </svg>
+        </button>
+        <button class="btn primary h-8 w-8 p-1 ml-2" (click)="delete()">
             <svg
                 class="h-6 w-6"
                 fill="none"
@@ -138,4 +206,39 @@
             </svg>
         </button>
     </div>
+</ng-template> -->
+</div>
+
+<ng-template #editTmpl>
+    <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+        ></path>
+    </svg>
+</ng-template>
+
+<ng-template #checkTmpl>
+    <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
+    </svg>
 </ng-template>

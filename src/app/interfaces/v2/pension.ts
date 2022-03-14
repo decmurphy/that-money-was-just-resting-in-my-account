@@ -138,23 +138,33 @@ export class Pension extends FormWithErrors {
     //     );
     // }
 
-    static occupational(employerContribution: number): Pension {
+    static occupational(
+        employeeContribution?: number,
+        employerContribution?: number,
+        maxTaxFree?: boolean
+    ): Pension {
         return new Pension(
             'pensn_occptnl__',
             'Occupational',
             TaxRelief.incomeTaxRelief(),
-            0,
-            employerContribution
+            employeeContribution,
+            employerContribution,
+            maxTaxFree
         );
     }
 
-    static prsa(): Pension {
+    static prsa(
+        employeeContribution?: number,
+        employerContribution?: number,
+        maxTaxFree?: boolean
+    ): Pension {
         return new Pension(
             'pensn_prsa_____',
             'PRSA',
             TaxRelief.incomeTaxRelief(),
-            0,
-            0
+            employeeContribution,
+            employerContribution,
+            maxTaxFree
         );
     }
 

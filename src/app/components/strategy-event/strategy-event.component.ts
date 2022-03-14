@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { takeUntil } from 'rxjs';
+import { Subscription, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
@@ -31,12 +31,13 @@ export class StrategyEventComponent
     editing = false;
     event: StrategyEvent;
     form: FormGroup;
+    formValueChangesSub: Subscription;
 
-    selectedQuantity: TypeAndOps;
-    availableOperations: StrategyEventOperation[];
+    selectedType: StrategyEventType;
+    operations: StrategyEventOperation[];
     taxpayers: TaxPayer[];
 
-    eventQuantities: TypeAndOps[];
+    eventTypes: StrategyEventType[];
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
@@ -49,52 +50,24 @@ export class StrategyEventComponent
             .subscribe((data) => {
                 this.taxpayers = data.taxpayers;
                 this.event = data.strategy.events[this.eventIdx];
+                this.selectedType = this.event.type;
                 this.resetForm();
             });
 
-        this.eventQuantities = [
-            {
-                type: StrategyEventType.EMPLOYMENT_INCOME,
-                operations: [StrategyEventOperation.CHANGE],
-            },
-            {
-                type: StrategyEventType.ANCILLARY_INCOME,
-                operations: [
-                    StrategyEventOperation.CHANGE,
-                    StrategyEventOperation.ADD,
-                    StrategyEventOperation.REMOVE,
-                ],
-            },
-            {
-                type: StrategyEventType.OTHER_INCOME,
-                operations: [
-                    StrategyEventOperation.CHANGE,
-                    StrategyEventOperation.ADD,
-                    StrategyEventOperation.REMOVE,
-                ],
-            },
-            {
-                type: StrategyEventType.PENSION_EMPLOYER_CONTRIB,
-                operations: [StrategyEventOperation.CHANGE],
-            },
-            {
-                type: StrategyEventType.PENSION_PERSONAL_CONTRIB,
-                operations: [StrategyEventOperation.CHANGE],
-            },
-            {
-                type: StrategyEventType.MORTGAGE_APRC,
-                operations: [StrategyEventOperation.CHANGE],
-            },
-            {
-                type: StrategyEventType.MORTGAGE_REPAYMENT,
-                operations: [StrategyEventOperation.CHANGE],
-            },
+        this.operations = [
+            StrategyEventOperation.ADD,
+            StrategyEventOperation.CHANGE,
+            StrategyEventOperation.REMOVE,
+        ];
+
+        this.eventTypes = [
+            StrategyEventType.MORTGAGE_APRC,
+            StrategyEventType.MORTGAGE_REPAYMENT,
         ];
     }
 
-    selectQuantity(quantity: TypeAndOps): void {
-        this.selectedQuantity = quantity;
-        this.availableOperations = quantity.operations;
+    selectType(type: StrategyEventType): void {
+        this.selectedType = type;
     }
 
     resetForm(): void {
@@ -102,6 +75,24 @@ export class StrategyEventComponent
         this.form = this.event.toFormGroup(this.fb);
         this.form.updateValueAndValidity();
         this.form.markAllAsTouched();
+
+        console.log(this.form);
+
+        //     console.log('reset form');
+
+        if (this.formValueChangesSub != null) {
+            this.formValueChangesSub.unsubscribe();
+        }
+
+        this.formValueChangesSub = this.form.valueChanges
+            .pipe(
+                takeUntil(this.ngUnsubscribe),
+                tap((fv) => this.dataService.setEvent(this.eventIdx, fv))
+            )
+            .subscribe((fv) => {
+                console.log(this.form);
+                console.log(fv);
+            });
     }
 
     delete(): void {
@@ -123,10 +114,10 @@ export class StrategyEventComponent
         item: StrategyEventOperation
     ) => index;
 
-    trackQuantity: TrackByFunction<TypeAndOps> = (
+    trackType: TrackByFunction<StrategyEventType> = (
         index: number,
-        item: TypeAndOps
-    ) => item.type;
+        item: StrategyEventType
+    ) => index;
 }
 
 export interface TypeAndOps {

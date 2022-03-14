@@ -17,6 +17,7 @@ export class ExpendituresComponent
     extends SubscriptionHandler
     implements OnInit
 {
+    editing = false;
     form: FormGroup;
     formValueChangesSub: Subscription;
     data: Expenditures;

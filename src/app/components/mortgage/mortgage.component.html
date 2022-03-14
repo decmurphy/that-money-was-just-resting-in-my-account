@@ -1,5 +1,5 @@
 <div
-    class="raised-bg-gradient w-full space-y-4 rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
+    class="raised-bg-gradient w-full rounded-lg p-4 pt-2 shadow-lg shadow-sky-800/50 font-bold"
 >
     <div class="flex flex-row justify-between">
         <h5>Mortgage</h5>
@@ -21,10 +21,10 @@
         </button>
     </div>
     <div
-        class="overflow-hidden transition-all duration-500"
+        class="overflow-hidden transition-all duration-700 font-normal"
         [ngClass]="{
-            'h-auto': showInfo,
-            'h-0': !showInfo
+            'max-h-0': !showInfo,
+            'max-h-[96rem]': showInfo
         }"
     >
         <p>
@@ -43,138 +43,164 @@
             can be dealt with in the <b>Timeline</b> section below
         </p>
     </div>
-    <ng-container
-        *ngIf="editing; then formTmpl; else summaryTmpl"
-    ></ng-container>
-</div>
 
-<ng-template #formTmpl>
-    <form
-        [formGroup]="form"
-        class="grid grid-cols-2 gap-2 font-bold sm:grid-cols-4"
-    >
-        <fc-form-field class="col-span-2">
-            <span formLabel>Start After Months</span>
-            <input formInput type="number" formControlName="startAfterMonth" />
-            <span formError *ngIf="form.get('startAfterMonth').invalid"> </span>
-        </fc-form-field>
-        <ng-container *ngIf="(xl$ | async) === true">
-            <span class="col-span-1 col-start-1 text-right">Amount</span>
-            <fc-slider
-                class="col-span-2"
-                formControlName="amount"
-                [min]="100000"
-                [max]="700000"
-                [step]="5000"
-                >Mortgage Amount</fc-slider
+    <div class="relative z-0 w-full mt-4">
+        <div
+            class="list-element relative z-10 flex w-full items-center"
+            [ngClass]="{
+                'sticky top-0': editing
+            }"
+        >
+            <div class="flex grow flex-col">
+                <h6>
+                    {{ data | mortgageSummary: 1 }}
+                </h6>
+                <p class="ml-4">
+                    {{ data | mortgageSummary: 2 }}
+                </p>
+                <p class="ml-4">
+                    {{ data | mortgageSummary: 3 }}
+                </p>
+            </div>
+            <button
+                class="btn primary h-8 w-8 p-1 ml-2"
+                (click)="editing = !editing"
             >
-            <span class="col-span-1 text-left font-mono">{{
-                data.amount | currency: "EUR"
-            }}</span>
+                <div
+                    class="rotate-0 transition-transform duration-300"
+                    [ngClass]="{
+                        'rotate-[360deg]': editing
+                    }"
+                >
+                    <ng-container
+                        *ngIf="editing; then checkTmpl; else editTmpl"
+                    ></ng-container>
+                </div>
+            </button>
+        </div>
 
-            <span class="col-span-1 text-right">APRC</span>
-            <fc-slider
-                class="col-span-2"
-                formControlName="aprc"
-                [min]="2"
-                [max]="5"
-                [step]="0.01"
-                >APRC</fc-slider
-            >
-            <span class="col-span-1 text-left font-mono">{{ data.aprc }}%</span>
-
-            <span class="col-span-1 text-right">Repayments</span>
-            <fc-slider
-                class="col-span-2"
-                formControlName="monthlyRepayments"
-                [min]="500"
-                [max]="8000"
-                [step]="50"
-            >
-                Monthly Repayments</fc-slider
-            >
-            <span class="col-span-1 text-left font-mono">{{
-                data.monthlyRepayments | currency: "EUR"
-            }}</span>
-        </ng-container>
-        <ng-container *ngIf="(xl$ | async) === false">
+        <form
+            *ngIf="form"
+            [formGroup]="form"
+            class="grid grid-cols-2 gap-2 font-bold sm:grid-cols-4 relative z-0 w-full space-y-2 overflow-hidden border-4 border-t-0 border-sky-800 p-4 transition-all duration-700 border-b-4 rounded-b-lg"
+            [ngClass]="{
+                'max-h-0 pt-0 -mt-6': !editing,
+                'max-h-[96rem] pt-8 -mt-4': editing
+            }"
+        >
             <fc-form-field class="col-span-2">
-                <span formLabel>Amount</span>
-                <span formPrefix>€</span>
-                <input formInput type="number" formControlName="amount" />
-                <span formError *ngIf="form.get('amount').invalid"> </span>
-            </fc-form-field>
-            <fc-form-field class="col-span-2">
-                <span formLabel>APRC</span>
-                <span formSuffix>%</span>
-                <input formInput type="number" formControlName="aprc" />
-                <span formError *ngIf="form.get('aprc').invalid"> </span>
-            </fc-form-field>
-            <fc-form-field class="col-span-2">
-                <span formLabel>Repayments</span>
-                <span formPrefix>€</span>
+                <span formLabel>Start After Months</span>
                 <input
                     formInput
                     type="number"
-                    formControlName="monthlyRepayments"
+                    formControlName="startAfterMonth"
                 />
-                <span formError *ngIf="form.get('monthlyRepayments').invalid">
+                <span formError *ngIf="form.get('startAfterMonth').invalid">
                 </span>
             </fc-form-field>
-        </ng-container>
-
-        <div class="col-span-full flex w-full justify-end">
-            <button class="btn light p-1" (click)="editing = false">
-                <svg
-                    class="h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
+            <ng-container *ngIf="(xl$ | async) === true">
+                <span class="col-span-1 col-start-1 text-right">Amount</span>
+                <fc-slider
+                    class="col-span-2"
+                    formControlName="amount"
+                    [min]="100000"
+                    [max]="700000"
+                    [step]="5000"
+                    >Mortgage Amount</fc-slider
                 >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                </svg>
-            </button>
-        </div>
-    </form>
+                <span class="col-span-1 text-left font-mono">{{
+                    data.amount | currency: "EUR"
+                }}</span>
+
+                <span class="col-span-1 text-right">APRC</span>
+                <fc-slider
+                    class="col-span-2"
+                    formControlName="aprc"
+                    [min]="2"
+                    [max]="5"
+                    [step]="0.01"
+                    >APRC</fc-slider
+                >
+                <span class="col-span-1 text-left font-mono"
+                    >{{ data.aprc }}%</span
+                >
+
+                <span class="col-span-1 text-right">Repayments</span>
+                <fc-slider
+                    class="col-span-2"
+                    formControlName="monthlyRepayments"
+                    [min]="500"
+                    [max]="8000"
+                    [step]="50"
+                >
+                    Monthly Repayments</fc-slider
+                >
+                <span class="col-span-1 text-left font-mono">{{
+                    data.monthlyRepayments | currency: "EUR"
+                }}</span>
+            </ng-container>
+            <ng-container *ngIf="(xl$ | async) === false">
+                <fc-form-field class="col-span-2">
+                    <span formLabel>Amount</span>
+                    <span formPrefix>€</span>
+                    <input formInput type="number" formControlName="amount" />
+                    <span formError *ngIf="form.get('amount').invalid"> </span>
+                </fc-form-field>
+                <fc-form-field class="col-span-2">
+                    <span formLabel>APRC</span>
+                    <span formSuffix>%</span>
+                    <input formInput type="number" formControlName="aprc" />
+                    <span formError *ngIf="form.get('aprc').invalid"> </span>
+                </fc-form-field>
+                <fc-form-field class="col-span-2">
+                    <span formLabel>Repayments</span>
+                    <span formPrefix>€</span>
+                    <input
+                        formInput
+                        type="number"
+                        formControlName="monthlyRepayments"
+                    />
+                    <span
+                        formError
+                        *ngIf="form.get('monthlyRepayments').invalid"
+                    >
+                    </span>
+                </fc-form-field>
+            </ng-container>
+        </form>
+    </div>
+</div>
+
+<ng-template #editTmpl>
+    <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+        ></path>
+    </svg>
 </ng-template>
 
-<ng-template #summaryTmpl>
-    <div
-        class="list-element flex w-full items-center font-bold"
-        (click)="editing = true"
+<ng-template #checkTmpl>
+    <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
     >
-        <div class="flex grow flex-col">
-            <h6>
-                {{ data | mortgageSummary: 1 }}
-            </h6>
-            <p class="ml-4">
-                {{ data | mortgageSummary: 2 }}
-            </p>
-            <p class="ml-4">
-                {{ data | mortgageSummary: 3 }}
-            </p>
-        </div>
-        <button class="btn dark p-1" (click)="editing = true">
-            <svg
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                ></path>
-            </svg>
-        </button>
-    </div>
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
+    </svg>
 </ng-template>

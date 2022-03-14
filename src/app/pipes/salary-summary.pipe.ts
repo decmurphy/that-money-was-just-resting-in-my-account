@@ -11,7 +11,7 @@ export class SalarySummaryPipe implements PipeTransform {
 
     transform(tp: TaxPayer): string {
         const incomes = tp.getAllIncomes();
-        return `Salary: ${this.currencyPipe.transform(
+        return `Total Income: ${this.currencyPipe.transform(
             UtilityService.sum(incomes.map((i) => i.gross)),
             'EUR',
             'symbol',

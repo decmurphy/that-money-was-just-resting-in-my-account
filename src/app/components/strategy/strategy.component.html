@@ -1,6 +1,6 @@
 <form
     [formGroup]="form"
-    class="raised-bg-gradient w-full space-y-4 rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
+    class="raised-bg-gradient w-full rounded-lg p-4 pt-2 shadow-lg shadow-sky-800/50"
 >
     <div class="flex flex-row items-center justify-between">
         <h5>Timeline</h5>
@@ -40,10 +40,10 @@
         </div>
     </div>
     <div
-        class="overflow-hidden transition-all duration-500"
+        class="overflow-hidden transition-all duration-700 font-normal"
         [ngClass]="{
-            'h-auto': showInfo,
-            'h-0': !showInfo
+            'max-h-0': !showInfo,
+            'max-h-[96rem]': showInfo
         }"
     >
         <p>
@@ -66,17 +66,15 @@
         cdkDropList
         [cdkDropListData]="data.events"
         (cdkDropListDropped)="drop($event)"
-        class="mt-2 w-full space-y-2"
+        class="w-full mt-4 space-y-2"
         formArrayName="events"
     >
         <div
             cdkDrag
-            *ngFor="let ev of data.events; let i = index"
-            class="list-element px-4 py-2"
+            *ngFor="let ev of data.events; trackBy: trackEvent; let i = index"
             [formGroupName]="i"
         >
             <fc-strategy-event
-                class="h-full w-full"
                 [eventIdx]="i"
                 (onDelete)="deleteEvent($event)"
             ></fc-strategy-event>

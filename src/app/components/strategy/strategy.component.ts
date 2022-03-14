@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TrackByFunction } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Subscription, takeUntil, tap } from 'rxjs';
@@ -74,4 +74,9 @@ export class StrategyComponent extends SubscriptionHandler implements OnInit {
     toggleInfo() {
         this.showInfo = !this.showInfo;
     }
+
+    trackEvent: TrackByFunction<StrategyEvent> = (
+        index: number,
+        item: StrategyEvent
+    ) => index;
 }

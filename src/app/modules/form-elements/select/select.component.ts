@@ -80,12 +80,13 @@ export class SelectComponent
 
         if (this.options.length > 0 && this.optGroups.length > 0) {
             throw new Error(
-                'Can pass either fc-option[] or fc-optgroup[] to fc-select - but not both'
+                `${this.id} - Can pass either fc-option[] or fc-optgroup[] to fc-select - but not both`
             );
         }
         if (this.options.length == 0 && this.optGroups.length == 0) {
+            console.log(this.value);
             throw new Error(
-                'Must pass one of fc-option[] or fc-optgroup[] to fc-select'
+                `${this.id} - Must pass one of fc-option[] or fc-optgroup[] to fc-select`
             );
         }
 
@@ -112,6 +113,10 @@ export class SelectComponent
         } else {
             this.value = value;
         }
+
+        this.getAllOptions().forEach((opt) => {
+            opt.checked = opt.value === this.value;
+        });
 
         this.updateLabel();
         this.updateContainerTransform();

@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
+import { StrategyEventType } from 'app/interfaces/v2/strategy/strategy-event-type';
 import { StrategyEvent } from '../interfaces/v2/strategy/strategy-event';
 
 @Pipe({
@@ -9,7 +10,27 @@ export class SummaryPipe implements PipeTransform {
     constructor(private currencyPipe: CurrencyPipe) {}
 
     transform(ev: StrategyEvent): string {
-        return '';
+        const years = Math.floor(ev.afterMonths / 12);
+        const months = ev.afterMonths - years * 12;
+        const totalTime = `${years}y` + (months > 0 ? ` ${months}m` : ``);
+
+        let summary = `After ${totalTime}, `;
+
+        switch (ev.type) {
+            case StrategyEventType.MORTGAGE_REPAYMENT:
+                summary += `change mortgage repayments to ${this.currencyPipe.transform(
+                    ev.value,
+                    'EUR',
+                    'symbol',
+                    '1.0-0'
+                )}`;
+                break;
+            case StrategyEventType.MORTGAGE_APRC:
+                summary += `change APRC to ${ev.value}%`;
+                break;
+        }
+
+        return summary;
         //     if (ev.quantity == null) {
         //         return '';
         //     }

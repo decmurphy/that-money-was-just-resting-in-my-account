@@ -1,10 +1,9 @@
 <div class="relative z-0 w-full">
     <div
-        class="peer list-element relative z-10 flex w-full items-center"
+        class="list-element relative z-10 flex w-full items-center"
         [ngClass]="{
-            'sticky top-0 rounded-b-none': editing
+            'sticky top-0': editing
         }"
-        (click)="editing = !editing"
     >
         <div class="flex grow flex-col">
             <h6>{{ data.details.name }}</h6>
@@ -16,11 +15,26 @@
             </p>
         </div>
         <button
+            class="btn primary h-8 w-8 p-1 ml-2"
+            (click)="editing = !editing"
+        >
+            <div
+                class="rotate-0 transition-transform duration-300"
+                [ngClass]="{
+                    'rotate-[360deg]': editing
+                }"
+            >
+                <ng-container
+                    *ngIf="editing; then checkTmpl; else editTmpl"
+                ></ng-container>
+            </div>
+        </button>
+        <button
             [ngClass]="{
                 disabled: taxpayers.length == 1
             }"
             [disabled]="taxpayers.length == 1"
-            class="btn primary p-1"
+            class="btn primary p-1 ml-2"
             (click)="delete()"
         >
             <svg
@@ -38,35 +52,14 @@
                 ></path>
             </svg>
         </button>
-        <div
-            class="rotate-0 p-1 transition-transform"
-            [ngClass]="{
-                'rotate-180': editing
-            }"
-        >
-            <svg
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                ></path>
-            </svg>
-        </div>
     </div>
     <form
         *ngIf="form"
         [formGroup]="form"
-        class="relative z-0 -mt-4 min-h-0 w-full space-y-2 overflow-hidden rounded-b-lg border-4 border-y-0 border-sky-800 px-4 pb-4 transition-all peer-hover:border-l-sky-500 peer-hover:border-b-sky-600 peer-hover:border-r-sky-700"
+        class="relative z-0 w-full space-y-2 overflow-hidden border-4 border-t-0 border-sky-800 p-4 transition-all duration-700 border-b-4 rounded-b-lg"
         [ngClass]="{
-            'h-0 py-0': !editing,
-            'h-[calc(100%-4rem)] border-b-4 pt-8': editing
+            'max-h-0 pt-0 -mt-6': !editing,
+            'max-h-[96rem] pt-8 -mt-4': editing
         }"
     >
         <h5>Personal Details</h5>
@@ -550,4 +543,38 @@
             </ng-container>
         </ng-container>
     </form>
+</ng-template>
+
+<ng-template #editTmpl>
+    <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+        ></path>
+    </svg>
+</ng-template>
+
+<ng-template #checkTmpl>
+    <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
+    </svg>
 </ng-template>

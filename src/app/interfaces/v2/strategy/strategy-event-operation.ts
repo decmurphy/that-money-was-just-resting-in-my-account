@@ -1,5 +1,5 @@
 export enum StrategyEventOperation {
-    ADD = 'Add',
-    REMOVE = 'Remove',
-    CHANGE = 'Change',
+    ADD = 'Add Item',
+    REMOVE = 'Remove Item',
+    CHANGE = 'Change Value',
 }

@@ -38,6 +38,7 @@ import { ChipComponent } from './components/layout/chip/chip.component';
 import { ContainsPipe } from './pipes/contains.pipe';
 import { IndexOfPipe } from './pipes/index-of.pipe';
 import { ConcatPipe } from './pipes/concat.pipe';
+import { FilterOpsForTypePipe } from './pipes/filter-ops-for-type.pipe';
 
 @NgModule({
     declarations: [
@@ -62,6 +63,7 @@ import { ConcatPipe } from './pipes/concat.pipe';
         ContainsPipe,
         IndexOfPipe,
         ConcatPipe,
+        FilterOpsForTypePipe,
     ],
     imports: [
         BrowserModule,

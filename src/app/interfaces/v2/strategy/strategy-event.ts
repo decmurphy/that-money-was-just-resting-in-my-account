@@ -1,6 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormData } from 'app/interfaces/v2/form-data';
-import { NamedAmount } from 'app/interfaces/v2/named-amount';
 import { RequiredNumber } from 'app/validators/required-number.directive';
 import { FormWithErrors } from '../../forms/form-with-errors';
 import { StrategyEventOperation } from './strategy-event-operation';
@@ -13,9 +12,9 @@ export class StrategyEvent extends FormWithErrors {
     constructor(
         public taxpayerId: string = null,
         public afterMonths: number = null,
-        public quantity: StrategyEventType = null,
+        public type: StrategyEventType = null,
         public operation: StrategyEventOperation = null,
-        public value: (...args) => any = null
+        public value: number = null
     ) {
         super();
     }
@@ -27,7 +26,7 @@ export class StrategyEvent extends FormWithErrors {
         return new StrategyEvent(
             model.taxpayerId,
             model.afterMonths,
-            model.quantity,
+            model.type,
             model.operation,
             model.value
         );
@@ -40,7 +39,7 @@ export class StrategyEvent extends FormWithErrors {
                 this.afterMonths,
                 [Validators.required, RequiredNumber, Validators.min(0)],
             ],
-            quantity: [this.quantity, [Validators.required]],
+            type: [this.type, [Validators.required]],
             operation: [this.operation, [Validators.required]],
             value: [
                 this.value,
@@ -53,7 +52,7 @@ export class StrategyEvent extends FormWithErrors {
         try {
             this.setAfterMonths(this.afterMonths)
                 .setTaxpayer(this.taxpayerId)
-                .setQuantity(this.quantity)
+                .setType(this.type)
                 .setOperation(this.operation)
                 .setValue(this.value);
             return true;
@@ -75,25 +74,25 @@ export class StrategyEvent extends FormWithErrors {
         return this;
     }
 
-    setQuantity(quantity: StrategyEventType): StrategyEvent {
-        if (quantity == null) {
+    setType(type: StrategyEventType): StrategyEvent {
+        if (type == null) {
             throw new Error('quantity is required');
         }
 
-        if (
-            [
-                StrategyEventType.PENSION_PERSONAL_CONTRIB,
-                StrategyEventType.PENSION_EMPLOYER_CONTRIB,
-                StrategyEventType.EMPLOYMENT_INCOME,
-                StrategyEventType.ANCILLARY_INCOME,
-                StrategyEventType.OTHER_INCOME,
-            ].indexOf(this.quantity) > -1 &&
-            this.taxpayerId == null
-        ) {
-            throw new Error(`Type ${quantity} requires a valid TaxPayer`);
-        }
+        // if (
+        //     [
+        //         StrategyEventType.PENSION_PERSONAL_CONTRIB,
+        //         StrategyEventType.PENSION_EMPLOYER_CONTRIB,
+        //         StrategyEventType.EMPLOYMENT_INCOME,
+        //         StrategyEventType.ANCILLARY_INCOME,
+        //         StrategyEventType.OTHER_INCOME,
+        //     ].indexOf(this.type) > -1 &&
+        //     this.taxpayerId == null
+        // ) {
+        //     throw new Error(`Type ${type} requires a valid TaxPayer`);
+        // }
 
-        this.quantity = quantity;
+        this.type = type;
         return this;
     }
 
@@ -106,7 +105,7 @@ export class StrategyEvent extends FormWithErrors {
         return this;
     }
 
-    setValue(value: (...args) => any): StrategyEvent {
+    setValue(value: number): StrategyEvent {
         if (value == null) {
             throw new Error('value is required');
         }
@@ -182,7 +181,7 @@ export class StrategyEvent extends FormWithErrors {
             tp = formData.taxpayers.find((tp) => tp.id === this.taxpayerId);
         }
 
-        switch (this.quantity) {
+        switch (this.type) {
             // case 'pensionPercentage':
             //     if (tp != null) {
             //         if (this._newValue >= 40) {
@@ -265,7 +264,7 @@ export class StrategyEvent extends FormWithErrors {
             //     break;
             default:
                 throw new Error(
-                    `Haven't implemented Strategy for ${this.quantity} yet`
+                    `Haven't implemented Strategy for ${this.type} yet`
                 );
                 break;
         }

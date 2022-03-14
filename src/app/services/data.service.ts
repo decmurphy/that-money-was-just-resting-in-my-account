@@ -34,7 +34,7 @@ export class DataService {
     constructor(private ls: LocalStorageService) {
         this.dataLSKey = 'mortgageCalcConfigV2';
         const mccString = this.ls.get(this.dataLSKey);
-        const mcc = JSON.parse(mccString) || new FormData();
+        const mcc = JSON.parse(mccString) || FormData.sampleData();
         this.setData(mcc);
     }
 

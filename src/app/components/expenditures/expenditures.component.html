@@ -1,6 +1,5 @@
-<form
-    [formGroup]="form"
-    class="raised-bg-gradient w-full space-y-4 rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
+<div
+    class="raised-bg-gradient w-full rounded-lg p-4 pt-2 shadow-lg shadow-sky-800/50 font-bold"
 >
     <div class="flex flex-row justify-between">
         <h5>Expenditures</h5>
@@ -22,10 +21,10 @@
         </button>
     </div>
     <div
-        class="overflow-hidden transition-all duration-500"
+        class="overflow-hidden transition-all duration-700 font-normal"
         [ngClass]="{
-            'h-auto': showInfo,
-            'h-0': !showInfo
+            'max-h-0': !showInfo,
+            'max-h-[96rem]': showInfo
         }"
     >
         <p>
@@ -43,44 +42,90 @@
         </p>
     </div>
 
-    <div>
-        <h6>
-            Monthly -
-            {{
-                data.monthlyItems
-                    | sum: "amount"
-                    | currency: "EUR":"symbol":"1.0-0"
-            }}/month
-        </h6>
-        <div class="my-4">
-            <ng-container
-                *ngTemplateOutlet="
-                    monthlyExpendituresTmpl;
-                    context: { data: data, form: form }
-                "
-            ></ng-container>
+    <div class="relative z-0 w-full mt-4">
+        <div
+            class="list-element relative z-10 flex w-full items-center"
+            [ngClass]="{
+                'sticky top-0': editing
+            }"
+        >
+            <div class="flex grow flex-col">
+                <h6>
+                    {{
+                        (data.monthlyItems | sum: "amount") * 12 +
+                            (data.yearlyItems | sum: "amount")
+                            | currency: "EUR":"symbol":"1.0-0"
+                    }}/year
+                </h6>
+                <p class="ml-4">
+                    {{ data.monthlyItems.length }}x Monthly Items -
+                    {{
+                        data.monthlyItems
+                            | sum: "amount"
+                            | currency: "EUR":"symbol":"1.0-0"
+                    }}/month
+                </p>
+                <p class="ml-4">
+                    {{ data.yearlyItems.length }}x Annual Items -
+                    {{
+                        data.yearlyItems
+                            | sum: "amount"
+                            | currency: "EUR":"symbol":"1.0-0"
+                    }}/year
+                </p>
+            </div>
+            <button
+                class="btn primary h-8 w-8 p-1 ml-2"
+                (click)="editing = !editing"
+            >
+                <div
+                    class="rotate-0 transition-transform duration-300"
+                    [ngClass]="{
+                        'rotate-[360deg]': editing
+                    }"
+                >
+                    <ng-container
+                        *ngIf="editing; then checkTmpl; else editTmpl"
+                    ></ng-container>
+                </div>
+            </button>
         </div>
-    </div>
 
-    <div>
-        <h6>
-            Annual -
-            {{
-                data.yearlyItems
-                    | sum: "amount"
-                    | currency: "EUR":"symbol":"1.0-0"
-            }}/year
-        </h6>
-        <div class="my-4">
-            <ng-container
-                *ngTemplateOutlet="
-                    annualExpendituresTmpl;
-                    context: { data: data, form: form }
-                "
-            ></ng-container>
-        </div>
+        <form
+            *ngIf="form"
+            [formGroup]="form"
+            class="relative z-0 w-full space-y-2 overflow-hidden border-4 border-t-0 border-sky-800 p-4 transition-all duration-700 border-b-4 rounded-b-lg"
+            [ngClass]="{
+                'max-h-0 pt-0 -mt-6': !editing,
+                'max-h-[96rem] pt-8 -mt-4': editing
+            }"
+        >
+            <h6>Monthly</h6>
+            <div class="ml-2 mt-2">
+                <ng-container
+                    *ngTemplateOutlet="
+                        monthlyExpendituresTmpl;
+                        context: { data: data, form: form }
+                    "
+                ></ng-container>
+            </div>
+
+            <div
+                class="-ml-4 w-[calc(100%+4rem)] border-2 border-b border-sky-800 my-4"
+            ></div>
+
+            <h6>Annual</h6>
+            <div class="ml-2 mt-2">
+                <ng-container
+                    *ngTemplateOutlet="
+                        annualExpendituresTmpl;
+                        context: { data: data, form: form }
+                    "
+                ></ng-container>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 <ng-template #monthlyExpendituresTmpl let-form="form" let-data="data">
     <div class="flex flex-wrap gap-1">
@@ -206,4 +251,38 @@
             </ng-container>
         </ng-container>
     </form>
+</ng-template>
+
+<ng-template #editTmpl>
+    <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+        ></path>
+    </svg>
+</ng-template>
+
+<ng-template #checkTmpl>
+    <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
+    </svg>
 </ng-template>
