@@ -1,7 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-
+import { Component, OnInit, TrackByFunction } from '@angular/core';
 import { takeUntil } from 'rxjs';
 
 import { MonthData } from 'app/interfaces/v2/month-data';
@@ -13,15 +10,10 @@ import { DataService } from 'app/services/data.service';
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.css'],
 })
-export class TableComponent
-    extends SubscriptionHandler
-    implements OnInit, AfterViewInit
-{
+export class TableComponent extends SubscriptionHandler implements OnInit {
     math = Math;
 
-    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
-    dataSource: MatTableDataSource<MonthData>;
+    tableData: MonthData[];
     displayedColumns: string[];
 
     constructor(private dataService: DataService) {
@@ -29,8 +21,6 @@ export class TableComponent
     }
 
     ngOnInit(): void {
-        this.dataSource = new MatTableDataSource<MonthData>([]);
-
         this.displayedColumns = [
             'year',
             'month',
@@ -44,11 +34,12 @@ export class TableComponent
             .getMonthData()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
-                this.dataSource.data = data.filter((mm) => mm.remaining > 0);
+                this.tableData = data.filter((mm) => mm.remaining > 0);
             });
     }
 
-    ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
-    }
+    trackMonth: TrackByFunction<MonthData> = (index: number, item: MonthData) =>
+        index;
+
+    trackCol: TrackByFunction<string> = (index: number, item: string) => index;
 }

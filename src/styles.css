@@ -15,8 +15,3 @@
 .cdk-drag-animating {
     transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
 }
-
-.mat-row:hover {
-    background-color: #0369a1 !important;
-    cursor: pointer;
-}

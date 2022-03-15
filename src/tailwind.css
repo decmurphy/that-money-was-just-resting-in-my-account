@@ -177,11 +177,7 @@
     */
 
     .list-element {
-        @apply flex h-auto min-h-[5rem] flex-row items-center justify-between rounded-lg border-sky-400/0 bg-sky-800 px-4 py-2 text-sky-100;
-    }
-
-    .list-element-clickable {
-        @apply list-element cursor-pointer border-l-4 transition-opacity-colors hover:rounded-l-none hover:border-sky-500/100 hover:bg-sky-700;
+        @apply flex h-auto min-h-[5rem] flex-row items-center justify-between rounded-lg bg-sky-800 px-4 py-2 text-sky-100;
     }
 }
 

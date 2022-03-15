@@ -53,13 +53,19 @@
         >
             <div class="flex grow flex-col">
                 <h6>
-                    {{ data | mortgageSummary: 1 }}
+                    {{ data.amount | currency: "EUR":"symbol":"1.0-0" }} @
+                    {{ data.aprc }}% APRC
                 </h6>
                 <p class="ml-4">
-                    {{ data | mortgageSummary: 2 }}
+                    Mortgage Term: {{ math.floor(mortgageTerm / 12) }}y,
+                    {{ mortgageTerm % 12 }}m
                 </p>
                 <p class="ml-4">
-                    {{ data | mortgageSummary: 3 }}
+                    Total Interest:
+                    {{
+                        monthData[monthData.length - 1].cumulativeInterest
+                            | currency: "EUR"
+                    }}
                 </p>
             </div>
             <button

@@ -7,6 +7,7 @@ import { Observable, Subscription, map, takeUntil, tap } from 'rxjs';
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
 import { Mortgage } from 'app/interfaces/v2/mortgage';
+import { MonthData } from 'app/interfaces/v2/month-data';
 
 @Component({
     selector: 'fc-mortgage',
@@ -18,8 +19,11 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
     form: FormGroup;
     formValueChangesSub: Subscription;
     data: Mortgage;
+    monthData: MonthData[];
+    mortgageTerm: number;
     showInfo = false;
 
+    math = Math;
     xl$: Observable<boolean>;
 
     constructor(
@@ -37,6 +41,17 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
             .subscribe((data) => {
                 this.data = data.mortgage;
                 this.resetForm();
+            });
+
+        this.dataService
+            .getMonthData()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((data) => {
+                this.monthData = data;
+
+                this.mortgageTerm = this.monthData.filter(
+                    (mm) => mm.remaining > 0
+                ).length;
             });
 
         this.xl$ = this.breakpointObserver

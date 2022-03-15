@@ -1,74 +1,20 @@
-<div class="w-full">
-    <table class="w-max min-w-full" mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="year">
-            <th mat-header-cell *matHeaderCellDef>Year #</th>
-            <td
-                mat-cell
-                *matCellDef="let element"
-                class="text-center font-mono"
-            >
-                {{ math.floor(element.month / 12) }}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="month">
-            <th mat-header-cell *matHeaderCellDef>Month #</th>
-            <td
-                mat-cell
-                *matCellDef="let element"
-                class="text-center font-mono"
-            >
-                {{ 1 + (element.month % 12) }}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="payment">
-            <th mat-header-cell *matHeaderCellDef>Payment</th>
-            <td
-                mat-cell
-                *matCellDef="let element"
-                class="text-center font-mono"
-            >
-                {{ element.payment | currency: "EUR" }}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="incrementalInterest">
-            <th mat-header-cell *matHeaderCellDef>Interest Added</th>
-            <td
-                mat-cell
-                *matCellDef="let element"
-                class="text-center font-mono"
-            >
-                {{ element.incrementalInterest | currency: "EUR" }}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="cumulativeInterest">
-            <th mat-header-cell *matHeaderCellDef>Interest Paid</th>
-            <td
-                mat-cell
-                *matCellDef="let element"
-                class="text-center font-mono"
-            >
-                {{ element.cumulativeInterest | currency: "EUR" }}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="remaining">
-            <th mat-header-cell *matHeaderCellDef>Remaining</th>
-            <td
-                mat-cell
-                *matCellDef="let element"
-                class="text-center font-mono"
-            >
-                {{ element.remaining | currency: "EUR" }}
-            </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <mat-paginator [pageSizeOptions]="[10, 100, 500]"></mat-paginator>
+<div class="h-96 rounded-lg overflow-y-scroll w-max">
+    <div
+        class="sticky top-0 bg-gray-300 font-bold px-4 py-3 border-b border-gray-500 grid grid-cols-6 gap-4"
+    >
+        <div class="flex basis-px">Year</div>
+        <div class="flex basis-px">Month</div>
+        <div class="flex basis-px">Payment</div>
+        <div class="flex basis-px whitespace-nowrap">Incr. Interest</div>
+        <div class="flex basis-px whitespace-nowrap">Cum. Interest</div>
+        <div class="flex basis-px">Mortgage</div>
+    </div>
+    <div
+        class="bg-gray-100 px-4 py-3 border-b border-gray-500 grid grid-cols-6 gap-4"
+        *ngFor="let row of tableData; trackBy: trackMonth"
+    >
+        <div *ngFor="let col of displayedColumns; trackBy: trackCol">
+            {{ row | display: col }}
+        </div>
+    </div>
 </div>

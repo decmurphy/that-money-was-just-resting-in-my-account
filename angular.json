@@ -27,11 +27,7 @@
                             "src/assets",
                             "src/manifest.webmanifest"
                         ],
-                        "styles": [
-                            "src/custom-theme.scss",
-                            "src/styles.css",
-                            "src/tailwind.css"
-                        ],
+                        "styles": ["src/styles.css", "src/tailwind.css"],
                         "scripts": [],
                         "serviceWorker": true,
                         "ngswConfigPath": "ngsw-config.json"

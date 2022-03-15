@@ -1,8 +1,0 @@
-/*
-    Angular Material Styling
-*/
-@use "@angular/material" as mat;
-@import "fc-theme";
-@include mat.core(mat.define-typography-config($font-family: "Quicksand"));
-@include mat.core-theme($theme);
-@include mat.table-theme($theme);
