@@ -1,20 +1,27 @@
-<div class="h-96 rounded-lg overflow-y-scroll w-max">
-    <div
-        class="sticky top-0 bg-gray-300 font-bold px-4 py-3 border-b border-gray-500 grid grid-cols-6 gap-4"
-    >
-        <div class="flex basis-px">Year</div>
-        <div class="flex basis-px">Month</div>
-        <div class="flex basis-px">Payment</div>
-        <div class="flex basis-px whitespace-nowrap">Incr. Interest</div>
-        <div class="flex basis-px whitespace-nowrap">Cum. Interest</div>
-        <div class="flex basis-px">Mortgage</div>
-    </div>
-    <div
-        class="bg-gray-100 px-4 py-3 border-b border-gray-500 grid grid-cols-6 gap-4"
-        *ngFor="let row of tableData; trackBy: trackMonth"
-    >
-        <div *ngFor="let col of displayedColumns; trackBy: trackCol">
-            {{ row | display: col }}
-        </div>
-    </div>
-</div>
+<table class="rounded-lg min-w-full w-max table-auto border-collapse">
+    <thead>
+        <tr
+            class="sticky top-0 bg-sky-800 font-bold px-4 py-3 border-b border-gray-500 text-left text-sky-50"
+        >
+            <th class="px-4 py-2">Year</th>
+            <th class="px-4 py-2">Month</th>
+            <th class="px-4 py-2">Payment</th>
+            <th class="px-4 py-2">Incr. Interest</th>
+            <th class="px-4 py-2">Cum. Interest</th>
+            <th class="px-4 py-2">Mortgage</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr
+            class="odd:bg-sky-50 even:bg-sky-100 border-b border-gray-500 hover:bg-sky-200"
+            *ngFor="let row of tableData; trackBy: trackMonth"
+        >
+            <td
+                class="px-4 py-2"
+                *ngFor="let col of displayedColumns; trackBy: trackCol"
+            >
+                {{ row | display: col }}
+            </td>
+        </tr>
+    </tbody>
+</table>

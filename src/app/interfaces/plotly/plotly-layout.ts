@@ -18,6 +18,9 @@ export class PlotlyLayout {
             b: 80,
             r: 80,
             t: 80,
-        } // public legend = { orientation: 'h' }
+        },
+        public legend = {
+            orientation: 'h',
+        }
     ) {}
 }

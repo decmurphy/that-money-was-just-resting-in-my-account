@@ -72,7 +72,7 @@
                     class="raised-bg-gradient rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
                 >
                     <fc-chart2d
-                        title="Net Worth"
+                        title="Net Worth vs Years"
                         xTitle="Years"
                         yTitle="Value (€)"
                         [genericData]="netWorthData$ | async"
@@ -82,7 +82,7 @@
                     class="raised-bg-gradient rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50"
                 >
                     <fc-chart2d
-                        title="Mortgage"
+                        title="Mortgage vs Years"
                         xTitle="Years"
                         yTitle="Value (€)"
                         [genericData]="mortgageData$ | async"
@@ -90,7 +90,7 @@
                 </div>
 
                 <div
-                    class="raised-bg-gradient rounded-lg shadow-lg shadow-sky-800/50 overflow-x-scroll"
+                    class="raised-bg-gradient rounded-lg shadow-lg shadow-sky-800/50 overflow-y-scroll h-96"
                 >
                     <fc-table></fc-table>
                 </div>

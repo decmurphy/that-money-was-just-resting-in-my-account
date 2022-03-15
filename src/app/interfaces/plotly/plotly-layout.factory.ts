@@ -40,7 +40,7 @@ export class PlotlyLayoutFactory {
                 color: this.fontColor,
                 gridcolor: this.gridColor,
                 type: plotConfig.x.type,
-                title: plotConfig.x.label,
+                title: '', //plotConfig.x.label,
                 range: plotConfig.x.range,
             },
             {
