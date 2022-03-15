@@ -1,6 +1,8 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
+import { StrategyEventOperation } from 'app/interfaces/v2/strategy/strategy-event-operation';
 import { StrategyEventType } from 'app/interfaces/v2/strategy/strategy-event-type';
+import { TaxPayer } from 'app/interfaces/v2/tax-payer';
 import { StrategyEvent } from '../interfaces/v2/strategy/strategy-event';
 
 @Pipe({
@@ -9,25 +11,82 @@ import { StrategyEvent } from '../interfaces/v2/strategy/strategy-event';
 export class SummaryPipe implements PipeTransform {
     constructor(private currencyPipe: CurrencyPipe) {}
 
-    transform(ev: StrategyEvent): string {
-        const years = Math.floor(ev.afterMonths / 12);
-        const months = ev.afterMonths - years * 12;
-        const totalTime = `${years}y` + (months > 0 ? ` ${months}m` : ``);
+    transform(ev: StrategyEvent, tps: TaxPayer[]): string {
+        let summary = ``;
 
-        let summary = `After ${totalTime}, `;
+        if (ev.afterMonths) {
+            const years = Math.floor(ev.afterMonths / 12);
+            const months = ev.afterMonths - years * 12;
+            const totalTime = `${years}y` + (months > 0 ? ` ${months}m` : ``);
 
-        switch (ev.type) {
-            case StrategyEventType.MORTGAGE_REPAYMENT:
-                summary += `change mortgage repayments to ${this.currencyPipe.transform(
-                    ev.value,
-                    'EUR',
-                    'symbol',
-                    '1.0-0'
-                )}`;
-                break;
-            case StrategyEventType.MORTGAGE_APRC:
-                summary += `change APRC to ${ev.value}%`;
-                break;
+            summary = `After ${totalTime}, `;
+        }
+
+        let tp: TaxPayer = null;
+        if (ev.taxpayerId != null) {
+            tp = tps.find((tp) => tp.id === ev.taxpayerId);
+        }
+
+        if (ev.type) {
+            switch (ev.type) {
+                case StrategyEventType.MORTGAGE_REPAYMENT:
+                    summary += `change mortgage repayments to ${this.currencyPipe.transform(
+                        ev.value,
+                        'EUR',
+                        'symbol',
+                        '1.0-0'
+                    )}`;
+                    break;
+                case StrategyEventType.MORTGAGE_APRC:
+                    summary += `change APRC to ${ev.value}%`;
+                    break;
+                case StrategyEventType.EMPLOYMENT_INCOME:
+                    summary += `change ${
+                        tp.details.name
+                    }'s salary to ${this.currencyPipe.transform(
+                        ev.value,
+                        'EUR',
+                        'symbol',
+                        '1.0-0'
+                    )}`;
+                    break;
+                case StrategyEventType.MONTHLY_EXPENDITURE:
+                case StrategyEventType.YEARLY_EXPENDITURE:
+                    if (ev.namedAmount) {
+                        let amount = `${this.currencyPipe.transform(
+                            ev.namedAmount.amount,
+                            'EUR',
+                            'symbol',
+                            '1.0-0'
+                        )}`;
+                        const period =
+                            ev.type === StrategyEventType.MONTHLY_EXPENDITURE
+                                ? 'mth'
+                                : 'yr';
+                        switch (ev.operation) {
+                            case StrategyEventOperation.ADD:
+                                summary += `start paying ${ev.namedAmount.name} (${amount}/${period})`;
+                                break;
+                            case StrategyEventOperation.REMOVE:
+                                summary += `stop paying ${ev.namedAmount.name} (${amount}/${period})`;
+                                break;
+                            case StrategyEventOperation.CHANGE:
+                                amount = `${this.currencyPipe.transform(
+                                    ev.value,
+                                    'EUR',
+                                    'symbol',
+                                    '1.0-0'
+                                )}`;
+                                summary += `change ${ev.namedAmount.name} to ${amount}/${period}`;
+                                break;
+                        }
+                    }
+                    break;
+                default:
+                    throw new Error(
+                        `Haven't accounted for ${ev.type} in summary.pipe.ts`
+                    );
+            }
         }
 
         return summary;

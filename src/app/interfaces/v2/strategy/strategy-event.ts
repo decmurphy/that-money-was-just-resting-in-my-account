@@ -2,6 +2,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormData } from 'app/interfaces/v2/form-data';
 import { RequiredNumber } from 'app/validators/required-number.directive';
 import { FormWithErrors } from '../../forms/form-with-errors';
+import { NamedAmount } from '../named-amount';
+import { TaxPayer } from '../tax-payer';
 import { StrategyEventOperation } from './strategy-event-operation';
 import { StrategyEventType } from './strategy-event-type';
 
@@ -14,7 +16,8 @@ export class StrategyEvent extends FormWithErrors {
         public afterMonths: number = null,
         public type: StrategyEventType = null,
         public operation: StrategyEventOperation = null,
-        public value: number = null
+        public value: number = null,
+        public namedAmount: NamedAmount = null
     ) {
         super();
     }
@@ -28,11 +31,13 @@ export class StrategyEvent extends FormWithErrors {
             model.afterMonths,
             model.type,
             model.operation,
-            model.value
+            model.value,
+            model.namedAmount
         );
     }
 
     toFormGroup(formBuilder: FormBuilder): FormGroup {
+        // console.log(this);
         return formBuilder.group({
             taxpayerId: [this.taxpayerId],
             afterMonths: [
@@ -41,10 +46,10 @@ export class StrategyEvent extends FormWithErrors {
             ],
             type: [this.type, [Validators.required]],
             operation: [this.operation, [Validators.required]],
-            value: [
-                this.value,
-                [Validators.required, RequiredNumber, Validators.min(0)],
-            ],
+            value: [this.value, [RequiredNumber, Validators.min(0)]],
+            namedAmount: (
+                NamedAmount.create(this.namedAmount) || new NamedAmount()
+            ).toFormGroup(formBuilder),
         });
     }
 
@@ -54,9 +59,12 @@ export class StrategyEvent extends FormWithErrors {
                 .setTaxpayer(this.taxpayerId)
                 .setType(this.type)
                 .setOperation(this.operation)
-                .setValue(this.value);
+                .setValue(this.value)
+                .setNamedAmount(this.namedAmount);
             return true;
         } catch (err) {
+            // console.error(err);
+            // console.log(this);
             return false;
         }
     }
@@ -106,15 +114,16 @@ export class StrategyEvent extends FormWithErrors {
     }
 
     setValue(value: number): StrategyEvent {
-        if (value == null) {
-            throw new Error('value is required');
-        }
+        // if (value == null) {
+        //     throw new Error('value is required');
+        // }
 
         this.value = value;
         switch (this.operation) {
             case StrategyEventOperation.ADD:
             case StrategyEventOperation.CHANGE:
             case StrategyEventOperation.REMOVE:
+                break;
             //     this._to(value);
             //     break;
             // case 'add':
@@ -126,6 +135,15 @@ export class StrategyEvent extends FormWithErrors {
             default:
                 throw new Error('Must set operation before value!');
         }
+        return this;
+    }
+
+    setNamedAmount(namedAmount: NamedAmount): StrategyEvent {
+        // if (namedAmount == null) {
+        //     throw new Error('namedAmount is required');
+        // }
+
+        this.namedAmount = namedAmount;
         return this;
     }
 
@@ -176,7 +194,7 @@ export class StrategyEvent extends FormWithErrors {
             return;
         }
 
-        let tp = null;
+        let tp: TaxPayer = null;
         if (this.taxpayerId != null) {
             tp = formData.taxpayers.find((tp) => tp.id === this.taxpayerId);
         }
@@ -192,81 +210,70 @@ export class StrategyEvent extends FormWithErrors {
             //         }
             //     }
             //     break;
-            // case 'grossIncome':
-            //     if (tp != null) {
-            //         tp.income.gross =
-            //             this._newValue || tp.income.gross + this._deltaValue;
-            //     }
-            //     break;
-            // case 'monthlyExpenditure':
-            //     switch (this.operation) {
-            //         case 'add':
-            //             formData.expenditures.monthlyItems.push(
-            //                 new NamedAmount(
-            //                     null,
-            //                     'New Amount',
-            //                     this._deltaValue
-            //                 )
-            //             );
-            //             break;
-            //         case 'subtract':
-            //             formData.expenditures.monthlyItems.push(
-            //                 new NamedAmount(
-            //                     null,
-            //                     'New Amount',
-            //                     -this._deltaValue
-            //                 )
-            //             );
-            //             break;
-            //         case 'to':
-            //         default:
-            //             throw new Error('What');
-            //     }
-            //     // formData.expenditures.monthly =
-            //     //     this._newValue ||
-            //     //     formData.expenditures.monthly + this._deltaValue;
-            //     break;
-            // case 'yearlyExpenditure':
-            //     switch (this.operation) {
-            //         case 'add':
-            //             formData.expenditures.yearlyItems.push(
-            //                 new NamedAmount(
-            //                     null,
-            //                     'New Amount',
-            //                     this._deltaValue
-            //                 )
-            //             );
-            //             break;
-            //         case 'subtract':
-            //             formData.expenditures.yearlyItems.push(
-            //                 new NamedAmount(
-            //                     null,
-            //                     'New Amount',
-            //                     -this._deltaValue
-            //                 )
-            //             );
-            //             break;
-            //         case 'to':
-            //         default:
-            //             throw new Error('What');
-            //     }
-            //     // formData.expenditures.yearly =
-            //     //     this._newValue ||
-            //     //     formData.expenditures.yearly + this._deltaValue;
-            //     break;
-            // case 'mortgageAPRC':
-            //     formData.mortgage.aprc = this._newValue;
-            //     break;
-            // case 'mortgageRepayment':
-            //     formData.mortgage.monthlyRepayments =
-            //         this._newValue ||
-            //         formData.mortgage.monthlyRepayments + this._deltaValue;
-            //     break;
+            case StrategyEventType.EMPLOYMENT_INCOME:
+                if (tp != null) {
+                    // console.log(tp);
+                    tp.employment.income.gross = this.value;
+                }
+                break;
+            case StrategyEventType.MONTHLY_EXPENDITURE:
+            case StrategyEventType.YEARLY_EXPENDITURE:
+                const arr =
+                    this.type === StrategyEventType.MONTHLY_EXPENDITURE
+                        ? formData.expenditures.monthlyItems
+                        : formData.expenditures.yearlyItems;
+                let item;
+                if (this.namedAmount?.name) {
+                    switch (this.operation) {
+                        case StrategyEventOperation.ADD:
+                            arr.push(this.namedAmount);
+                            break;
+                        case StrategyEventOperation.CHANGE:
+                            item = arr.find(
+                                (item) => item.name === this.namedAmount.name
+                            );
+                            if (item) {
+                                item.amount = this.value;
+                            } else {
+                                throw new Error(
+                                    `Couldn't find namedAmount ${this.namedAmount.name} to change`
+                                );
+                            }
+                            break;
+                        case StrategyEventOperation.REMOVE:
+                            item = arr.find(
+                                (item) => item.name === this.namedAmount.name
+                            );
+                            if (item) {
+                                const idx = arr.indexOf(item);
+                                if (idx > -1) {
+                                    arr.splice(idx, 1);
+                                } else {
+                                    throw new Error(
+                                        `Couldn't find namedAmount ${this.namedAmount.name} to remove (1)`
+                                    );
+                                }
+                            } else {
+                                throw new Error(
+                                    `Couldn't find namedAmount ${this.namedAmount.name} to remove (2)`
+                                );
+                            }
+                            break;
+                        default:
+                            throw new Error('What');
+                    }
+                }
+                break;
+            case StrategyEventType.MORTGAGE_APRC:
+                formData.mortgage.aprc = this.value;
+                break;
+            case StrategyEventType.MORTGAGE_REPAYMENT:
+                formData.mortgage.monthlyRepayments = this.value;
+                break;
             default:
                 throw new Error(
                     `Haven't implemented Strategy for ${this.type} yet`
                 );
-                break;
         }
     }
 }

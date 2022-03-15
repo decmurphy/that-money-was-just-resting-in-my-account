@@ -8,15 +8,15 @@ export enum StrategyEventType {
     /*
         Income
     */
-    // EMPLOYMENT_INCOME = 'Salary',
+    EMPLOYMENT_INCOME = 'Salary',
     // ANCILLARY_INCOME = 'Ancillary Income',
     // OTHER_INCOME = 'Other Income',
 
     /*
         Expenditures
     */
-    // MONTHLY_EXPENDITURE = 'Monthly Expenditure',
-    // YEARLY_EXPENDITURE = 'Annual Expenditure',
+    MONTHLY_EXPENDITURE = 'Monthly Expenditure',
+    YEARLY_EXPENDITURE = 'Annual Expenditure',
 
     /*
         Mortgage

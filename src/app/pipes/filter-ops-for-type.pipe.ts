@@ -22,6 +22,27 @@ export class FilterOpsForTypePipe implements PipeTransform {
             case StrategyEventType.MORTGAGE_REPAYMENT:
                 allowedOps = [StrategyEventOperation.CHANGE];
                 break;
+            case StrategyEventType.EMPLOYMENT_INCOME:
+                allowedOps = [StrategyEventOperation.CHANGE];
+                break;
+            case StrategyEventType.MONTHLY_EXPENDITURE:
+                allowedOps = [
+                    StrategyEventOperation.ADD,
+                    StrategyEventOperation.CHANGE,
+                    StrategyEventOperation.REMOVE,
+                ];
+                break;
+            case StrategyEventType.YEARLY_EXPENDITURE:
+                allowedOps = [
+                    StrategyEventOperation.ADD,
+                    StrategyEventOperation.CHANGE,
+                    StrategyEventOperation.REMOVE,
+                ];
+                break;
+            default:
+                throw new Error(
+                    `Haven't accounted for ${type} in filter-ops-for-type.pipe.ts`
+                );
         }
 
         return allowedOps.indexOf(op) > -1;

@@ -16,6 +16,8 @@ import { StrategyEvent } from 'app/interfaces/v2/strategy/strategy-event';
 import { TaxPayer } from 'app/interfaces/v2/tax-payer';
 import { StrategyEventOperation } from 'app/interfaces/v2/strategy/strategy-event-operation';
 import { StrategyEventType } from 'app/interfaces/v2/strategy/strategy-event-type';
+import { NamedAmount } from 'app/interfaces/v2/named-amount';
+import { FormData } from 'app/interfaces/v2/form-data';
 
 @Component({
     selector: 'fc-strategy-event',
@@ -29,15 +31,22 @@ export class StrategyEventComponent
     @Input() eventIdx: number;
     @Output() onDelete: EventEmitter<number> = new EventEmitter();
     editing = false;
+    data: FormData;
+    taxpayers: TaxPayer[];
     event: StrategyEvent;
     form: FormGroup;
     formValueChangesSub: Subscription;
 
-    selectedType: StrategyEventType;
-    operations: StrategyEventOperation[];
-    taxpayers: TaxPayer[];
+    SEO = StrategyEventOperation;
 
+    selectedType: StrategyEventType;
+    selectedOperation: StrategyEventOperation;
+    modifiableNamedAmounts: NamedAmount[];
+
+    operations: StrategyEventOperation[];
     eventTypes: StrategyEventType[];
+    valueTypes: StrategyEventType[];
+    namedAmountTypes: StrategyEventType[];
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
@@ -48,10 +57,15 @@ export class StrategyEventComponent
             .getData()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
+                this.data = data;
                 this.taxpayers = data.taxpayers;
                 this.event = data.strategy.events[this.eventIdx];
-                this.selectedType = this.event.type;
-                this.resetForm();
+                // console.log(this.event);
+                if (this.event) {
+                    this.selectType(this.event.type);
+                    this.selectOperation(this.event.operation);
+                    this.resetForm();
+                }
             });
 
         this.operations = [
@@ -61,13 +75,49 @@ export class StrategyEventComponent
         ];
 
         this.eventTypes = [
+            StrategyEventType.EMPLOYMENT_INCOME,
+            StrategyEventType.MONTHLY_EXPENDITURE,
+            StrategyEventType.YEARLY_EXPENDITURE,
             StrategyEventType.MORTGAGE_APRC,
             StrategyEventType.MORTGAGE_REPAYMENT,
         ];
+
+        this.valueTypes = [
+            StrategyEventType.EMPLOYMENT_INCOME,
+            StrategyEventType.MORTGAGE_APRC,
+            StrategyEventType.MORTGAGE_REPAYMENT,
+        ];
+
+        this.namedAmountTypes = [
+            StrategyEventType.MONTHLY_EXPENDITURE,
+            StrategyEventType.YEARLY_EXPENDITURE,
+        ];
+    }
+
+    selectOperation(op: StrategyEventOperation): void {
+        this.selectedOperation = op;
     }
 
     selectType(type: StrategyEventType): void {
         this.selectedType = type;
+        switch (this.selectedType) {
+            case StrategyEventType.MONTHLY_EXPENDITURE:
+                this.modifiableNamedAmounts =
+                    this.data.expenditures.monthlyItems;
+                break;
+            case StrategyEventType.YEARLY_EXPENDITURE:
+                this.modifiableNamedAmounts =
+                    this.data.expenditures.yearlyItems;
+                break;
+            default:
+                this.modifiableNamedAmounts = [];
+                break;
+        }
+        // console.log(this.modifiableNamedAmounts);
+    }
+
+    selectModifiableNamedAmount(na: NamedAmount): void {
+        this.form.patchValue({ namedAmount: na });
     }
 
     resetForm(): void {
@@ -75,10 +125,6 @@ export class StrategyEventComponent
         this.form = this.event.toFormGroup(this.fb);
         this.form.updateValueAndValidity();
         this.form.markAllAsTouched();
-
-        console.log(this.form);
-
-        //     console.log('reset form');
 
         if (this.formValueChangesSub != null) {
             this.formValueChangesSub.unsubscribe();
@@ -104,6 +150,10 @@ export class StrategyEventComponent
         this.editing = false;
     }
 
+    get namedAmount(): FormGroup {
+        return this.form.get('namedAmount') as FormGroup;
+    }
+
     trackTaxpayer: TrackByFunction<TaxPayer> = (
         index: number,
         item: TaxPayer
@@ -118,6 +168,11 @@ export class StrategyEventComponent
         index: number,
         item: StrategyEventType
     ) => index;
+
+    trackNamedAmount: TrackByFunction<NamedAmount> = (
+        index: number,
+        item: NamedAmount
+    ) => item.id;
 }
 
 export interface TypeAndOps {

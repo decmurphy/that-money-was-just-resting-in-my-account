@@ -11,6 +11,9 @@ import { Income } from './income';
 import { NamedAmount } from './named-amount';
 import { Pension } from './pension';
 import { PersonalDetails } from './personal-details';
+import { StrategyEvent } from './strategy/strategy-event';
+import { StrategyEventOperation } from './strategy/strategy-event-operation';
+import { StrategyEventType } from './strategy/strategy-event-type';
 
 export class FormData extends FormWithErrors {
     constructor(
@@ -37,44 +40,48 @@ export class FormData extends FormWithErrors {
     }
 
     static sampleData(): FormData {
-        return new FormData(
-            [
-                new TaxPayer(
+        const taxpayers = [
+            new TaxPayer(
+                null,
+                new PersonalDetails(
+                    'Alex',
+                    1990,
+                    new MaritalStatus(false, '0', true)
+                ),
+                new Employment(
                     null,
-                    new PersonalDetails(
-                        'Alex',
-                        1990,
-                        new MaritalStatus(false, '0', true)
-                    ),
-                    new Employment(
-                        null,
-                        true,
-                        Income.paye(50000),
-                        Pension.occupational(5, 0, true),
-                        [],
-                        [BenefitInKind.healthInsurance(1500)]
-                    ),
+                    true,
+                    Income.paye(50000),
+                    Pension.occupational(5, 0, true),
+                    [],
+                    [BenefitInKind.healthInsurance(1500)]
+                ),
+                []
+            ),
+            new TaxPayer(
+                null,
+                new PersonalDetails(
+                    'Jamie',
+                    1990,
+                    new MaritalStatus(false, '0', false)
+                ),
+                new Employment(
+                    null,
+                    true,
+                    Income.paye(35000),
+                    Pension.prsa(8, 0, true),
+                    [Income.annualBonus(3000)],
                     []
                 ),
-                new TaxPayer(
-                    null,
-                    new PersonalDetails(
-                        'Jamie',
-                        1990,
-                        new MaritalStatus(false, '0', false)
-                    ),
-                    new Employment(
-                        null,
-                        true,
-                        Income.paye(35000),
-                        Pension.prsa(8, 0, true),
-                        [Income.annualBonus(3000)],
-                        []
-                    ),
-                    [Income.rentARoom(5000)]
-                ),
-            ],
-            new MaritalStatus(false, '0', true),
+                [Income.rentARoom(5000)]
+            ),
+        ];
+
+        const rent = new NamedAmount(null, 'Rent', 2000);
+
+        return new FormData(
+            taxpayers,
+            taxpayers[0].details.maritalStatus,
             new Expenditures(
                 null,
                 [
@@ -85,6 +92,7 @@ export class FormData extends FormWithErrors {
                     new NamedAmount(null, 'Bills', 200),
                     new NamedAmount(null, 'Going Out', 500),
                     new NamedAmount(null, 'Vet', 50),
+                    rent,
                 ],
                 [
                     new NamedAmount(null, 'Car Tax', 100),
@@ -92,7 +100,52 @@ export class FormData extends FormWithErrors {
                 ]
             ),
             new Mortgage(24, 400000, 2.8, 2500),
-            new Strategy([])
+            new Strategy([
+                new StrategyEvent(
+                    taxpayers[1].id,
+                    12,
+                    StrategyEventType.EMPLOYMENT_INCOME,
+                    StrategyEventOperation.CHANGE,
+                    50000
+                ),
+                new StrategyEvent(
+                    null,
+                    24,
+                    StrategyEventType.MONTHLY_EXPENDITURE,
+                    StrategyEventOperation.REMOVE,
+                    null,
+                    rent
+                ),
+                new StrategyEvent(
+                    taxpayers[0].id,
+                    48,
+                    StrategyEventType.EMPLOYMENT_INCOME,
+                    StrategyEventOperation.CHANGE,
+                    75000
+                ),
+                new StrategyEvent(
+                    null,
+                    54,
+                    StrategyEventType.MONTHLY_EXPENDITURE,
+                    StrategyEventOperation.ADD,
+                    null,
+                    new NamedAmount(null, 'Baby!', 2000)
+                ),
+                new StrategyEvent(
+                    taxpayers[1].id,
+                    72,
+                    StrategyEventType.EMPLOYMENT_INCOME,
+                    StrategyEventOperation.CHANGE,
+                    80000
+                ),
+                new StrategyEvent(
+                    null,
+                    72,
+                    StrategyEventType.MORTGAGE_REPAYMENT,
+                    StrategyEventOperation.CHANGE,
+                    3000
+                ),
+            ])
         );
     }
 
