@@ -30,7 +30,7 @@ export class PlotlyLayoutFactory {
     getLineChartLayout(plotConfig: PlotlyConfig): PlotlyLayout {
         return new PlotlyLayout(
             plotConfig.title,
-            false,
+            true,
             {
                 family: 'Montserrat',
                 size: 15,

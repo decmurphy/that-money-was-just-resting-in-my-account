@@ -52,7 +52,7 @@ export class FormData extends FormWithErrors {
                     null,
                     true,
                     Income.paye(50000),
-                    Pension.occupational(5, 0, true),
+                    Pension.occupational(5, 0, true, 2),
                     [],
                     [BenefitInKind.healthInsurance(1500)]
                 ),
@@ -69,7 +69,7 @@ export class FormData extends FormWithErrors {
                     null,
                     true,
                     Income.paye(35000),
-                    Pension.prsa(8, 0, true),
+                    Pension.prsa(8, 0, true, 2),
                     [Income.annualBonus(3000)],
                     []
                 ),

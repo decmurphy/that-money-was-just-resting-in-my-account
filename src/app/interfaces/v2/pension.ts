@@ -141,7 +141,8 @@ export class Pension extends FormWithErrors {
     static occupational(
         employeeContribution?: number,
         employerContribution?: number,
-        maxTaxFree?: boolean
+        maxTaxFree?: boolean,
+        growthRate?: number
     ): Pension {
         return new Pension(
             'pensn_occptnl__',
@@ -149,14 +150,16 @@ export class Pension extends FormWithErrors {
             TaxRelief.incomeTaxRelief(),
             employeeContribution,
             employerContribution,
-            maxTaxFree
+            maxTaxFree,
+            growthRate
         );
     }
 
     static prsa(
         employeeContribution?: number,
         employerContribution?: number,
-        maxTaxFree?: boolean
+        maxTaxFree?: boolean,
+        growthRate?: number
     ): Pension {
         return new Pension(
             'pensn_prsa_____',
@@ -164,7 +167,8 @@ export class Pension extends FormWithErrors {
             TaxRelief.incomeTaxRelief(),
             employeeContribution,
             employerContribution,
-            maxTaxFree
+            maxTaxFree,
+            growthRate
         );
     }
 

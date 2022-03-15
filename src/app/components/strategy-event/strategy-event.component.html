@@ -59,18 +59,6 @@
         <span formError *ngIf="form.get('afterMonths').invalid"> </span>
     </fc-form-field>
     <fc-form-field class="flex basis-px">
-        <span formLabel>TaxPayer</span>
-        <fc-select formInput formControlName="taxpayerId">
-            <fc-option value="null">Household</fc-option>
-            <fc-option
-                *ngFor="let tp of taxpayers; trackBy: trackTaxpayer"
-                [value]="tp.id"
-                >{{ tp.details.name }}</fc-option
-            >
-        </fc-select>
-        <span formError *ngIf="form.get('taxpayerId').invalid"> </span>
-    </fc-form-field>
-    <fc-form-field class="flex basis-px">
         <span formLabel>Modify</span>
         <fc-select formInput formControlName="type">
             <fc-option
@@ -83,6 +71,19 @@
         </fc-select>
         <span formError *ngIf="form.get('type').invalid"> </span>
     </fc-form-field>
+    <ng-container *ngIf="selectedType | requiresTaxpayer">
+        <fc-form-field class="flex basis-px">
+            <span formLabel>TaxPayer</span>
+            <fc-select formInput formControlName="taxpayerId">
+                <fc-option
+                    *ngFor="let tp of taxpayers; trackBy: trackTaxpayer"
+                    [value]="tp.id"
+                    >{{ tp.details.name }}</fc-option
+                >
+            </fc-select>
+            <span formError *ngIf="form.get('taxpayerId').invalid"> </span>
+        </fc-form-field>
+    </ng-container>
     <fc-form-field *ngIf="selectedType != null" class="flex basis-px">
         <span formLabel>Operation</span>
         <fc-select formInput formControlName="operation">

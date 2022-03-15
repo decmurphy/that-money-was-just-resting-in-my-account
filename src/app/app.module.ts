@@ -39,6 +39,7 @@ import { ContainsPipe } from './pipes/contains.pipe';
 import { IndexOfPipe } from './pipes/index-of.pipe';
 import { ConcatPipe } from './pipes/concat.pipe';
 import { FilterOpsForTypePipe } from './pipes/filter-ops-for-type.pipe';
+import { RequiresTaxpayerPipe } from './pipes/requires-taxpayer.pipe';
 
 @NgModule({
     declarations: [
@@ -64,6 +65,7 @@ import { FilterOpsForTypePipe } from './pipes/filter-ops-for-type.pipe';
         IndexOfPipe,
         ConcatPipe,
         FilterOpsForTypePipe,
+        RequiresTaxpayerPipe,
     ],
     imports: [
         BrowserModule,

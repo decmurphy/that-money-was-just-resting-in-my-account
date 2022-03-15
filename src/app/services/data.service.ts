@@ -195,7 +195,7 @@ export class DataService {
         fv.taxpayers.forEach((tp, i) => {
             netWorthData.push({
                 mode: 'lines',
-                name: `${tp.details.name} Pension Fund`,
+                name: `Pension (${tp.details.name})`,
                 x: this.monthData.map((mm) => mm.month / 12.0),
                 y: pensionFund[i],
             });
@@ -212,7 +212,7 @@ export class DataService {
         netWorthData.push(
             {
                 mode: 'lines',
-                name: 'Combined Net Worth',
+                name: 'Net Worth',
                 x: this.monthData.map((mm) => mm.month / 12.0),
                 y: this.monthData.map(
                     (mm, i) =>
@@ -226,13 +226,13 @@ export class DataService {
             },
             {
                 mode: 'lines',
-                name: 'Combined Savings',
+                name: 'Savings',
                 x: this.monthData.map((mm) => mm.month / 12.0),
                 y: savingsFund,
             },
             {
                 mode: 'lines',
-                name: 'Combined Liabilities',
+                name: 'Liabilities',
                 x: this.monthData.map((mm) => mm.month / 12.0),
                 y: liabilities,
             }
@@ -245,19 +245,19 @@ export class DataService {
         this.setMortgageData([
             {
                 mode: 'lines',
-                name: 'Mortgage Size',
+                name: 'Mortgage',
                 x: this.monthData.map((mm) => mm.month / 12.0),
                 y: this.monthData.map((mm) => mm.remaining),
             },
             {
                 mode: 'lines',
-                name: 'Interest',
+                name: 'Incr. Interest',
                 x: this.monthData.map((mm) => mm.month / 12.0),
                 y: this.monthData.map((mm) => mm.incrementalInterest),
             },
             {
                 mode: 'lines',
-                name: 'Total Interest Paid',
+                name: 'Cum. Interest',
                 x: this.monthData.map((mm) => mm.month / 12.0),
                 y: this.monthData.map((mm) => mm.cumulativeInterest),
             },
