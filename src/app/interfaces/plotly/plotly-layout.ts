@@ -21,6 +21,10 @@ export class PlotlyLayout {
         },
         public legend = {
             orientation: 'h',
+            // x: 1,
+            // y: 0,
+            // xanchor: 'right',
+            bgcolor: '#bae6fd',
         }
     ) {}
 }
