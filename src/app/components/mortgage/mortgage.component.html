@@ -1,5 +1,5 @@
 <div
-    class="raised-bg-gradient w-full rounded-lg p-4 pt-2 shadow-lg shadow-sky-800/50 font-bold"
+    class="raised-bg-gradient w-full rounded-lg p-4 pt-2 font-bold shadow-lg shadow-sky-800/50"
 >
     <div class="flex flex-row justify-between">
         <h5>Mortgage</h5>
@@ -21,7 +21,7 @@
         </button>
     </div>
     <div
-        class="overflow-hidden transition-all duration-700 font-normal"
+        class="overflow-hidden font-normal transition-all duration-700"
         [ngClass]="{
             'max-h-0': !showInfo,
             'max-h-[96rem]': showInfo
@@ -44,7 +44,7 @@
         </p>
     </div>
 
-    <div class="relative z-0 w-full mt-4">
+    <div class="relative z-0 mt-4 w-full">
         <div
             class="list-element relative z-10 flex w-full items-center"
             [ngClass]="{
@@ -60,7 +60,7 @@
                     Mortgage Term: {{ math.floor(mortgageTerm / 12) }}y,
                     {{ mortgageTerm % 12 }}m
                 </p>
-                <p class="ml-4">
+                <p class="ml-4" *ngIf="monthData">
                     Total Interest:
                     {{
                         monthData[monthData.length - 1].cumulativeInterest
@@ -69,7 +69,7 @@
                 </p>
             </div>
             <button
-                class="btn primary h-8 w-8 p-1 ml-2"
+                class="btn primary ml-2 h-8 w-8 p-1"
                 (click)="editing = !editing"
             >
                 <div
@@ -88,10 +88,10 @@
         <form
             *ngIf="form"
             [formGroup]="form"
-            class="grid grid-cols-2 gap-2 font-bold sm:grid-cols-4 relative z-0 w-full xl:space-y-2 overflow-hidden border-4 border-t-0 border-sky-800 p-4 transition-all duration-700 border-b-4 rounded-b-lg"
+            class="relative z-0 grid w-full grid-cols-2 gap-2 overflow-hidden rounded-b-lg border-4 border-t-0 border-b-4 border-sky-800 p-4 font-bold transition-all duration-700 sm:grid-cols-4 xl:space-y-2"
             [ngClass]="{
-                'max-h-0 pt-0 -mt-6': !editing,
-                'max-h-[96rem] pt-8 -mt-4': editing
+                '-mt-6 max-h-0 pt-0': !editing,
+                '-mt-4 max-h-[96rem] pt-8': editing
             }"
         >
             <fc-form-field class="col-span-2">
@@ -179,7 +179,7 @@
 
 <ng-template #editTmpl>
     <svg
-        class="w-6 h-6"
+        class="h-6 w-6"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -196,7 +196,7 @@
 
 <ng-template #checkTmpl>
     <svg
-        class="w-6 h-6"
+        class="h-6 w-6"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

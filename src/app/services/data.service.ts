@@ -8,7 +8,7 @@ import { Mortgage } from 'app/interfaces/v2/mortgage';
 import { Strategy } from 'app/interfaces/v2/strategy/strategy';
 import { StrategyEvent } from 'app/interfaces/v2/strategy/strategy-event';
 import { AppServicesModule } from 'app/modules/app-services.module';
-import { Observable, ReplaySubject, debounceTime } from 'rxjs';
+import { Observable, ReplaySubject, debounceTime, distinct } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 import { UtilityService } from './utility.service';
 import { TaxPayer } from 'app/interfaces/v2/tax-payer';
@@ -38,9 +38,11 @@ export class DataService {
         this.setData(mcc);
 
         this.getData()
-            .pipe(debounceTime(200))
+            .pipe(distinct(), debounceTime(200))
             .subscribe(() => {
+                console.log('update');
                 this.updateFormInputs();
+                this.dataChanged.next(this.data);
                 this.ls.put(this.dataLSKey, JSON.stringify(this.data));
             });
     }
@@ -132,7 +134,7 @@ export class DataService {
     }
 
     updateFormInputs() {
-        this.data = FormData.create(this.data);
+        // this.data = FormData.create(this.data);
         this.populateData(this.data);
 
         // make copy
