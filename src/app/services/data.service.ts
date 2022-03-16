@@ -8,7 +8,7 @@ import { Mortgage } from 'app/interfaces/v2/mortgage';
 import { Strategy } from 'app/interfaces/v2/strategy/strategy';
 import { StrategyEvent } from 'app/interfaces/v2/strategy/strategy-event';
 import { AppServicesModule } from 'app/modules/app-services.module';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject, debounceTime } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 import { UtilityService } from './utility.service';
 import { TaxPayer } from 'app/interfaces/v2/tax-payer';
@@ -36,6 +36,13 @@ export class DataService {
         const mccString = this.ls.get(this.dataLSKey);
         const mcc = JSON.parse(mccString) || FormData.sampleData();
         this.setData(mcc);
+
+        this.getData()
+            .pipe(debounceTime(200))
+            .subscribe(() => {
+                this.updateFormInputs();
+                this.ls.put(this.dataLSKey, JSON.stringify(this.data));
+            });
     }
 
     getData(): Observable<FormData> {
@@ -44,8 +51,6 @@ export class DataService {
 
     setData(data: FormData): void {
         this.data = FormData.create(data);
-        this.updateFormInputs();
-        this.ls.put(this.dataLSKey, JSON.stringify(this.data));
         this.dataChanged.next(this.data);
     }
 
