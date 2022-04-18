@@ -330,13 +330,13 @@ export class DataService {
             interestAdded = 0;
             mortgagePayment = 0;
 
-            if (monthIdx < formData.mortgage.startAfterMonth) {
+            if (monthIdx < formData.mortgage.startAfterMonth + 1) {
                 mortgageToRepay = 0;
-            } else if (monthIdx === formData.mortgage.startAfterMonth) {
+            } else if (monthIdx === formData.mortgage.startAfterMonth + 1) {
                 mortgageToRepay = formData.mortgage.amount;
             }
 
-            if (monthIdx >= formData.mortgage.startAfterMonth) {
+            if (monthIdx >= formData.mortgage.startAfterMonth + 1) {
                 const mortgageMPR = this.aprToMpr(formData.mortgage.aprc);
 
                 interestAdded = mortgageToRepay * mortgageMPR;
