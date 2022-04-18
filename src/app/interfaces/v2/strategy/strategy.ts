@@ -30,7 +30,7 @@ export class Strategy extends FormWithErrors {
 
     apply(formData: FormData, monthIdx: number): void {
         this.events
-            .filter((ev) => ev.afterMonths === monthIdx)
+            .filter((ev) => ev.afterMonths + 1 === monthIdx)
             .forEach((ev) => ev.activate(formData));
     }
 }
