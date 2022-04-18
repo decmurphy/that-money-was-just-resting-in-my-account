@@ -224,7 +224,7 @@ export class DataService {
                 y: this.monthData.map(
                     (mm, i) =>
                         liabilities[i] +
-                        (i >= fv.mortgage.startAfterMonth
+                        (i > fv.mortgage.startAfterMonth
                             ? fv.mortgage.amount
                             : 0) +
                         savingsFund[i] +
