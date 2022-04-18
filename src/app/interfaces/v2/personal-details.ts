@@ -7,7 +7,9 @@ export class PersonalDetails extends FormWithErrors {
     constructor(
         public name: string = null,
         public yearOfBirth: number = null,
-        public maritalStatus: MaritalStatus = new MaritalStatus()
+        public maritalStatus: MaritalStatus = new MaritalStatus(),
+        public initialSavings: number = 0,
+        public initialPension: number = 0
     ) {
         super();
     }
@@ -25,6 +27,14 @@ export class PersonalDetails extends FormWithErrors {
                 ],
             ],
             maritalStatus: this.maritalStatus.toFormGroup(formBuilder),
+            initialSavings: [
+                this.initialSavings,
+                [Validators.required, RequiredNumber, Validators.min(0)],
+            ],
+            initialPension: [
+                this.initialPension,
+                [Validators.required, RequiredNumber, Validators.min(0)],
+            ],
         });
     }
 
@@ -36,7 +46,9 @@ export class PersonalDetails extends FormWithErrors {
         return new PersonalDetails(
             model.name,
             model.yearOfBirth,
-            MaritalStatus.create(model.maritalStatus)
+            MaritalStatus.create(model.maritalStatus),
+            model.initialSavings,
+            model.initialPension
         );
     }
 }

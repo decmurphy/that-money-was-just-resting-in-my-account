@@ -161,8 +161,12 @@ export class DataService {
 
             if (i == 0) {
                 liabilities[i] = -mm.remaining;
-                savingsFund[i] = 0;
-                fv.taxpayers.forEach((tp, j) => pensionFund[j].push(0));
+                savingsFund[i] = fv.taxpayers
+                    .map((tp) => tp.details.initialSavings)
+                    .reduce((acc, cur) => acc + cur, 0);
+                fv.taxpayers.forEach((tp, j) =>
+                    pensionFund[j].push(tp.details.initialPension)
+                );
             } else {
                 // const liabilitiesDelta = -mm.remaining;
 

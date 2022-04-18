@@ -15,7 +15,7 @@
             </p>
         </div>
         <button
-            class="btn primary h-8 w-8 p-1 ml-2"
+            class="btn primary ml-2 h-8 w-8 p-1"
             (click)="editing = !editing"
         >
             <div
@@ -34,7 +34,7 @@
                 disabled: taxpayers.length == 1
             }"
             [disabled]="taxpayers.length == 1"
-            class="btn primary p-1 ml-2"
+            class="btn primary ml-2 p-1"
             (click)="delete()"
         >
             <svg
@@ -56,10 +56,10 @@
     <form
         *ngIf="form"
         [formGroup]="form"
-        class="relative z-0 w-full space-y-2 overflow-hidden border-4 border-t-0 border-sky-800 p-4 transition-all duration-700 border-b-4 rounded-b-lg"
+        class="relative z-0 w-full space-y-2 overflow-hidden rounded-b-lg border-4 border-t-0 border-b-4 border-sky-800 p-4 transition-all duration-700"
         [ngClass]="{
-            'max-h-0 pt-0 -mt-6': !editing,
-            'max-h-[96rem] pt-8 -mt-4': editing
+            '-mt-6 max-h-0 pt-0': !editing,
+            '-mt-4 max-h-[96rem] pt-8': editing
         }"
     >
         <h5>Personal Details</h5>
@@ -76,6 +76,26 @@
                 <span formLabel>Birth Year</span>
                 <input formInput type="number" formControlName="yearOfBirth" />
                 <span formError *ngIf="details.get('yearOfBirth').invalid">
+                </span>
+            </fc-form-field>
+            <fc-form-field>
+                <span formLabel>Initial Savings</span>
+                <input
+                    formInput
+                    type="number"
+                    formControlName="initialSavings"
+                />
+                <span formError *ngIf="details.get('initialSavings').invalid">
+                </span>
+            </fc-form-field>
+            <fc-form-field>
+                <span formLabel>Initial Pension</span>
+                <input
+                    formInput
+                    type="number"
+                    formControlName="initialPension"
+                />
+                <span formError *ngIf="details.get('initialPension').invalid">
                 </span>
             </fc-form-field>
         </div>
@@ -537,7 +557,7 @@
 
 <ng-template #editTmpl>
     <svg
-        class="w-6 h-6"
+        class="h-6 w-6"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -554,7 +574,7 @@
 
 <ng-template #checkTmpl>
     <svg
-        class="w-6 h-6"
+        class="h-6 w-6"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
