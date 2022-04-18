@@ -5,6 +5,7 @@ import { FormWithErrors } from '../forms/form-with-errors';
 export class Mortgage extends FormWithErrors {
     constructor(
         public startAfterMonth: number = 0,
+        public deposit: number = 30000,
         public amount: number = 300000,
         public aprc: number = 3.4,
         public monthlyRepayments: number = 2000
@@ -18,6 +19,7 @@ export class Mortgage extends FormWithErrors {
         }
         return new Mortgage(
             model.startAfterMonth,
+            model.deposit,
             model.amount,
             model.aprc,
             model.monthlyRepayments
@@ -28,6 +30,10 @@ export class Mortgage extends FormWithErrors {
         return formBuilder.group({
             startAfterMonth: [
                 this.startAfterMonth,
+                [Validators.required, RequiredNumber, Validators.min(0)],
+            ],
+            deposit: [
+                this.deposit,
                 [Validators.required, RequiredNumber, Validators.min(0)],
             ],
             amount: [

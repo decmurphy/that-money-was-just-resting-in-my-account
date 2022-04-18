@@ -99,7 +99,7 @@ export class FormData extends FormWithErrors {
                     new NamedAmount(null, 'Accountant', 400),
                 ]
             ),
-            new Mortgage(24, 400000, 2.8, 2500),
+            new Mortgage(24, 40000, 400000, 2.8, 2500),
             new Strategy([
                 new StrategyEvent(
                     taxpayers[1].id,

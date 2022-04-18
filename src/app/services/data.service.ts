@@ -174,6 +174,9 @@ export class DataService {
                     mm.payment;
 
                 savingsFund[i] = savingsFund[i - 1] + savingsDelta;
+                if (i === fv.mortgage.startAfterMonth + 1) {
+                    savingsFund[i] -= fv.mortgage.deposit;
+                }
 
                 const pensionDelta = fv.taxpayers.map((tp, j) => {
                     const pensionInterest =

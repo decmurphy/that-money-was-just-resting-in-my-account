@@ -118,6 +118,19 @@
                     data.amount | currency: "EUR"
                 }}</span>
 
+                <span class="col-span-1 col-start-1 text-right">Deposit</span>
+                <fc-slider
+                    class="col-span-2"
+                    formControlName="deposit"
+                    [min]="10000"
+                    [max]="150000"
+                    [step]="5000"
+                    >Deposit</fc-slider
+                >
+                <span class="col-span-1 text-left font-mono">{{
+                    data.deposit | currency: "EUR"
+                }}</span>
+
                 <span class="col-span-1 text-right">APRC</span>
                 <fc-slider
                     class="col-span-2"
@@ -151,6 +164,12 @@
                     <span formPrefix>€</span>
                     <input formInput type="number" formControlName="amount" />
                     <span formError *ngIf="form.get('amount').invalid"> </span>
+                </fc-form-field>
+                <fc-form-field class="col-span-2">
+                    <span formLabel>Deposit</span>
+                    <span formPrefix>€</span>
+                    <input formInput type="number" formControlName="deposit" />
+                    <span formError *ngIf="form.get('deposit').invalid"> </span>
                 </fc-form-field>
                 <fc-form-field class="col-span-2">
                     <span formLabel>APRC</span>
