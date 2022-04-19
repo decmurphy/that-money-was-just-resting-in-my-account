@@ -232,7 +232,7 @@ export class DataService {
                     (mm, i) =>
                         liabilities[i] +
                         (i > fv.mortgage.startAfterMonth
-                            ? fv.mortgage.amount
+                            ? fv.mortgage.amount + fv.mortgage.deposit
                             : 0) +
                         savingsFund[i] +
                         combinedPensionFund[i]
