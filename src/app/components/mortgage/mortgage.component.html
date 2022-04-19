@@ -54,7 +54,11 @@
             <div class="flex grow flex-col">
                 <h6>
                     {{ data.amount | currency: "EUR":"symbol":"1.0-0" }} @
-                    {{ data.aprc }}% APRC
+                    {{ data.aprc }}% APRC,
+                    {{
+                        (data.amount * 100) / (data.deposit + data.amount)
+                            | number: "1.0-1"
+                    }}% LTV
                 </h6>
                 <p class="ml-4">
                     Mortgage Term: {{ math.floor(mortgageTerm / 12) }}y,
