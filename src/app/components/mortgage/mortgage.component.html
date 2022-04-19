@@ -56,7 +56,8 @@
                     {{ data.amount | currency: "EUR":"symbol":"1.0-0" }} @
                     {{ data.aprc }}% APRC,
                     {{
-                        (data.amount * 100) / (data.deposit + data.amount)
+                        (data.amount * 100) /
+                            (data.deposit + data.amount + data.htb)
                             | number: "1.0-1"
                     }}% LTV
                 </h6>
@@ -68,7 +69,7 @@
                     Total Interest:
                     {{
                         monthData[monthData.length - 1].cumulativeInterest
-                            | currency: "EUR"
+                            | currency: "EUR":"symbol":"0.0-0"
                     }}
                 </p>
             </div>
@@ -98,7 +99,7 @@
                 '-mt-4 max-h-[96rem] pt-8': editing
             }"
         >
-            <fc-form-field class="col-span-2">
+            <fc-form-field class="col-span-1">
                 <span formLabel>Start After Months</span>
                 <input
                     formInput
@@ -108,6 +109,10 @@
                 <span formError *ngIf="form.get('startAfterMonth').invalid">
                 </span>
             </fc-form-field>
+            <!-- <div class="col-span-1 col-start-1">
+                <fc-checkbox formControlName="htb">Help to Buy</fc-checkbox>
+            </div> -->
+
             <ng-container *ngIf="(xl$ | async) === true">
                 <span class="col-span-1 col-start-1 text-right">Amount</span>
                 <fc-slider
@@ -119,7 +124,7 @@
                     >Mortgage Amount</fc-slider
                 >
                 <span class="col-span-1 text-left font-mono">{{
-                    data.amount | currency: "EUR"
+                    data.amount | currency: "EUR":"symbol":"0.0-0"
                 }}</span>
 
                 <span class="col-span-1 col-start-1 text-right">Deposit</span>
@@ -132,7 +137,22 @@
                     >Deposit</fc-slider
                 >
                 <span class="col-span-1 text-left font-mono">{{
-                    data.deposit | currency: "EUR"
+                    data.deposit | currency: "EUR":"symbol":"0.0-0"
+                }}</span>
+
+                <span class="col-span-1 col-start-1 text-right"
+                    >Help To Buy</span
+                >
+                <fc-slider
+                    class="col-span-2"
+                    formControlName="htb"
+                    [min]="0"
+                    [max]="30000"
+                    [step]="500"
+                    >Deposit</fc-slider
+                >
+                <span class="col-span-1 text-left font-mono">{{
+                    data.htb | currency: "EUR":"symbol":"0.0-0"
                 }}</span>
 
                 <span class="col-span-1 text-right">APRC</span>
@@ -159,7 +179,7 @@
                     Monthly Repayments</fc-slider
                 >
                 <span class="col-span-1 text-left font-mono">{{
-                    data.monthlyRepayments | currency: "EUR"
+                    data.monthlyRepayments | currency: "EUR":"symbol":"0.0-0"
                 }}</span>
             </ng-container>
             <ng-container *ngIf="(xl$ | async) === false">

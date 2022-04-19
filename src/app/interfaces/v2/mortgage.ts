@@ -8,7 +8,8 @@ export class Mortgage extends FormWithErrors {
         public deposit: number = 30000,
         public amount: number = 300000,
         public aprc: number = 3.4,
-        public monthlyRepayments: number = 2000
+        public monthlyRepayments: number = 2000,
+        public htb: number = 30000
     ) {
         super();
     }
@@ -22,7 +23,8 @@ export class Mortgage extends FormWithErrors {
             model.deposit,
             model.amount,
             model.aprc,
-            model.monthlyRepayments
+            model.monthlyRepayments,
+            model.htb
         );
     }
 
@@ -47,6 +49,15 @@ export class Mortgage extends FormWithErrors {
             monthlyRepayments: [
                 this.monthlyRepayments,
                 [Validators.required, RequiredNumber, Validators.min(0)],
+            ],
+            htb: [
+                this.htb,
+                [
+                    Validators.required,
+                    RequiredNumber,
+                    Validators.min(0),
+                    Validators.max(30000),
+                ],
             ],
         });
     }
