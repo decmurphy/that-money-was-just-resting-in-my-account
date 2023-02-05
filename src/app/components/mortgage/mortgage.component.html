@@ -53,17 +53,13 @@
         >
             <div class="flex grow flex-col">
                 <h6>
-                    {{ data.amount | currency: "EUR":"symbol":"1.0-0" }} @
+                    {{ data.value | currency: "EUR":"symbol":"1.0-0" }} @
                     {{ data.aprc }}% APRC,
-                    {{
-                        (data.amount * 100) /
-                            (data.deposit + data.amount + data.htb)
-                            | number: "1.0-1"
-                    }}% LTV
+                    {{ data.term }}y
                 </h6>
                 <p class="ml-4">
-                    Mortgage Term: {{ math.floor(mortgageTerm / 12) }}y,
-                    {{ mortgageTerm % 12 }}m
+                    Monthly Repayment:
+                    {{ monthlyRepayments | currency: "EUR":"symbol":"0.0-0" }}
                 </p>
                 <p class="ml-4" *ngIf="monthData">
                     Total Interest:
@@ -109,36 +105,61 @@
                 <span formError *ngIf="form.get('startAfterMonth').invalid">
                 </span>
             </fc-form-field>
-            <!-- <div class="col-span-1 col-start-1">
-                <fc-checkbox formControlName="htb">Help to Buy</fc-checkbox>
-            </div> -->
 
             <ng-container *ngIf="(xl$ | async) === true">
-                <span class="col-span-1 col-start-1 text-right">Amount</span>
+
+                <span class="col-span-1 col-start-1 text-right">Property Value</span>
                 <fc-slider
                     class="col-span-2"
-                    formControlName="amount"
+                    formControlName="value"
                     [min]="100000"
-                    [max]="700000"
+                    [max]="1000000"
                     [step]="5000"
-                    >Mortgage Amount</fc-slider
+                    >Property Value</fc-slider
                 >
                 <span class="col-span-1 text-left font-mono">{{
-                    data.amount | currency: "EUR":"symbol":"0.0-0"
+                    data.value | currency: "EUR":"symbol":"0.0-0"
                 }}</span>
 
-                <span class="col-span-1 col-start-1 text-right">Deposit</span>
+                <span class="col-span-1 col-start-1 text-right">LTV</span>
                 <fc-slider
                     class="col-span-2"
-                    formControlName="deposit"
-                    [min]="10000"
-                    [max]="150000"
-                    [step]="5000"
-                    >Deposit</fc-slider
+                    formControlName="ltv"
+                    [min]="0"
+                    [max]="90"
+                    [step]="0.1"
+                    >LTV</fc-slider
                 >
                 <span class="col-span-1 text-left font-mono">{{
-                    data.deposit | currency: "EUR":"symbol":"0.0-0"
-                }}</span>
+                    data.ltv
+                }}%</span>
+
+                <span class="col-span-1 text-right">Term</span>
+                <fc-slider
+                    class="col-span-2"
+                    formControlName="term"
+                    [min]="5"
+                    [max]="35"
+                    [step]="5"
+                >
+                    Term</fc-slider
+                >
+                <span class="col-span-1 text-left font-mono">
+                    {{ data.term }}y
+                </span>
+
+                <span class="col-span-1 text-right">APRC</span>
+                <fc-slider
+                    class="col-span-2"
+                    formControlName="aprc"
+                    [min]="2"
+                    [max]="6"
+                    [step]="0.05"
+                    >APRC</fc-slider
+                >
+                <span class="col-span-1 text-left font-mono"
+                    >{{ data.aprc }}%</span
+                >
 
                 <span class="col-span-1 col-start-1 text-right"
                     >Help To Buy</span
@@ -155,45 +176,34 @@
                     data.htb | currency: "EUR":"symbol":"0.0-0"
                 }}</span>
 
-                <span class="col-span-1 text-right">APRC</span>
+                <span class="col-span-1 col-start-1 text-right"
+                    >Overpayment</span
+                >
                 <fc-slider
                     class="col-span-2"
-                    formControlName="aprc"
-                    [min]="2"
-                    [max]="5"
-                    [step]="0.01"
-                    >APRC</fc-slider
-                >
-                <span class="col-span-1 text-left font-mono"
-                    >{{ data.aprc }}%</span
-                >
-
-                <span class="col-span-1 text-right">Repayments</span>
-                <fc-slider
-                    class="col-span-2"
-                    formControlName="monthlyRepayments"
-                    [min]="500"
-                    [max]="8000"
-                    [step]="50"
-                >
-                    Monthly Repayments</fc-slider
+                    formControlName="overpaymentPct"
+                    [min]="0"
+                    [max]="10"
+                    [step]="1"
+                    >Overpayment</fc-slider
                 >
                 <span class="col-span-1 text-left font-mono">{{
-                    data.monthlyRepayments | currency: "EUR":"symbol":"0.0-0"
-                }}</span>
+                    data.overpaymentPct
+                }}%</span>
+
             </ng-container>
             <ng-container *ngIf="(xl$ | async) === false">
                 <fc-form-field class="col-span-2">
-                    <span formLabel>Amount</span>
+                    <span formLabel>Value</span>
                     <span formPrefix>€</span>
-                    <input formInput type="number" formControlName="amount" />
-                    <span formError *ngIf="form.get('amount').invalid"> </span>
+                    <input formInput type="number" formControlName="value" />
+                    <span formError *ngIf="form.get('value').invalid"> </span>
                 </fc-form-field>
                 <fc-form-field class="col-span-2">
-                    <span formLabel>Deposit</span>
-                    <span formPrefix>€</span>
-                    <input formInput type="number" formControlName="deposit" />
-                    <span formError *ngIf="form.get('deposit').invalid"> </span>
+                    <span formLabel>Term</span>
+                    <span formSuffix>y</span>
+                    <input formInput type="number" formControlName="term" />
+                    <span formError *ngIf="form.get('term').invalid"> </span>
                 </fc-form-field>
                 <fc-form-field class="col-span-2">
                     <span formLabel>APRC</span>
@@ -202,18 +212,22 @@
                     <span formError *ngIf="form.get('aprc').invalid"> </span>
                 </fc-form-field>
                 <fc-form-field class="col-span-2">
-                    <span formLabel>Repayments</span>
+                    <span formLabel>LTV</span>
+                    <span formSuffix>%</span>
+                    <input formInput type="number" formControlName="ltv" />
+                    <span formError *ngIf="form.get('ltv').invalid"> </span>
+                </fc-form-field>
+                <fc-form-field class="col-span-2">
+                    <span formLabel>HTB</span>
                     <span formPrefix>€</span>
-                    <input
-                        formInput
-                        type="number"
-                        formControlName="monthlyRepayments"
-                    />
-                    <span
-                        formError
-                        *ngIf="form.get('monthlyRepayments').invalid"
-                    >
-                    </span>
+                    <input formInput type="number" formControlName="htb" />
+                    <span formError *ngIf="form.get('htb').invalid"> </span>
+                </fc-form-field>
+                <fc-form-field class="col-span-2">
+                    <span formLabel>Overpayments</span>
+                    <span formSuffix>%</span>
+                    <input formInput type="number" formControlName="overpaymentPct" />
+                    <span formError *ngIf="form.get('overpaymentPct').invalid"> </span>
                 </fc-form-field>
             </ng-container>
         </form>

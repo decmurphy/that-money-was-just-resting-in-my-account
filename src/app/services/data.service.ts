@@ -45,6 +45,12 @@ export class DataService {
                 this.dataChanged.next(this.data);
                 this.ls.put(this.dataLSKey, JSON.stringify(this.data));
             });
+
+        // console.log("e.g, 500k @ 3.2%:")
+        // console.log(`15y: ${this.findRepaymentForTerm(500e3, 3.9, 15*12)}`);
+        // console.log(`20y: ${this.findRepaymentForTerm(500e3, 3.9, 20*12)}`);
+        // console.log(`25y: ${this.findRepaymentForTerm(500e3, 3.9, 25*12)}`);
+        // console.log(`30y: ${this.findRepaymentForTerm(500e3, 3.9, 30*12)}`);
     }
 
     getData(): Observable<FormData> {
@@ -296,6 +302,9 @@ export class DataService {
 
         const now = new Date();
 
+        const monthlyRepayment = this.findRepaymentForTerm(formData.mortgage.amount, formData.mortgage.aprc, formData.mortgage.term * 12);
+        const overpayment = monthlyRepayment * formData.mortgage.overpaymentPct / 100.0;
+
         do {
             const _date = new Date(
                 now.getTime() + monthIdx * 30 * 24 * 60 * 60 * 1000
@@ -353,10 +362,7 @@ export class DataService {
 
                 mortgageToRepay += interestAdded;
 
-                mortgagePayment = Math.min(
-                    mortgageToRepay,
-                    formData.mortgage.monthlyRepayments
-                );
+                mortgagePayment = Math.min(mortgageToRepay, monthlyRepayment + overpayment);
             }
 
             const monthlyExpenditures = UtilityService.sum(
@@ -407,4 +413,55 @@ export class DataService {
     aprToMpr(apr: number): number {
         return Math.pow((100 + apr) / 100.0, 1 / 12) - 1;
     }
+
+    findRepaymentForTerm(mortgage: number, aprc: number, termInMonths: number): number {
+
+        const mprc = this.aprToMpr(aprc);
+
+        let maxRepayment = 200000;
+        let minRepayment = 0;
+        let testRepayment = (maxRepayment + minRepayment) / 2.0;
+
+        let maxTerm = this.getTermForRepayment(mortgage, mprc, maxRepayment) - termInMonths;
+        let testTerm = this.getTermForRepayment(mortgage, mprc, testRepayment) - termInMonths;
+        let minTerm = 1;
+
+        let iters = 0;
+
+        while ( Math.abs(testTerm) > 0.001 && iters++ < 500) {
+
+            if (minTerm * testTerm < 0) {
+                maxRepayment = testRepayment;
+                maxTerm = testTerm;
+            }
+            else {
+                minRepayment = testRepayment;
+                minTerm = testTerm;
+            }
+            testRepayment = (maxRepayment + minRepayment) / 2.0;
+            testTerm = this.getTermForRepayment(mortgage, mprc, testRepayment) - termInMonths;
+
+        }
+
+        return testRepayment;
+
+    }
+
+    getTermForRepayment(mortgage: number, mprc: number, repayment: number): number {
+
+        let remaining = mortgage;
+        let term = 0;
+        do {
+            remaining *= ( 1 + mprc);
+            remaining -= repayment;
+            if (remaining >= mortgage) {
+                return Infinity;
+            }
+            term++;
+        } while (remaining * ( 1 + mprc ) > repayment);
+
+        return term + (remaining/repayment);
+
+    }
+
 }

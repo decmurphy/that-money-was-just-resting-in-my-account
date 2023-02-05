@@ -20,7 +20,7 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
     formValueChangesSub: Subscription;
     data: Mortgage;
     monthData: MonthData[];
-    mortgageTerm: number;
+    monthlyRepayments: number;
     showInfo = false;
 
     math = Math;
@@ -40,6 +40,7 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
                 this.data = data.mortgage;
+                this.monthlyRepayments = this.dataService.findRepaymentForTerm(this.data.amount, this.data.aprc, this.data.term * 12);
                 this.resetForm();
             });
 
@@ -48,10 +49,6 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
                 this.monthData = data;
-
-                this.mortgageTerm = this.monthData.filter(
-                    (mm) => mm.remaining > 0
-                ).length;
             });
 
         this.xl$ = this.breakpointObserver
