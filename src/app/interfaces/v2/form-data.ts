@@ -8,6 +8,7 @@ import { FormWithErrors } from '../forms/form-with-errors';
 import { BenefitInKind } from './benefit-in-kind';
 import { Employment } from './employment';
 import { Income } from './income';
+import { MonthData } from './month-data';
 import { NamedAmount } from './named-amount';
 import { Pension } from './pension';
 import { PersonalDetails } from './personal-details';
@@ -16,6 +17,9 @@ import { StrategyEventOperation } from './strategy/strategy-event-operation';
 import { StrategyEventType } from './strategy/strategy-event-type';
 
 export class FormData extends FormWithErrors {
+
+    mortgageMonths: MonthData[];
+
     constructor(
         public taxpayers: TaxPayer[] = [new TaxPayer()],
         public maritalStatus: MaritalStatus = new MaritalStatus(),
@@ -24,6 +28,7 @@ export class FormData extends FormWithErrors {
         public strategy: Strategy = new Strategy()
     ) {
         super();
+        this.mortgageMonths = [];
     }
 
     static create(fd: FormData): FormData {
@@ -99,7 +104,7 @@ export class FormData extends FormWithErrors {
                     new NamedAmount(null, 'Accountant', 400),
                 ]
             ),
-            new Mortgage(24, 40000, 400000, 2.8, 2500),
+            new Mortgage(400000, 90, 12, 25, 3.5, 0, 10),
             new Strategy([
                 new StrategyEvent(
                     taxpayers[1].id,
