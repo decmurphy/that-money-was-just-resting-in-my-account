@@ -7,7 +7,11 @@ export class Expenditures extends FormWithErrors {
     constructor(
         private _id: string = null,
         public monthlyItems: NamedAmount[] = [],
-        public yearlyItems: NamedAmount[] = []
+        public yearlyItems: NamedAmount[] = [],
+        public onceOffItems: {
+            amount: NamedAmount,
+            monthIdx: number
+        }[] = []
     ) {
         super();
         this._id = this._id || UtilityService.newID('exp');
@@ -24,7 +28,8 @@ export class Expenditures extends FormWithErrors {
         return new Expenditures(
             model._id,
             model.monthlyItems.map((item) => NamedAmount.create(item)),
-            model.yearlyItems.map((item) => NamedAmount.create(item))
+            model.yearlyItems.map((item) => NamedAmount.create(item)),
+            (model.onceOffItems || []).map((item) => ({ amount: NamedAmount.create(item.amount), monthIdx: item.monthIdx }) )
         );
     }
 

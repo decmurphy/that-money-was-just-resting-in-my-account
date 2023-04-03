@@ -3,13 +3,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { StrategyEventOperation } from 'app/interfaces/v2/strategy/strategy-event-operation';
 import { StrategyEventType } from 'app/interfaces/v2/strategy/strategy-event-type';
 import { TaxPayer } from 'app/interfaces/v2/tax-payer';
-import { StrategyEvent } from '../interfaces/v2/strategy/strategy-event';
+import { StrategyEvent } from '../../../interfaces/v2/strategy/strategy-event';
 
 @Pipe({
     name: 'summary',
 })
 export class SummaryPipe implements PipeTransform {
-    constructor(private currencyPipe: CurrencyPipe) {}
+    constructor(private currencyPipe: CurrencyPipe) { }
 
     transform(ev: StrategyEvent, tps: TaxPayer[]): string {
         let summary = ``;
@@ -40,15 +40,25 @@ export class SummaryPipe implements PipeTransform {
                 case StrategyEventType.MORTGAGE_APRC:
                     summary += `change APRC to ${ev.value}%`;
                     break;
+                case StrategyEventType.MORTGAGE_LUMP_SUM:
+                    if (ev.namedAmount) {
+                        let amount = `${this.currencyPipe.transform(
+                            ev.value,
+                            'EUR',
+                            'symbol',
+                            '1.0-0'
+                        )}`;
+                        summary += `Pay ${amount} off Mortgage`;
+                    }
+                    break;
                 case StrategyEventType.EMPLOYMENT_INCOME:
-                    summary += `change ${
-                        tp.details.name
-                    }'s salary to ${this.currencyPipe.transform(
-                        ev.value,
-                        'EUR',
-                        'symbol',
-                        '1.0-0'
-                    )}`;
+                    summary += `change ${tp.details.name
+                        }'s salary to ${this.currencyPipe.transform(
+                            ev.value,
+                            'EUR',
+                            'symbol',
+                            '1.0-0'
+                        )}`;
                     break;
                 case StrategyEventType.MONTHLY_EXPENDITURE:
                 case StrategyEventType.YEARLY_EXPENDITURE:
@@ -80,6 +90,17 @@ export class SummaryPipe implements PipeTransform {
                                 summary += `change ${ev.namedAmount.name} to ${amount}/${period}`;
                                 break;
                         }
+                    }
+                    break;
+                case StrategyEventType.ONCE_OFF_EXPENDITURE:
+                    if (ev.namedAmount) {
+                        let amount = `${this.currencyPipe.transform(
+                            ev.value,
+                            'EUR',
+                            'symbol',
+                            '1.0-0'
+                        )}`;
+                        summary += `Pay ${amount} for ${ev.namedAmount.name}`;
                     }
                     break;
                 default:

@@ -17,10 +17,12 @@ export enum StrategyEventType {
     */
     MONTHLY_EXPENDITURE = 'Monthly Expenditure',
     YEARLY_EXPENDITURE = 'Annual Expenditure',
+    ONCE_OFF_EXPENDITURE = 'Once Off Expenditure',
 
     /*
         Mortgage
     */
     MORTGAGE_APRC = 'Mortgage APRC',
     MORTGAGE_REPAYMENT = 'Mortgage Repayment',
+    MORTGAGE_LUMP_SUM = 'Mortgage Lump Sum'
 }

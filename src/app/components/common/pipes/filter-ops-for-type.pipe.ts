@@ -22,6 +22,9 @@ export class FilterOpsForTypePipe implements PipeTransform {
             case StrategyEventType.MORTGAGE_REPAYMENT:
                 allowedOps = [StrategyEventOperation.CHANGE];
                 break;
+            case StrategyEventType.MORTGAGE_LUMP_SUM:
+                allowedOps = [StrategyEventOperation.ADD];
+                break;
             case StrategyEventType.EMPLOYMENT_INCOME:
                 allowedOps = [StrategyEventOperation.CHANGE];
                 break;
@@ -38,6 +41,9 @@ export class FilterOpsForTypePipe implements PipeTransform {
                     StrategyEventOperation.CHANGE,
                     StrategyEventOperation.REMOVE,
                 ];
+                break;
+            case StrategyEventType.ONCE_OFF_EXPENDITURE:
+                allowedOps = [StrategyEventOperation.ADD];
                 break;
             default:
                 throw new Error(

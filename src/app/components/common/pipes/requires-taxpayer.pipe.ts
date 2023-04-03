@@ -11,8 +11,10 @@ export class RequiresTaxpayerPipe implements PipeTransform {
                 return true;
             case StrategyEventType.MONTHLY_EXPENDITURE:
             case StrategyEventType.YEARLY_EXPENDITURE:
+            case StrategyEventType.ONCE_OFF_EXPENDITURE:
             case StrategyEventType.MORTGAGE_APRC:
             case StrategyEventType.MORTGAGE_REPAYMENT:
+            case StrategyEventType.MORTGAGE_LUMP_SUM:
                 return false;
             default:
                 throw new Error(

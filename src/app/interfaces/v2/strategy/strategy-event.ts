@@ -270,6 +270,9 @@ export class StrategyEvent extends FormWithErrors {
             case StrategyEventType.MORTGAGE_REPAYMENT:
                 formData.mortgage.monthlyRepayments = this.value;
                 break;
+            case StrategyEventType.MORTGAGE_LUMP_SUM:
+                formData.mortgageMonths[formData.mortgageMonths.length - 1].remaining -= this.value; // amount -= this.value;
+                break;
             default:
                 throw new Error(
                     `Haven't implemented Strategy for ${this.type} yet`

@@ -1,0 +1,23 @@
+<div class="grid grid-cols-1 gap-4 pt-2 lg:grid-cols-2">
+    <div class="space-y-4">
+        <fc-income-pension class="flex"></fc-income-pension>
+        <fc-expenditures class="flex"></fc-expenditures>
+        <fc-mortgage class="flex"></fc-mortgage>
+        <fc-strategy class="flex"></fc-strategy>
+    </div>
+
+    <div class="space-y-4">
+        <div class="raised-bg-gradient rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50">
+            <fc-chart2d title="Net Worth vs Years" xTitle="Years" yTitle="Value (€)"
+                [genericData]="netWorthData$ | async"></fc-chart2d>
+        </div>
+        <div class="raised-bg-gradient rounded-lg px-4 py-2 shadow-lg shadow-sky-800/50">
+            <fc-chart2d title="Mortgage vs Years" xTitle="Years" yTitle="Value (€)"
+                [genericData]="mortgageData$ | async"></fc-chart2d>
+        </div>
+
+        <div class="raised-bg-gradient rounded-lg shadow-lg shadow-sky-800/50 overflow-y-scroll h-96">
+            <fc-table></fc-table>
+        </div>
+    </div>
+</div>

@@ -293,8 +293,8 @@ export class DataService {
     }
 
     populateData(formData: FormData, strategy = new Strategy()): MonthData[] {
+
         let mortgageToRepay = 0;
-        const mortgageMonths = [] as MonthData[];
         let monthIdx = 0;
         let mortgagePayment = 0;
         let cumulativeInterest = 0;
@@ -352,6 +352,8 @@ export class DataService {
                 mortgageToRepay = 0;
             } else if (monthIdx === formData.mortgage.startAfterMonth + 1) {
                 mortgageToRepay = formData.mortgage.amount;
+            } else {
+                mortgageToRepay = formData.mortgageMonths[formData.mortgageMonths.length - 1].remaining;
             }
 
             if (monthIdx >= formData.mortgage.startAfterMonth + 1) {
@@ -400,14 +402,14 @@ export class DataService {
             }
 
             mortgageToRepay = mortgageMonth.remaining;
-            mortgageMonths.push(mortgageMonth);
+            formData.mortgageMonths.push(mortgageMonth);
 
             monthIdx++;
 
             // 25 years optimal. 50 absolute max, don't care how big the mortgage is
         } while ((mortgageToRepay > 0 && monthIdx <= 600) || monthIdx <= 300);
 
-        return mortgageMonths;
+        return formData.mortgageMonths;
     }
 
     aprToMpr(apr: number): number {

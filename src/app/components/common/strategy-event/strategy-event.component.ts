@@ -78,14 +78,18 @@ export class StrategyEventComponent
             StrategyEventType.EMPLOYMENT_INCOME,
             StrategyEventType.MONTHLY_EXPENDITURE,
             StrategyEventType.YEARLY_EXPENDITURE,
+            StrategyEventType.ONCE_OFF_EXPENDITURE,
             StrategyEventType.MORTGAGE_APRC,
             StrategyEventType.MORTGAGE_REPAYMENT,
+            StrategyEventType.MORTGAGE_LUMP_SUM,
         ];
 
         this.valueTypes = [
             StrategyEventType.EMPLOYMENT_INCOME,
+            StrategyEventType.ONCE_OFF_EXPENDITURE,
             StrategyEventType.MORTGAGE_APRC,
             StrategyEventType.MORTGAGE_REPAYMENT,
+            StrategyEventType.MORTGAGE_LUMP_SUM,
         ];
 
         this.namedAmountTypes = [
