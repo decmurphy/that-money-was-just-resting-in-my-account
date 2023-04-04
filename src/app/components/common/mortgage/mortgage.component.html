@@ -1,107 +1,45 @@
-<div
-    class="raised-bg-gradient w-full rounded-lg p-4 pt-2 font-bold shadow-lg shadow-sky-800/50"
->
+<div class="raised-bg-gradient w-full rounded-lg p-4 pt-2 font-bold shadow-lg shadow-sky-800/50">
     <div class="flex flex-row justify-between">
         <h5>Mortgage</h5>
-        <button class="btn light p-1" (click)="toggleInfo()">
-            <svg
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-            </svg>
-        </button>
-    </div>
-    <div
-        class="overflow-hidden font-normal transition-all duration-700"
-        [ngClass]="{
-            'max-h-0': !showInfo,
-            'max-h-[96rem]': showInfo
-        }"
-    >
-        <p>
-            The Amount field should be the amount of money to be borrowed from
-            the bank - NOT the price of the property
-        </p>
-        <p>
-            APRC takes into account the initial fixed interest rate, any later
-            variable rate changes, and any once-off fees included in the process
-            of drawing up mortgages. Most banks will provide APRC figures for
-            different mortgage plans
-        </p>
-        <p>
-            Repayments is per month, and represents your
-            <em>initial</em> repayment amount. Any increases/decreases over time
-            can be dealt with in the <b>Timeline</b> section below
-        </p>
     </div>
 
     <div class="relative z-0 mt-4 w-full">
-        <div
-            class="list-element relative z-10 flex w-full items-center"
-            [ngClass]="{
+        <div class="list-element relative z-10 flex w-full items-center" [ngClass]="{
                 'sticky top-0': editing
-            }"
-        >
+            }">
             <div class="flex grow flex-col">
                 <h6>
-                    {{ data.value | currency: "EUR":"symbol":"1.0-0" }} @
-                    {{ data.aprc }}% APRC,
-                    {{ data.term }}y
+                    {{ mortgage.amount | currency: "EUR":"symbol":"1.0-0" }} @
+                    {{ mortgage.aprc }}% APRC,
+                    {{ mortgage.term }}y
                 </h6>
                 <p class="ml-4">
                     Monthly Repayment:
                     {{ monthlyRepayments | currency: "EUR":"symbol":"0.0-0" }}
                 </p>
-                <p class="ml-4" *ngIf="monthData">
+                <p class="ml-4">
                     Total Interest:
-                    {{
-                        monthData[monthData.length - 1].cumulativeInterest
-                            | currency: "EUR":"symbol":"0.0-0"
-                    }}
+                    {{ totalCumulativeInterest | currency: "EUR":"symbol":"0.0-0" }}
                 </p>
             </div>
-            <button
-                class="btn primary ml-2 h-8 w-8 p-1"
-                (click)="editing = !editing"
-            >
-                <div
-                    class="rotate-0 transition-transform duration-300"
-                    [ngClass]="{
+            <button class="btn primary ml-2 h-8 w-8 p-1" *ngIf="!alwaysShow" (click)="editing = !editing">
+                <div class="rotate-0 transition-transform duration-300" [ngClass]="{
                         'rotate-[360deg]': editing
-                    }"
-                >
-                    <ng-container
-                        *ngIf="editing; then checkTmpl; else editTmpl"
-                    ></ng-container>
+                    }">
+                    <ng-container *ngIf="editing; then checkTmpl; else editTmpl"></ng-container>
                 </div>
             </button>
         </div>
 
-        <form
-            *ngIf="form"
-            [formGroup]="form"
+        <form *ngIf="form" [formGroup]="form"
             class="relative z-0 grid w-full grid-cols-2 gap-2 overflow-hidden rounded-b-lg border-4 border-t-0 border-b-4 border-sky-800 p-4 font-bold transition-all duration-700 sm:grid-cols-4 xl:space-y-2"
             [ngClass]="{
                 '-mt-6 max-h-0 pt-0': !editing,
                 '-mt-4 max-h-[96rem] pt-8': editing
-            }"
-        >
-            <fc-form-field class="col-span-1">
+            }">
+            <fc-form-field *ngIf="showStartMonth" class="col-span-1">
                 <span formLabel>Start After Months</span>
-                <input
-                    formInput
-                    type="number"
-                    formControlName="startAfterMonth"
-                />
+                <input formInput type="number" formControlName="startAfterMonth" />
                 <span formError *ngIf="form.get('startAfterMonth').invalid">
                 </span>
             </fc-form-field>
@@ -109,87 +47,42 @@
             <ng-container *ngIf="(xl$ | async) === true">
 
                 <span class="col-span-1 col-start-1 text-right">Property Value</span>
-                <fc-slider
-                    class="col-span-2"
-                    formControlName="value"
-                    [min]="100000"
-                    [max]="1000000"
-                    [step]="5000"
-                    >Property Value</fc-slider
-                >
+                <fc-slider class="col-span-2" formControlName="value" [min]="100000" [max]="1000000"
+                    [step]="5000">Property Value</fc-slider>
                 <span class="col-span-1 text-left font-mono">{{
-                    data.value | currency: "EUR":"symbol":"0.0-0"
-                }}</span>
+                    mortgage.value | currency: "EUR":"symbol":"0.0-0"
+                    }}</span>
 
                 <span class="col-span-1 col-start-1 text-right">LTV</span>
-                <fc-slider
-                    class="col-span-2"
-                    formControlName="ltv"
-                    [min]="0"
-                    [max]="90"
-                    [step]="0.1"
-                    >LTV</fc-slider
-                >
+                <fc-slider class="col-span-2" formControlName="ltv" [min]="0" [max]="90" [step]="0.1">LTV</fc-slider>
                 <span class="col-span-1 text-left font-mono">{{
-                    data.ltv
-                }}%</span>
+                    mortgage.ltv
+                    }}%</span>
 
                 <span class="col-span-1 text-right">Term</span>
-                <fc-slider
-                    class="col-span-2"
-                    formControlName="term"
-                    [min]="5"
-                    [max]="35"
-                    [step]="5"
-                >
-                    Term</fc-slider
-                >
+                <fc-slider class="col-span-2" formControlName="term" [min]="5" [max]="35" [step]="5">
+                    Term</fc-slider>
                 <span class="col-span-1 text-left font-mono">
-                    {{ data.term }}y
+                    {{ mortgage.term }}y
                 </span>
 
                 <span class="col-span-1 text-right">APRC</span>
-                <fc-slider
-                    class="col-span-2"
-                    formControlName="aprc"
-                    [min]="2"
-                    [max]="6"
-                    [step]="0.05"
-                    >APRC</fc-slider
-                >
-                <span class="col-span-1 text-left font-mono"
-                    >{{ data.aprc }}%</span
-                >
+                <fc-slider class="col-span-2" formControlName="aprc" [min]="2" [max]="6" [step]="0.05">APRC</fc-slider>
+                <span class="col-span-1 text-left font-mono">{{ mortgage.aprc }}%</span>
 
-                <span class="col-span-1 col-start-1 text-right"
-                    >Help To Buy</span
-                >
-                <fc-slider
-                    class="col-span-2"
-                    formControlName="htb"
-                    [min]="0"
-                    [max]="30000"
-                    [step]="500"
-                    >Deposit</fc-slider
-                >
+                <span class="col-span-1 col-start-1 text-right">Help To Buy</span>
+                <fc-slider class="col-span-2" formControlName="htb" [min]="0" [max]="30000"
+                    [step]="500">Deposit</fc-slider>
                 <span class="col-span-1 text-left font-mono">{{
-                    data.htb | currency: "EUR":"symbol":"0.0-0"
-                }}</span>
+                    mortgage.htb | currency: "EUR":"symbol":"0.0-0"
+                    }}</span>
 
-                <span class="col-span-1 col-start-1 text-right"
-                    >Overpayment</span
-                >
-                <fc-slider
-                    class="col-span-2"
-                    formControlName="overpaymentPct"
-                    [min]="0"
-                    [max]="10"
-                    [step]="1"
-                    >Overpayment</fc-slider
-                >
+                <span class="col-span-1 col-start-1 text-right">Overpayment</span>
+                <fc-slider class="col-span-2" formControlName="overpaymentPct" [min]="0" [max]="10"
+                    [step]="1">Overpayment</fc-slider>
                 <span class="col-span-1 text-left font-mono">{{
-                    data.overpaymentPct
-                }}%</span>
+                    mortgage.overpaymentPct
+                    }}%</span>
 
             </ng-container>
             <ng-container *ngIf="(xl$ | async) === false">
@@ -235,35 +128,15 @@
 </div>
 
 <ng-template #editTmpl>
-    <svg
-        class="h-6 w-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-        ></path>
+    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
     </svg>
 </ng-template>
 
 <ng-template #checkTmpl>
-    <svg
-        class="h-6 w-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        ></path>
+    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
     </svg>
 </ng-template>

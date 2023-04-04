@@ -1,8 +1,6 @@
-<table class="rounded-lg min-w-full w-max table-auto border-collapse">
+<table *ngIf="tableData != null" class="rounded-lg min-w-full w-max table-auto border-collapse">
     <thead>
-        <tr
-            class="sticky top-0 bg-sky-800 font-bold px-4 py-3 border-b border-gray-500 text-left text-sky-50"
-        >
+        <tr class="sticky top-0 bg-sky-800 font-bold px-4 py-3 border-b border-gray-500 text-left text-sky-50">
             <th class="px-4 py-2">Year</th>
             <th class="px-4 py-2">Month</th>
             <th class="px-4 py-2">Payment</th>
@@ -12,14 +10,9 @@
         </tr>
     </thead>
     <tbody>
-        <tr
-            class="odd:bg-sky-50 even:bg-sky-100 border-b border-gray-500 hover:bg-sky-200 cursor-pointer transition-colors"
-            *ngFor="let row of tableData; trackBy: trackMonth"
-        >
-            <td
-                class="px-4 py-2"
-                *ngFor="let col of displayedColumns; trackBy: trackCol"
-            >
+        <tr class="odd:bg-sky-50 even:bg-sky-100 border-b border-gray-500 hover:bg-sky-200 cursor-pointer transition-colors"
+            *ngFor="let row of tableData; trackBy: trackMonth">
+            <td class="px-4 py-2" *ngFor="let col of displayedColumns; trackBy: trackCol">
                 {{ row | display: col }}
             </td>
         </tr>

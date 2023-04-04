@@ -21,7 +21,7 @@ export class DataService {
     private data: FormData;
     private dataChanged: ReplaySubject<FormData> = new ReplaySubject();
 
-    private monthData: MonthData[];
+    private monthData: MonthData[] = [];
     private monthDataChanged: ReplaySubject<MonthData[]> = new ReplaySubject();
 
     private netWorthData: GenericPlotData[];
@@ -40,17 +40,11 @@ export class DataService {
         this.getData()
             .pipe(distinct(), debounceTime(200))
             .subscribe(() => {
-                console.log('update');
                 this.updateFormInputs();
                 this.dataChanged.next(this.data);
                 this.ls.put(this.dataLSKey, JSON.stringify(this.data));
             });
 
-        // console.log("e.g, 500k @ 3.2%:")
-        // console.log(`15y: ${this.findRepaymentForTerm(500e3, 3.9, 15*12)}`);
-        // console.log(`20y: ${this.findRepaymentForTerm(500e3, 3.9, 20*12)}`);
-        // console.log(`25y: ${this.findRepaymentForTerm(500e3, 3.9, 25*12)}`);
-        // console.log(`30y: ${this.findRepaymentForTerm(500e3, 3.9, 30*12)}`);
     }
 
     getData(): Observable<FormData> {
@@ -155,7 +149,7 @@ export class DataService {
                     ? tp.employment.pension.annualGrowthRate
                     : 0
             )
-            .map((apr) => this.aprToMpr(apr));
+            .map((apr) => Mortgage.aprToMpr(apr));
 
         const liabilities = [];
         const savingsFund = [];
@@ -184,7 +178,7 @@ export class DataService {
                     mm.payment;
 
                 savingsFund[i] = savingsFund[i - 1] + savingsDelta;
-                if (i === fv.mortgage.startAfterMonth + 1) {
+                if (i === fv.mortgage.startAfterMonth) {
                     savingsFund[i] -= fv.mortgage.deposit;
                 }
 
@@ -200,8 +194,6 @@ export class DataService {
                 );
             }
         });
-
-        // console.log(pensionFund);
 
         /*
             Set Month Data
@@ -237,10 +229,10 @@ export class DataService {
                 y: this.monthData.map(
                     (mm, i) =>
                         liabilities[i] +
-                        (i > fv.mortgage.startAfterMonth
+                        (i >= fv.mortgage.startAfterMonth
                             ? fv.mortgage.amount +
-                              fv.mortgage.deposit +
-                              fv.mortgage.htb
+                            fv.mortgage.deposit +
+                            fv.mortgage.htb
                             : 0) +
                         savingsFund[i] +
                         combinedPensionFund[i]
@@ -260,50 +252,15 @@ export class DataService {
             }
         );
 
-        // console.log(netWorthData);
-
         this.setNetWorthData(netWorthData);
 
-        this.setMortgageData([
-            {
-                mode: 'lines',
-                name: 'Mortgage',
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: this.monthData.map((mm) => mm.remaining),
-            },
-            {
-                mode: 'lines',
-                name: 'Incr. Interest',
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: this.monthData.map((mm) => mm.incrementalInterest),
-            },
-            {
-                mode: 'lines',
-                name: 'Cum. Interest',
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: this.monthData.map((mm) => mm.cumulativeInterest),
-            },
-            {
-                mode: 'lines',
-                name: 'Payment',
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: this.monthData.map((mm) => mm.payment),
-            },
-        ]);
     }
 
     populateData(formData: FormData, strategy = new Strategy()): MonthData[] {
 
-        let mortgageToRepay = 0;
         let monthIdx = 0;
-        let mortgagePayment = 0;
-        let cumulativeInterest = 0;
-        let interestAdded = 0;
 
         const now = new Date();
-
-        const monthlyRepayment = this.findRepaymentForTerm(formData.mortgage.amount, formData.mortgage.aprc, formData.mortgage.term * 12);
-        const overpayment = monthlyRepayment * formData.mortgage.overpaymentPct / 100.0;
 
         do {
             const _date = new Date(
@@ -342,31 +299,6 @@ export class DataService {
                 );
             }
 
-            /*
-                Calculate Mortgage Lifecycle
-            */
-            interestAdded = 0;
-            mortgagePayment = 0;
-
-            if (monthIdx < formData.mortgage.startAfterMonth + 1) {
-                mortgageToRepay = 0;
-            } else if (monthIdx === formData.mortgage.startAfterMonth + 1) {
-                mortgageToRepay = formData.mortgage.amount;
-            } else {
-                mortgageToRepay = formData.mortgageMonths[formData.mortgageMonths.length - 1].remaining;
-            }
-
-            if (monthIdx >= formData.mortgage.startAfterMonth + 1) {
-                const mortgageMPR = this.aprToMpr(formData.mortgage.aprc);
-
-                interestAdded = mortgageToRepay * mortgageMPR;
-                cumulativeInterest += interestAdded;
-
-                mortgageToRepay += interestAdded;
-
-                mortgagePayment = Math.min(mortgageToRepay, monthlyRepayment + overpayment);
-            }
-
             const monthlyExpenditures = UtilityService.sum(
                 formData.expenditures.monthlyItems.map((item) => item.amount)
             );
@@ -374,96 +306,26 @@ export class DataService {
                 formData.expenditures.yearlyItems.map((item) => item.amount)
             );
 
-            // console.log(monthIdx, mortgageToRepay, mortgagePayment);
-
-            const mortgageMonth = new MonthData(
-                monthIdx,
-                mortgagePayment,
-                interestAdded,
-                cumulativeInterest,
-                mortgageToRepay - mortgagePayment,
-                monthlyExpenditures + yearlyExpenditures / 12.0,
-                formData.taxpayers.map(
-                    (tp) =>
-                        UtilityService.sum(
-                            tp.getAllIncomes().map((i) => i.net)
-                        ) / 12.0
-                ),
-                formData.taxpayers.map((tp) =>
+            if (this.monthData[monthIdx]) {
+                this.monthData[monthIdx].expenditures = monthlyExpenditures + yearlyExpenditures / 12.0;
+                this.monthData[monthIdx].incomes = formData.taxpayers.map((tp) =>
+                    UtilityService.sum(
+                        tp.getAllIncomes().map((i) => i.net)
+                    ) / 12.0
+                );
+                this.monthData[monthIdx].pensionContribs = formData.taxpayers.map((tp) =>
                     tp.employment.pension
                         ? tp.employment.pension.summary.amount / 12.0
                         : 0
-                )
-            );
-
-            if (mortgageMonth.remaining > mortgageToRepay) {
-                throw new Error('Impossible Mortgage');
-                return [];
+                );
             }
-
-            mortgageToRepay = mortgageMonth.remaining;
-            formData.mortgageMonths.push(mortgageMonth);
 
             monthIdx++;
 
             // 25 years optimal. 50 absolute max, don't care how big the mortgage is
-        } while ((mortgageToRepay > 0 && monthIdx <= 600) || monthIdx <= 300);
+        } while (/*(this.monthData[monthIdx].remaining > 0 && monthIdx <= 600) ||*/ monthIdx <= 300);
 
-        return formData.mortgageMonths;
-    }
-
-    aprToMpr(apr: number): number {
-        return Math.pow((100 + apr) / 100.0, 1 / 12) - 1;
-    }
-
-    findRepaymentForTerm(mortgage: number, aprc: number, termInMonths: number): number {
-
-        const mprc = this.aprToMpr(aprc);
-
-        let maxRepayment = 200000;
-        let minRepayment = 0;
-        let testRepayment = (maxRepayment + minRepayment) / 2.0;
-
-        let maxTerm = this.getTermForRepayment(mortgage, mprc, maxRepayment) - termInMonths;
-        let testTerm = this.getTermForRepayment(mortgage, mprc, testRepayment) - termInMonths;
-        let minTerm = 1;
-
-        let iters = 0;
-
-        while ( Math.abs(testTerm) > 0.001 && iters++ < 500) {
-
-            if (minTerm * testTerm < 0) {
-                maxRepayment = testRepayment;
-                maxTerm = testTerm;
-            }
-            else {
-                minRepayment = testRepayment;
-                minTerm = testTerm;
-            }
-            testRepayment = (maxRepayment + minRepayment) / 2.0;
-            testTerm = this.getTermForRepayment(mortgage, mprc, testRepayment) - termInMonths;
-
-        }
-
-        return testRepayment;
-
-    }
-
-    getTermForRepayment(mortgage: number, mprc: number, repayment: number): number {
-
-        let remaining = mortgage;
-        let term = 0;
-        do {
-            remaining *= ( 1 + mprc);
-            remaining -= repayment;
-            if (remaining >= mortgage) {
-                return Infinity;
-            }
-            term++;
-        } while (remaining * ( 1 + mprc ) > repayment);
-
-        return term + (remaining/repayment);
-
+        return this.monthData;
     }
 
 }

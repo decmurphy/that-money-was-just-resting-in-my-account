@@ -1,13 +1,13 @@
 <div class="flex flex-col gap-8">
 
-    <div class="grid grid-cols-2">
-        <fc-mortgage class="flex"></fc-mortgage>
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+        <fc-mortgage class="flex" [mortgage]="mortgage" (onDataChange)="onMortgageDataChange($event)"></fc-mortgage>
         <fc-chart2d title="Mortgage vs Years" xTitle="Years" yTitle="Value (€)"
-            [genericData]="mortgageData$ | async"></fc-chart2d>
+            [genericData]="plotData$ | async"></fc-chart2d>
     </div>
 
     <div class="raised-bg-gradient rounded-lg shadow-lg shadow-sky-800/50 overflow-y-scroll h-96">
-        <fc-table></fc-table>
+        <fc-table [tableData]="tableData$ | async"></fc-table>
     </div>
 
 </div>

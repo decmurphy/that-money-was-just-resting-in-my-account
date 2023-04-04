@@ -104,7 +104,7 @@ export class FormData extends FormWithErrors {
                     new NamedAmount(null, 'Accountant', 400),
                 ]
             ),
-            new Mortgage(400000, 90, 12, 25, 3.5, 0, 10),
+            new Mortgage(400000, 90, 0, 25, 3.5, 0, 10),
             new Strategy([
                 new StrategyEvent(
                     taxpayers[1].id,

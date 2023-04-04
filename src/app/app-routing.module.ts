@@ -7,6 +7,10 @@ const routes: Routes = [
         loadChildren: () => import('./components/home/home.module').then((m) => m.HomeModule),
     },
     {
+        path: 'planner',
+        loadChildren: () => import('./components/planner/planner.module').then((m) => m.PlannerModule),
+    },
+    {
         path: 'mortgage-calculator',
         loadChildren: () => import('./components/mortgage-calculator/mortgage-calculator.module').then((m) => m.MortgageCalculatorModule),
     }

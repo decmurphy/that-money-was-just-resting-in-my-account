@@ -5,8 +5,8 @@ export class MonthData {
         public incrementalInterest: number,
         public cumulativeInterest: number,
         public remaining: number,
-        public expenditures: number,
-        public incomes: number[],
-        public pensionContribs: number[]
-    ) {}
+        public expenditures: number = null,
+        public incomes: number[] = null,
+        public pensionContribs: number[] = null
+    ) { }
 }
