@@ -14,7 +14,7 @@ export class Mortgage extends FormWithErrors {
         public ltv: number = 90,
         public startAfterMonth: number = 0,
         public term: number = 25,
-        public aprc: number = 3.2,
+        public aprc: string = '3.2',
         public htb: number = 0,
         public overpaymentPct: number = 0
     ) {
@@ -27,6 +27,7 @@ export class Mortgage extends FormWithErrors {
         if (model == null) {
             return new Mortgage();
         }
+
         return new Mortgage(
             model.value,
             model.ltv,
@@ -86,7 +87,7 @@ export class Mortgage extends FormWithErrors {
     }
 
     findRepaymentForTerm(): number {
-        return Mortgage.findRepaymentForTerm(this.amount, this.aprc, this.term * 12, this.overpaymentPct);
+        return Mortgage.findRepaymentForTerm(this.amount, parseFloat(this.aprc), this.term * 12, this.overpaymentPct);
     }
 
     static findRepaymentForTerm(mortgage: number, aprc: number, termInMonths: number, overpaymentPct: number = 0): number {
@@ -145,8 +146,8 @@ export class Mortgage extends FormWithErrors {
 
     static getTotalInterest(mortgage: Mortgage): number {
 
-        let repayment = Mortgage.findRepaymentForTerm(mortgage.amount, mortgage.aprc, mortgage.term * 12, mortgage.overpaymentPct);
-        let mprc = Mortgage.aprToMpr(mortgage.aprc);
+        let repayment = Mortgage.findRepaymentForTerm(mortgage.amount, parseFloat(mortgage.aprc), mortgage.term * 12, mortgage.overpaymentPct);
+        let mprc = Mortgage.aprToMpr(parseFloat(mortgage.aprc));
 
         let remaining = mortgage.amount;
         let monthIdx = 0;
@@ -179,8 +180,8 @@ export class Mortgage extends FormWithErrors {
         let cumulativeInterest = 0;
         let interestAdded = 0;
 
-        const monthlyRepayment = Mortgage.findRepaymentForTerm(this.amount, this.aprc, this.term * 12, this.overpaymentPct);
-        const mortgageMPR = Mortgage.aprToMpr(this.aprc);
+        const monthlyRepayment = Mortgage.findRepaymentForTerm(this.amount, parseFloat(this.aprc), this.term * 12, this.overpaymentPct);
+        const mortgageMPR = Mortgage.aprToMpr(parseFloat(this.aprc));
 
         do {
 

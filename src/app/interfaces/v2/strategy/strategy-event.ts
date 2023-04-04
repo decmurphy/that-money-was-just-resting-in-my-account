@@ -265,7 +265,7 @@ export class StrategyEvent extends FormWithErrors {
                 }
                 break;
             case StrategyEventType.MORTGAGE_APRC:
-                formData.mortgage.aprc = this.value;
+                formData.mortgage.aprc = this.value + '';
                 break;
             case StrategyEventType.MORTGAGE_REPAYMENT:
                 formData.mortgage.monthlyRepayments = this.value;

@@ -63,6 +63,7 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit, On
 
     resetForm() {
         this.mortgage = Mortgage.create(this.mortgage);
+        console.log(this.mortgage);
 
         this.monthlyRepayments = this.mortgage.findRepaymentForTerm();
         this.totalCumulativeInterest = this.mortgage.getTotalInterest();

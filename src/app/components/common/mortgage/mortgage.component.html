@@ -70,12 +70,14 @@
                 <fc-slider class="col-span-2" formControlName="aprc" [min]="2" [max]="6" [step]="0.05">APRC</fc-slider>
                 <span class="col-span-1 text-left font-mono">{{ mortgage.aprc }}%</span>
 
-                <span class="col-span-1 col-start-1 text-right">Help To Buy</span>
-                <fc-slider class="col-span-2" formControlName="htb" [min]="0" [max]="30000"
-                    [step]="500">Deposit</fc-slider>
-                <span class="col-span-1 text-left font-mono">{{
-                    mortgage.htb | currency: "EUR":"symbol":"0.0-0"
-                    }}</span>
+                <ng-container *ngIf="!alwaysShow">
+                    <span class="col-span-1 col-start-1 text-right">Help To Buy</span>
+                    <fc-slider class="col-span-2" formControlName="htb" [min]="0" [max]="30000"
+                        [step]="500">Deposit</fc-slider>
+                    <span class="col-span-1 text-left font-mono">{{
+                        mortgage.htb | currency: "EUR":"symbol":"0.0-0"
+                        }}</span>
+                </ng-container>
 
                 <span class="col-span-1 col-start-1 text-right">Overpayment</span>
                 <fc-slider class="col-span-2" formControlName="overpaymentPct" [min]="0" [max]="10"
@@ -101,7 +103,7 @@
                 <fc-form-field class="col-span-2">
                     <span formLabel>APRC</span>
                     <span formSuffix>%</span>
-                    <input formInput type="number" formControlName="aprc" />
+                    <input formInput formControlName="aprc" />
                     <span formError *ngIf="form.get('aprc').invalid"> </span>
                 </fc-form-field>
                 <fc-form-field class="col-span-2">
@@ -110,7 +112,7 @@
                     <input formInput type="number" formControlName="ltv" />
                     <span formError *ngIf="form.get('ltv').invalid"> </span>
                 </fc-form-field>
-                <fc-form-field class="col-span-2">
+                <fc-form-field *ngIf="!alwaysShow" class="col-span-2">
                     <span formLabel>HTB</span>
                     <span formPrefix>€</span>
                     <input formInput type="number" formControlName="htb" />
