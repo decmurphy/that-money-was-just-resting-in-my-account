@@ -44,19 +44,19 @@ export class MortgageCalculatorComponent extends SubscriptionHandler implements 
           return [
             {
               mode: 'lines', name: 'Mortgage',
-              x: data.map((mm) => mm.month / 12.0), y: data.map((mm) => mm.remaining)
+              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.remaining)
             },
             {
               mode: 'lines', name: 'Incr. Interest',
-              x: data.map((mm) => mm.month / 12.0), y: data.map((mm) => mm.incrementalInterest)
+              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.incrementalInterest)
             },
             {
               mode: 'lines', name: 'Cum. Interest',
-              x: data.map((mm) => mm.month / 12.0), y: data.map((mm) => mm.cumulativeInterest)
+              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.cumulativeInterest)
             },
             {
               mode: 'lines', name: 'Payment',
-              x: data.map((mm) => mm.month / 12.0), y: data.map((mm) => mm.payment)
+              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.payment)
             },
           ] as GenericPlotData[];
         })

@@ -323,7 +323,7 @@ export class DataService {
             monthIdx++;
 
             // 25 years optimal. 50 absolute max, don't care how big the mortgage is
-        } while (/*(this.monthData[monthIdx].remaining > 0 && monthIdx <= 600) ||*/ monthIdx <= 300);
+        } while (monthIdx <= 600);
 
         return this.monthData;
     }
