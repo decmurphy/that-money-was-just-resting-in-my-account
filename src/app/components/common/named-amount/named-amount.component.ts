@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NamedAmount } from 'app/interfaces/v2/named-amount';
+import { NamedAmount } from 'app/interfaces/v3/named-amount';
 
 @Component({
     selector: 'fc-named-amount',
@@ -8,7 +8,7 @@ import { NamedAmount } from 'app/interfaces/v2/named-amount';
 })
 export class NamedAmountComponent implements OnInit {
     @Input() item: NamedAmount;
-    constructor() {}
+    constructor() { }
 
-    ngOnInit(): void {}
+    ngOnInit(): void { }
 }

@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, map, takeUntil } from 'rxjs';
 
 import { GenericPlotData } from 'app/interfaces/plotly/generic-plot-data';
-import { Mortgage } from 'app/interfaces/v2/mortgage';
 import { DataService } from 'app/services/data.service';
-import { MonthData } from 'app/interfaces/v2/month-data';
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
+import { Snapshot } from 'app/interfaces/v3/snapshot';
+import { Mortgage } from 'app/interfaces/v3/mortgage';
 
 @Component({
   selector: 'fc-planner',
@@ -17,7 +17,7 @@ export class PlannerComponent extends SubscriptionHandler implements OnInit {
 
   mortgage$: Observable<Mortgage>;
 
-  tableData$: Observable<MonthData[]>;
+  tableData$: Observable<Snapshot[]>;
   plotData$: Observable<GenericPlotData[]>;
   netWorthData$: Observable<GenericPlotData[]>;
 
@@ -31,32 +31,32 @@ export class PlannerComponent extends SubscriptionHandler implements OnInit {
 
     this.netWorthData$ = this.dataService.getNetWorthData();
 
-    this.tableData$ = this.dataService.getMonthData()
+    this.tableData$ = this.dataService.getSnapshot()
       .pipe(
         takeUntil(this.ngUnsubscribe),
         map(data => data.filter((mm) => mm.payment > 0))
       );
 
-    this.plotData$ = this.dataService.getMonthData()
+    this.plotData$ = this.dataService.getSnapshot()
       .pipe(
         takeUntil(this.ngUnsubscribe),
         map(data => {
           return [
             {
               mode: 'lines', name: 'Mortgage',
-              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.remaining)
+              x: data.map((mm) => new Date(mm.timestamp).getFractionalYear()), y: data.map((mm) => mm.principal)
             },
             {
               mode: 'lines', name: 'Incr. Interest',
-              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.incrementalInterest)
+              x: data.map((mm) => new Date(mm.timestamp).getFractionalYear()), y: data.map((mm) => mm.interestDelta)
             },
             {
               mode: 'lines', name: 'Cum. Interest',
-              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.cumulativeInterest)
+              x: data.map((mm) => new Date(mm.timestamp).getFractionalYear()), y: data.map((mm) => mm.interestPaid)
             },
             {
               mode: 'lines', name: 'Payment',
-              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.payment)
+              x: data.map((mm) => new Date(mm.timestamp).getFractionalYear()), y: data.map((mm) => mm.payment)
             },
           ] as GenericPlotData[];
         })
@@ -65,8 +65,14 @@ export class PlannerComponent extends SubscriptionHandler implements OnInit {
 
   onMortgageDataChange(mortgage: Mortgage): void {
     mortgage = Mortgage.create(mortgage);
-    const monthData = mortgage.generateMortgageLifetimeData();
-    this.dataService.setMonthData(monthData);
+
+    var snapshotDate = new Date(mortgage.startDate.getTime()).toStartOfMonth();
+    const endDate = mortgage.startDate.plusYears(35).toStartOfMonth();
+    while (+snapshotDate < +endDate) {
+      mortgage.evaluate(snapshotDate);
+      snapshotDate.setMonth(snapshotDate.getMonth() + 1);
+    }
+
     this.dataService.setMortgage(mortgage);
   }
 

@@ -1,13 +1,13 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { TaxPayer } from 'app/interfaces/v2/tax-payer';
+import { TaxPayer } from 'app/interfaces/v3/people/people';
 import { UtilityService } from 'app/services/utility.service';
 
 @Pipe({
     name: 'salarySummary',
 })
 export class SalarySummaryPipe implements PipeTransform {
-    constructor(private currencyPipe: CurrencyPipe) {}
+    constructor(private currencyPipe: CurrencyPipe) { }
 
     transform(tp: TaxPayer): string {
         const incomes = tp.getAllIncomes();

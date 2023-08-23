@@ -3,9 +3,9 @@ import { Observable, ReplaySubject, map, takeUntil } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { GenericPlotData } from 'app/interfaces/plotly/generic-plot-data';
-import { MonthData } from 'app/interfaces/v2/month-data';
-import { Mortgage } from 'app/interfaces/v2/mortgage';
-import { FormData } from 'app/interfaces/v2/form-data';
+import { Household } from 'app/interfaces/v3/household';
+import { Snapshot } from 'app/interfaces/v3/snapshot';
+import { Mortgage } from 'app/interfaces/v3/mortgage';
 
 @Component({
   selector: 'fc-mortgage-calculator',
@@ -15,13 +15,12 @@ import { FormData } from 'app/interfaces/v2/form-data';
 })
 export class MortgageCalculatorComponent extends SubscriptionHandler implements OnInit {
 
-  mortgage: Mortgage = FormData.sampleData().mortgage;
+  mortgage: Mortgage = Household.sampleData().mortgage;
 
-  tableData$: Observable<MonthData[]>;
+  tableData$: Observable<Snapshot[]>;
   plotData$: Observable<GenericPlotData[]>;
 
-  private monthData: MonthData[] = [];
-  private monthDataChanged: ReplaySubject<MonthData[]> = new ReplaySubject();
+  private monthDataChanged: ReplaySubject<Snapshot[]> = new ReplaySubject();
 
   constructor(
     private cd: ChangeDetectorRef
@@ -41,22 +40,23 @@ export class MortgageCalculatorComponent extends SubscriptionHandler implements 
       .pipe(
         takeUntil(this.ngUnsubscribe),
         map(data => {
+          const xLabels = data.filter((mm) => mm.payment > 0).map((mm) => new Date(mm.timestamp).getFractionalYear());
           return [
             {
               mode: 'lines', name: 'Mortgage',
-              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.remaining)
+              x: xLabels, y: data.map((mm) => mm.principal)
             },
             {
               mode: 'lines', name: 'Incr. Interest',
-              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.incrementalInterest)
+              x: xLabels, y: data.map((mm) => mm.interestDelta)
             },
             {
               mode: 'lines', name: 'Cum. Interest',
-              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.cumulativeInterest)
+              x: xLabels, y: data.map((mm) => mm.interestPaid)
             },
             {
               mode: 'lines', name: 'Payment',
-              x: data.filter(mm => mm.payment > 0).map((mm) => mm.month / 12.0), y: data.map((mm) => mm.payment)
+              x: xLabels, y: data.map((mm) => mm.payment)
             },
           ] as GenericPlotData[];
         })
@@ -68,19 +68,25 @@ export class MortgageCalculatorComponent extends SubscriptionHandler implements 
     this.cd.detectChanges();
   }
 
-  getMonthData(): Observable<MonthData[]> {
+  getMonthData(): Observable<Snapshot[]> {
     return this.monthDataChanged.asObservable();
   }
 
-  setMonthData(monthData: MonthData[]): void {
-    this.monthData = monthData;
-    this.monthDataChanged.next(this.monthData);
+  setMonthData(monthData: Snapshot[]): void {
+    this.monthDataChanged.next(monthData);
   }
 
   onMortgageDataChange(mortgageParams: Mortgage): void {
     this.mortgage = Mortgage.create(mortgageParams);
-    const monthData = this.mortgage.generateMortgageLifetimeData();
-    this.setMonthData(monthData);
+    const household = new Household(null, [], null, this.mortgage, null);
+
+    var snapshotDate = new Date(mortgageParams.startDate.getTime()).toStartOfMonth();
+    const endDate = snapshotDate.plusYears(35).toStartOfMonth();
+    while (+snapshotDate < +endDate) {
+      this.mortgage.evaluate(snapshotDate);
+      snapshotDate.setMonth(snapshotDate.getMonth() + 1);
+    }
+    this.setMonthData(household.createSnapshotSeries(mortgageParams.startDate, endDate));
   }
 
 }

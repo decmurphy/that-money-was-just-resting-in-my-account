@@ -10,7 +10,7 @@ export class PlotlyLayoutFactory {
     fontColor = '#0c4a6e';
     gridColor = '#bbbbbb';
 
-    constructor() {}
+    constructor() { }
 
     getLayout(plotConfig: PlotlyConfig): PlotlyLayout {
         switch (plotConfig.type) {
@@ -30,7 +30,7 @@ export class PlotlyLayoutFactory {
     getLineChartLayout(plotConfig: PlotlyConfig): PlotlyLayout {
         return new PlotlyLayout(
             plotConfig.title,
-            true,
+            false,
             {
                 family: 'Montserrat',
                 size: 15,

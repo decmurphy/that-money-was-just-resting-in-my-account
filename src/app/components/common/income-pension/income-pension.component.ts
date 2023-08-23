@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
-import { Subscription, takeUntil, tap } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { MaritalStatus } from 'app/interfaces/v2/marital-status';
-import { TaxPayer } from 'app/interfaces/v2/tax-payer';
+import { TaxPayer } from 'app/interfaces/v3/people/people';
 
 @Component({
     selector: 'fc-income-pension',
@@ -15,12 +14,8 @@ import { TaxPayer } from 'app/interfaces/v2/tax-payer';
 })
 export class IncomePensionComponent
     extends SubscriptionHandler
-    implements OnInit
-{
-    form: FormGroup;
-    formValueChangesSub: Subscription;
+    implements OnInit {
     taxpayers: TaxPayer[];
-    data: MaritalStatus;
     showInfo = false;
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
@@ -32,28 +27,8 @@ export class IncomePensionComponent
             .getData()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data) => {
-                this.data = data.maritalStatus;
                 this.taxpayers = data.taxpayers;
-                this.resetForm();
             });
-    }
-
-    resetForm(): void {
-        this.data = MaritalStatus.create(this.data);
-        this.form = this.data.toFormGroup(this.fb);
-        this.form.updateValueAndValidity();
-        this.form.markAllAsTouched();
-
-        if (this.formValueChangesSub != null) {
-            this.formValueChangesSub.unsubscribe();
-        }
-
-        this.formValueChangesSub = this.form.valueChanges
-            .pipe(
-                takeUntil(this.ngUnsubscribe),
-                tap((fv) => this.dataService.setMaritalStatus(fv))
-            )
-            .subscribe((fv) => {});
     }
 
     addTaxpayer() {

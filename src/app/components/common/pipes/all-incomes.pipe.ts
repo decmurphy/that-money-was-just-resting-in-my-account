@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Income } from 'app/interfaces/v2/income';
-import { TaxPayer } from 'app/interfaces/v2/tax-payer';
+import { Income, TaxPayer } from 'app/interfaces/v3/people/people';
 
 @Pipe({
     name: 'allIncomes',

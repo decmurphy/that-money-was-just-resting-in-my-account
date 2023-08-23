@@ -1,40 +1,37 @@
 import { Injectable } from '@angular/core';
-import { Expenditures } from 'app/interfaces/v2/expenditures';
-import { FormData } from 'app/interfaces/v2/form-data';
 import { GenericPlotData } from 'app/interfaces/plotly/generic-plot-data';
-import { MaritalStatus } from 'app/interfaces/v2/marital-status';
-import { MonthData } from 'app/interfaces/v2/month-data';
-import { Mortgage } from 'app/interfaces/v2/mortgage';
-import { Strategy } from 'app/interfaces/v2/strategy/strategy';
-import { StrategyEvent } from 'app/interfaces/v2/strategy/strategy-event';
+import { Strategy } from 'app/interfaces/v3/strategy';
 import { AppServicesModule } from 'app/modules/app-services.module';
 import { Observable, ReplaySubject, debounceTime, distinct } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
-import { UtilityService } from './utility.service';
-import { TaxPayer } from 'app/interfaces/v2/tax-payer';
+
+import 'app/interfaces/extensions/date.extensions';
+import { Household } from 'app/interfaces/v3/household';
+import { Snapshot } from 'app/interfaces/v3/snapshot';
+import { TaxPayer } from 'app/interfaces/v3/people/people';
+import { Mortgage } from 'app/interfaces/v3/mortgage';
+import { Expenditures } from 'app/interfaces/v3/expenditures';
+import { Event, Noop } from 'app/interfaces/v3/events/events';
 
 @Injectable({
     providedIn: AppServicesModule,
 })
 export class DataService {
-    private dataLSKey: string;
-    private data: FormData;
-    private dataChanged: ReplaySubject<FormData> = new ReplaySubject();
 
-    private monthData: MonthData[] = [];
-    private monthDataChanged: ReplaySubject<MonthData[]> = new ReplaySubject();
+    private dataLSKey: string;
+    private data: Household;
+    private dataChanged: ReplaySubject<Household> = new ReplaySubject();
+
+    private snapshot: Snapshot[] = [];
+    private snapshotChanged: ReplaySubject<Snapshot[]> = new ReplaySubject();
 
     private netWorthData: GenericPlotData[];
-    private netWorthDataChanged: ReplaySubject<GenericPlotData[]> =
-        new ReplaySubject();
-    private mortgageData: GenericPlotData[];
-    private mortgageDataChanged: ReplaySubject<GenericPlotData[]> =
-        new ReplaySubject();
+    private netWorthDataChanged: ReplaySubject<GenericPlotData[]> = new ReplaySubject();
 
     constructor(private ls: LocalStorageService) {
-        this.dataLSKey = 'mortgageCalcConfigV2';
+        this.dataLSKey = 'mortgageCalcConfigV3';
         const mccString = this.ls.get(this.dataLSKey);
-        const mcc = JSON.parse(mccString) || FormData.sampleData();
+        const mcc = JSON.parse(mccString) || Household.sampleData();
         this.setData(mcc);
 
         this.getData()
@@ -47,22 +44,22 @@ export class DataService {
 
     }
 
-    getData(): Observable<FormData> {
+    getData(): Observable<Household> {
         return this.dataChanged.asObservable();
     }
 
-    setData(data: FormData): void {
-        this.data = FormData.create(data);
+    setData(data: Household): void {
+        this.data = Household.create(data);
         this.dataChanged.next(this.data);
     }
 
-    getMonthData(): Observable<MonthData[]> {
-        return this.monthDataChanged.asObservable();
+    getSnapshot(): Observable<Snapshot[]> {
+        return this.snapshotChanged.asObservable();
     }
 
-    setMonthData(monthData: MonthData[]): void {
-        this.monthData = monthData;
-        this.monthDataChanged.next(this.monthData);
+    setSnapshot(snapshot: Snapshot[]): void {
+        this.snapshot = snapshot;
+        this.snapshotChanged.next(this.snapshot);
     }
 
     getNetWorthData(): Observable<GenericPlotData[]> {
@@ -74,15 +71,6 @@ export class DataService {
         this.netWorthDataChanged.next(this.netWorthData);
     }
 
-    getMortgageData(): Observable<GenericPlotData[]> {
-        return this.mortgageDataChanged.asObservable();
-    }
-
-    setMortgageData(data: GenericPlotData[]): void {
-        this.mortgageData = data;
-        this.mortgageDataChanged.next(this.mortgageData);
-    }
-
     addTaxpayer() {
         this.data.taxpayers.push(new TaxPayer());
         this.setData(this.data);
@@ -90,11 +78,6 @@ export class DataService {
 
     removeTaxpayer(idx: number): void {
         this.data.taxpayers.splice(idx, 1);
-        this.setData(this.data);
-    }
-
-    setMaritalStatus(model: MaritalStatus): void {
-        this.data.maritalStatus = model;
         this.setData(this.data);
     }
 
@@ -118,214 +101,66 @@ export class DataService {
         this.setData(this.data);
     }
 
-    setEvent(i: number, model: StrategyEvent): void {
-        this.data.strategy.events[i] = model;
+    setEvent(id: string, model: Event): void {
+        this.data.strategy.events = this.data.strategy.events.map(ev => ev.id == id ? model : ev);
         this.setData(this.data);
     }
 
     addEvent(): void {
-        this.data.strategy.events.push(new StrategyEvent());
+        this.data.strategy.events.push(new Noop());
         this.setData(this.data);
     }
 
-    deleteEvent(i: number): void {
-        this.data.strategy.events.splice(i, 1);
+    deleteEvent(id: string): void {
+        const eventToDelete = this.data.strategy.events.find(ev => ev.id == id);
+        const idx = this.data.strategy.events.indexOf(eventToDelete);
+        this.data.strategy.events.splice(idx, 1);
         this.setData(this.data);
     }
 
     updateFormInputs() {
-        // this.data = FormData.create(this.data);
-        this.populateData(this.data);
 
-        // make copy
-        const fv = FormData.create(this.data);
+        const copy = Household.create(this.data);
+        copy.evaluate();
 
-        // again with the strategy for the graphs, and save this one
-        const monthData = this.populateData(fv, this.data.strategy);
+        this.setSnapshot(copy.createSnapshotSeries());
 
-        const pensionMpr = fv.taxpayers
-            .map((tp) =>
-                tp.employment.pension
-                    ? tp.employment.pension.annualGrowthRate
-                    : 0
-            )
-            .map((apr) => Mortgage.aprToMpr(apr));
+        const netWorthData: GenericPlotData[] = [
 
-        const liabilities = [];
-        const savingsFund = [];
-        const pensionFund = fv.taxpayers.map((tp, i) => [] as number[]);
-        monthData.forEach((mm, i) => {
-            /*
-                Calculate Savings/Liabilities
-            */
-
-            if (i == 0) {
-                liabilities[i] = -mm.remaining;
-                savingsFund[i] = fv.taxpayers
-                    .map((tp) => tp.details.initialSavings)
-                    .reduce((acc, cur) => acc + cur, 0);
-                fv.taxpayers.forEach((tp, j) =>
-                    pensionFund[j].push(tp.details.initialPension)
-                );
-            } else {
-                // const liabilitiesDelta = -mm.remaining;
-
-                liabilities[i] = -mm.remaining;
-
-                const savingsDelta =
-                    mm.incomes.reduce((acc, cur) => acc + cur, 0.0) -
-                    mm.expenditures -
-                    mm.payment;
-
-                savingsFund[i] = savingsFund[i - 1] + savingsDelta;
-                if (i === fv.mortgage.startAfterMonth) {
-                    savingsFund[i] -= fv.mortgage.deposit;
-                }
-
-                const pensionDelta = fv.taxpayers.map((tp, j) => {
-                    const pensionInterest =
-                        pensionFund[j][i - 1] * pensionMpr[j];
-                    const pensionContrib = mm.pensionContribs[j];
-                    return pensionInterest + pensionContrib;
-                });
-
-                fv.taxpayers.forEach((tp, j) =>
-                    pensionFund[j].push(pensionFund[j][i - 1] + pensionDelta[j])
-                );
-            }
-        });
-
-        /*
-            Set Month Data
-        */
-        this.setMonthData(monthData);
-
-        /*
-            Build Graphs
-        */
-        const netWorthData = [];
-        fv.taxpayers.forEach((tp, i) => {
-            netWorthData.push({
-                mode: 'lines',
-                name: `Pension (${tp.details.name})`,
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: pensionFund[i],
-            });
-        });
-
-        const combinedPensionFund = [];
-        for (let i = 0; i < this.monthData.length; i++) {
-            const combinedContribs = UtilityService.sum(
-                fv.taxpayers.map((tp, j) => pensionFund[j][i])
-            );
-            combinedPensionFund.push(combinedContribs);
-        }
-
-        netWorthData.push(
             {
                 mode: 'lines',
                 name: 'Net Worth',
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: this.monthData.map(
-                    (mm, i) =>
-                        liabilities[i] +
-                        (i >= fv.mortgage.startAfterMonth
-                            ? fv.mortgage.amount +
-                            fv.mortgage.deposit +
-                            fv.mortgage.htb
-                            : 0) +
-                        savingsFund[i] +
-                        combinedPensionFund[i]
-                ),
+                x: this.snapshot.map(el => new Date(el.timestamp).getFractionalYear()),
+                y: this.snapshot.map(el => el.netWorth)
             },
+
             {
                 mode: 'lines',
                 name: 'Savings',
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: savingsFund,
+                x: this.snapshot.map(el => new Date(el.timestamp).getFractionalYear()),
+                y: this.snapshot.map(el => el.cash)
             },
+
             {
                 mode: 'lines',
                 name: 'Liabilities',
-                x: this.monthData.map((mm) => mm.month / 12.0),
-                y: liabilities,
+                x: this.snapshot.map(el => new Date(el.timestamp).getFractionalYear()),
+                y: this.snapshot.map(el => -el.principal)
             }
-        );
+
+        ];
+
+        copy.taxpayers.forEach((tp, i) => {
+            netWorthData.push({
+                mode: 'lines',
+                name: `Pension (${tp.details.name})`,
+                x: this.snapshot.map(el => new Date(el.timestamp).getFractionalYear()),
+                y: this.snapshot.map(el => el.pension[i])
+            });
+        });
 
         this.setNetWorthData(netWorthData);
 
-    }
-
-    populateData(formData: FormData, strategy = new Strategy()): MonthData[] {
-
-        let monthIdx = 0;
-
-        const now = new Date();
-
-        do {
-            const _date = new Date(
-                now.getTime() + monthIdx * 30 * 24 * 60 * 60 * 1000
-            );
-
-            if (strategy.events.length > 0 || monthIdx === 0) {
-                // console.log(monthIdx, formData.tp1.income);
-
-                strategy.apply(formData, monthIdx);
-
-                /*
-                    Set Marital Status
-                */
-                if (formData.taxpayers.length == 2) {
-                    const tp1IsAssessor =
-                        formData.taxpayers[0].employment.income.gross >
-                        formData.taxpayers[1].employment.income.gross;
-                    formData.taxpayers[0].details.maritalStatus =
-                        MaritalStatus.create({
-                            ...formData.maritalStatus,
-                            isAssessor: tp1IsAssessor,
-                        } as MaritalStatus);
-                    formData.taxpayers[1].details.maritalStatus =
-                        MaritalStatus.create({
-                            ...formData.maritalStatus,
-                            isAssessor: !tp1IsAssessor,
-                        } as MaritalStatus);
-                }
-
-                /*
-                    Calculate Pension Contribution
-                */
-                formData.taxpayers.forEach((tp) =>
-                    tp.calculateTaxAndPension(_date.getFullYear())
-                );
-            }
-
-            const monthlyExpenditures = UtilityService.sum(
-                formData.expenditures.monthlyItems.map((item) => item.amount)
-            );
-            const yearlyExpenditures = UtilityService.sum(
-                formData.expenditures.yearlyItems.map((item) => item.amount)
-            );
-
-            if (this.monthData[monthIdx]) {
-                this.monthData[monthIdx].expenditures = monthlyExpenditures + yearlyExpenditures / 12.0;
-                this.monthData[monthIdx].incomes = formData.taxpayers.map((tp) =>
-                    UtilityService.sum(
-                        tp.getAllIncomes().map((i) => i.net)
-                    ) / 12.0
-                );
-                this.monthData[monthIdx].pensionContribs = formData.taxpayers.map((tp) =>
-                    tp.employment.pension
-                        ? tp.employment.pension.summary.amount / 12.0
-                        : 0
-                );
-            }
-
-            monthIdx++;
-
-            // 25 years optimal. 50 absolute max, don't care how big the mortgage is
-        } while (monthIdx <= 600);
-
-        return this.monthData;
     }
 
 }

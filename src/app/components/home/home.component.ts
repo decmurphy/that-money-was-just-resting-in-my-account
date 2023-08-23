@@ -11,12 +11,10 @@ import { Observable } from 'rxjs';
 export class HomeComponent implements OnInit {
 
   netWorthData$: Observable<GenericPlotData[]>;
-  mortgageData$: Observable<GenericPlotData[]>;
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
     this.netWorthData$ = this.dataService.getNetWorthData();
-    this.mortgageData$ = this.dataService.getMortgageData();
   }
 
 }

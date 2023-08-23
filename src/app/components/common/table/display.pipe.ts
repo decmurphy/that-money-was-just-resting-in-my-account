@@ -1,18 +1,18 @@
 import { CurrencyPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { MonthData } from 'app/interfaces/v2/month-data';
+import { Snapshot } from 'app/interfaces/v3/snapshot';
 
 @Pipe({
     name: 'display',
 })
 export class DisplayPipe implements PipeTransform {
-    constructor(private currency: CurrencyPipe) {}
-    transform(element: MonthData, col: string): string {
+    constructor(private currency: CurrencyPipe) { }
+    transform(element: Snapshot, col: string): string {
         switch (col) {
             case 'year':
-                return '' + Math.floor(element.month / 12);
+                return new Date(element.timestamp).getFullYear() + "";
             case 'month':
-                return '' + (1 + (element.month % 12));
+                return new Date(element.timestamp).getMonth() + 1 + "";
             case 'payment':
                 return this.currency.transform(
                     element.payment,
@@ -22,21 +22,21 @@ export class DisplayPipe implements PipeTransform {
                 );
             case 'incrementalInterest':
                 return this.currency.transform(
-                    element.incrementalInterest,
+                    element.interestDelta,
                     'EUR',
                     'symbol',
                     '1.0-0'
                 );
             case 'cumulativeInterest':
                 return this.currency.transform(
-                    element.cumulativeInterest,
+                    element.interestPaid,
                     'EUR',
                     'symbol',
                     '1.0-0'
                 );
             case 'remaining':
                 return this.currency.transform(
-                    element.remaining,
+                    element.principal,
                     'EUR',
                     'symbol',
                     '1.0-0'

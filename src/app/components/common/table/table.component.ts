@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, TrackByFunction } from '@angular/core';
 
-import { MonthData } from 'app/interfaces/v2/month-data';
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
+import { Snapshot } from 'app/interfaces/v3/snapshot';
 
 @Component({
     selector: 'fc-table',
@@ -11,7 +11,7 @@ import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 export class TableComponent extends SubscriptionHandler implements OnInit {
     math = Math;
 
-    @Input() tableData: MonthData[];
+    @Input() tableData: Snapshot[];
     displayedColumns: string[];
 
     constructor() {
@@ -29,7 +29,7 @@ export class TableComponent extends SubscriptionHandler implements OnInit {
         ];
     }
 
-    trackMonth: TrackByFunction<MonthData> = (index: number, item: MonthData) =>
+    trackMonth: TrackByFunction<Snapshot> = (index: number, item: Snapshot) =>
         index;
 
     trackCol: TrackByFunction<string> = (index: number, item: string) => index;

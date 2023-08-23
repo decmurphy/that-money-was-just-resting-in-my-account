@@ -5,8 +5,8 @@ import { Subscription, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { Expenditures } from 'app/interfaces/v2/expenditures';
-import { NamedAmount } from 'app/interfaces/v2/named-amount';
+import { Expenditures } from 'app/interfaces/v3/expenditures';
+import { NamedAmount } from 'app/interfaces/v3/named-amount';
 
 @Component({
     selector: 'fc-expenditures',
@@ -15,8 +15,7 @@ import { NamedAmount } from 'app/interfaces/v2/named-amount';
 })
 export class ExpendituresComponent
     extends SubscriptionHandler
-    implements OnInit
-{
+    implements OnInit {
     editing = false;
     form: FormGroup;
     formValueChangesSub: Subscription;
@@ -52,7 +51,7 @@ export class ExpendituresComponent
                 takeUntil(this.ngUnsubscribe),
                 tap((fv) => this.dataService.setExpenditures(fv))
             )
-            .subscribe((fv) => {});
+            .subscribe((fv) => { });
     }
 
     addMonthlyItem() {

@@ -1,10 +1,12 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UtilityService } from 'app/services/utility.service';
-import { RequiredNumber } from 'app/validators/required-number.directive';
-import { FormWithErrors } from '../forms/form-with-errors';
+import { UtilityService } from "app/services/utility.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+
+import { FormWithErrors } from "../forms/form-with-errors";
+import { RequiredNumber } from "app/validators/required-number.directive";
 
 export class NamedAmount extends FormWithErrors {
-    constructor(
+
+    public constructor(
         private _id: string = null,
         public name: string = null,
         public amount: number = null
@@ -34,4 +36,5 @@ export class NamedAmount extends FormWithErrors {
             ],
         });
     }
+
 }

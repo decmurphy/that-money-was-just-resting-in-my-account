@@ -1,10 +1,7 @@
 <div class="relative z-0 w-full">
-    <div
-        class="list-element relative z-10 flex w-full items-center"
-        [ngClass]="{
+    <div class="list-element relative z-10 flex w-full items-center" [ngClass]="{
             'sticky top-0': editing
-        }"
-    >
+        }">
         <div class="flex grow flex-col">
             <h6>{{ data.details.name }}</h6>
             <p class="ml-4">
@@ -14,59 +11,32 @@
                 {{ data.employment.pension | pensionSummary }}
             </p>
         </div>
-        <button
-            class="btn primary ml-2 h-8 w-8 p-1"
-            (click)="editing = !editing"
-        >
-            <div
-                class="rotate-0 transition-transform duration-300"
-                [ngClass]="{
+        <button class="btn primary ml-2 h-8 w-8 p-1" (click)="editing = !editing">
+            <div class="rotate-0 transition-transform duration-300" [ngClass]="{
                     'rotate-[360deg]': editing
-                }"
-            >
-                <ng-container
-                    *ngIf="editing; then checkTmpl; else editTmpl"
-                ></ng-container>
+                }">
+                <ng-container *ngIf="editing; then checkTmpl; else editTmpl"></ng-container>
             </div>
         </button>
-        <button
-            [ngClass]="{
+        <button [ngClass]="{
                 disabled: taxpayers.length == 1
-            }"
-            [disabled]="taxpayers.length == 1"
-            class="btn primary ml-2 p-1"
-            (click)="delete()"
-        >
-            <svg
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                ></path>
+            }" [disabled]="taxpayers.length == 1" class="btn primary ml-2 p-1" (click)="delete()">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                </path>
             </svg>
         </button>
     </div>
-    <form
-        *ngIf="form"
-        [formGroup]="form"
+    <form *ngIf="form" [formGroup]="form"
         class="relative z-0 w-full space-y-2 overflow-hidden rounded-b-lg border-4 border-t-0 border-b-4 border-sky-800 p-4 transition-all duration-700"
         [ngClass]="{
             '-mt-6 max-h-0 pt-0': !editing,
             '-mt-4 max-h-[96rem] pt-8': editing
-        }"
-    >
+        }">
         <h5>Personal Details</h5>
-        <div
-            class="grid grid-cols-1 gap-2 sm:grid-cols-2"
-            formGroupName="details"
-        >
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2" formGroupName="details">
             <fc-form-field>
                 <span formLabel>Name</span>
                 <input formInput type="text" formControlName="name" />
@@ -80,21 +50,13 @@
             </fc-form-field>
             <fc-form-field>
                 <span formLabel>Initial Savings</span>
-                <input
-                    formInput
-                    type="number"
-                    formControlName="initialSavings"
-                />
+                <input formInput type="number" formControlName="initialSavings" />
                 <span formError *ngIf="details.get('initialSavings').invalid">
                 </span>
             </fc-form-field>
             <fc-form-field>
                 <span formLabel>Initial Pension</span>
-                <input
-                    formInput
-                    type="number"
-                    formControlName="initialPension"
-                />
+                <input formInput type="number" formControlName="initialPension" />
                 <span formError *ngIf="details.get('initialPension').invalid">
                 </span>
             </fc-form-field>
@@ -103,11 +65,13 @@
         <div class="-ml-4 w-[calc(100%+4rem)] border-b border-sky-800"></div>
 
         <h5>Employment</h5>
-        <div
-            class="grid grid-cols-1 gap-2 sm:grid-cols-2"
-            formGroupName="employment"
-        >
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2" formGroupName="employment">
             <ng-container formGroupName="income">
+                <fc-form-field>
+                    <span formLabel>Name</span>
+                    <input formInput type="text" formControlName="name" />
+                    <span formError *ngIf="income.get('name').invalid"> </span>
+                </fc-form-field>
                 <fc-form-field>
                     <span formLabel>Salary</span>
                     <p class="text-sky-100" formPrefix>€</p>
@@ -123,24 +87,20 @@
         <div>
             <h6>Ancillary Income</h6>
             <div class="my-4">
-                <ng-container
-                    *ngTemplateOutlet="
+                <ng-container *ngTemplateOutlet="
                         ancillarySuggestionsTmpl;
                         context: { data: data, form: form }
-                    "
-                ></ng-container>
+                    "></ng-container>
             </div>
         </div>
 
         <div>
             <h6>Benefit In Kind</h6>
             <div class="my-4">
-                <ng-container
-                    *ngTemplateOutlet="
+                <ng-container *ngTemplateOutlet="
                         bikSuggestionsTmpl;
                         context: { data: data, form: form }
-                    "
-                ></ng-container>
+                    "></ng-container>
             </div>
         </div>
 
@@ -149,12 +109,10 @@
         <div>
             <h6>Pension</h6>
             <div class="my-4">
-                <ng-container
-                    *ngTemplateOutlet="
+                <ng-container *ngTemplateOutlet="
                         pensionSuggestionsTmpl;
                         context: { data: data, form: form }
-                    "
-                ></ng-container>
+                    "></ng-container>
             </div>
         </div>
 
@@ -163,12 +121,10 @@
         <div>
             <h6>Additional Incomes</h6>
             <div class="my-4">
-                <ng-container
-                    *ngTemplateOutlet="
+                <ng-container *ngTemplateOutlet="
                         incomeSuggestionsTmpl;
                         context: { data: data, form: form }
-                    "
-                ></ng-container>
+                    "></ng-container>
             </div>
         </div>
 
@@ -177,12 +133,10 @@
         <div>
             <h6>Tax Credits</h6>
             <div class="my-4">
-                <ng-container
-                    *ngTemplateOutlet="
+                <ng-container *ngTemplateOutlet="
                         taxCreditSuggestionsTmpl;
                         context: { data: data }
-                    "
-                ></ng-container>
+                    "></ng-container>
             </div>
         </div>
 
@@ -193,46 +147,43 @@
                 <span class="text-left lg:text-right">Tax Credits</span>
                 <span class="text-right font-mono lg:text-left">{{
                     data.taxPayable.taxCreditsUsed | currency: "EUR"
-                }}</span>
+                    }}</span>
 
                 <span class="text-left lg:text-right">Net Tax</span>
                 <span class="text-right font-mono lg:text-left">{{
                     data.taxPayable.incomeTax | currency: "EUR"
-                }}</span>
+                    }}</span>
 
                 <span class="text-left lg:text-right">PRSI</span>
                 <span class="text-right font-mono lg:text-left">{{
                     data.taxPayable.prsi | currency: "EUR"
-                }}</span>
+                    }}</span>
 
                 <span class="text-left lg:text-right">USC</span>
                 <span class="text-right font-mono lg:text-left">{{
                     data.taxPayable.usc | currency: "EUR"
-                }}</span>
+                    }}</span>
             </div>
 
             <div class="grid grid-cols-2 gap-y-0 gap-x-4">
                 <span class="text-left lg:text-right">Pension</span>
                 <span class="text-right font-mono lg:text-left">{{
                     (data.employment.pension
-                        ? data.employment.pension.summary.amount
-                        : 0
+                    ? data.employment.pension.summary
+                    : 0
                     ) | currency: "EUR"
-                }}</span>
+                    }}</span>
 
                 <span class="text-left lg:text-right">Net Income</span>
-                <span class="text-right font-mono lg:text-left"
-                    >{{ [data] | allIncomes | sum: "net" | currency: "EUR" }} /
-                    year</span
-                >
+                <span class="text-right font-mono lg:text-left">{{ [data] | allIncomes | sum: "net" | currency: "EUR" }}
+                    /
+                    year</span>
 
-                <span class="col-start-2 text-right font-mono lg:text-left"
-                    >{{
-                        ([data] | allIncomes | sum: "net") / 12.0
-                            | currency: "EUR"
+                <span class="col-start-2 text-right font-mono lg:text-left">{{
+                    ([data] | allIncomes | sum: "net") / 12.0
+                    | currency: "EUR"
                     }}
-                    / month</span
-                >
+                    / month</span>
 
                 <span class="h-4"></span>
                 <span class="h-4"></span>
@@ -243,209 +194,130 @@
 
 <ng-template #pensionSuggestionsTmpl let-data="data" let-form="form">
     <div class="flex flex-wrap gap-1">
-        <fc-chip
-            *ngFor="let suggestion of pensionSuggestions"
-            [hidden]="
+        <fc-chip *ngFor="let suggestion of pensionSuggestions" [hidden]="
                 data.employment.pension &&
                 data.employment.pension.id != suggestion.id
-            "
-            [active]="data.employment.pension?.id == suggestion.id"
-            [editable]="true"
-            [title]="suggestion.name"
-            (onAdd)="addPension(suggestion)"
-            (onDelete)="removePension()"
-        >
-            <ng-container
-                *ngTemplateOutlet="
+            " [active]="data.employment.pension?.id == suggestion.id" [editable]="true" [title]="suggestion.name"
+            (onAdd)="addPension(suggestion)" (onDelete)="removePension()">
+            <ng-container *ngTemplateOutlet="
                     editPensionTmpl;
                     context: { form: form, data: data }
-                "
-            ></ng-container>
+                "></ng-container>
         </fc-chip>
     </div>
 </ng-template>
 
 <ng-template #incomeSuggestionsTmpl let-form="form" let-data="data">
     <div class="flex flex-wrap gap-1">
-        <fc-chip
-            *ngFor="
+        <fc-chip *ngFor="
                 let suggestion of data.otherIncomes;
                 let i = index;
                 trackBy: trackIncome
-            "
-            [active]="true"
-            [editable]="true"
-            [title]="suggestion.name"
-            (onDelete)="removeIncome(suggestion)"
-        >
-            <ng-container
-                *ngTemplateOutlet="
+            " [active]="true" [editable]="true" [title]="suggestion.name" (onDelete)="removeIncome(suggestion)">
+            <ng-container *ngTemplateOutlet="
                     editIncomeTmpl;
                     context: {
                         form: form,
                         data: data,
                         index: i
                     }
-                "
-            ></ng-container>
+                "></ng-container>
         </fc-chip>
-        <fc-chip
-            *ngFor="
+        <fc-chip *ngFor="
                 let suggestion of incomeSuggestions
                     | filterByNotIn: data.otherIncomes;
                 trackBy: trackIncome
-            "
-            [title]="suggestion.name"
-            (onAdd)="addIncome(suggestion)"
-        >
+            " [title]="suggestion.name" (onAdd)="addIncome(suggestion)">
         </fc-chip>
     </div>
 </ng-template>
 
 <ng-template #ancillarySuggestionsTmpl let-form="form" let-data="data">
     <div class="flex flex-wrap gap-1">
-        <fc-chip
-            *ngFor="
+        <fc-chip *ngFor="
                 let suggestion of data.employment.ancillary;
                 let i = index;
                 trackBy: trackIncome
-            "
-            [active]="true"
-            [editable]="true"
-            [title]="suggestion.name"
-            (onDelete)="removeAncillary(suggestion)"
-        >
-            <ng-container
-                *ngTemplateOutlet="
+            " [active]="true" [editable]="true" [title]="suggestion.name" (onDelete)="removeAncillary(suggestion)">
+            <ng-container *ngTemplateOutlet="
                     editAncillaryTmpl;
                     context: {
                         form: form,
                         data: data,
                         index: i
                     }
-                "
-            ></ng-container>
+                "></ng-container>
         </fc-chip>
-        <fc-chip
-            *ngFor="
+        <fc-chip *ngFor="
                 let suggestion of ancillarySuggestions
                     | filterByNotIn: data.employment.ancillary
-            "
-            [title]="suggestion.name"
-            (onAdd)="addAncillary(suggestion)"
-        >
+            " [title]="suggestion.name" (onAdd)="addAncillary(suggestion)">
         </fc-chip>
     </div>
 </ng-template>
 
 <ng-template #bikSuggestionsTmpl let-form="form" let-data="data">
     <div class="flex flex-wrap gap-1">
-        <fc-chip
-            *ngFor="
+        <fc-chip *ngFor="
                 let suggestion of data.employment.benefitInKind;
                 let i = index;
                 trackBy: trackBenefitInKind
-            "
-            [active]="true"
-            [editable]="true"
-            [title]="suggestion.name"
-            (onDelete)="removeBIK(suggestion)"
-        >
-            <ng-container
-                *ngTemplateOutlet="
+            " [active]="true" [editable]="true" [title]="suggestion.name" (onDelete)="removeBIK(suggestion)">
+            <ng-container *ngTemplateOutlet="
                     editBIKTmpl;
                     context: {
                         form: form,
                         data: data,
                         index: i
                     }
-                "
-            >
+                ">
             </ng-container>
         </fc-chip>
-        <fc-chip
-            *ngFor="
+        <fc-chip *ngFor="
                 let suggestion of bikSuggestions
                     | filterByNotIn: data.employment.benefitInKind
-            "
-            [title]="suggestion.name"
-            (onAdd)="addBIK(suggestion)"
-        >
+            " [title]="suggestion.name" (onAdd)="addBIK(suggestion)">
         </fc-chip>
     </div>
 </ng-template>
 
 <ng-template #taxCreditSuggestionsTmpl let-data="data">
     <div class="flex flex-wrap gap-1">
-        <fc-chip
-            *ngFor="let suggestion of taxCreditSuggestions"
-            [active]="data.taxCredits | contains: suggestion"
-            [title]="suggestion.name"
-        ></fc-chip>
+        <fc-chip *ngFor="let suggestion of taxCreditSuggestions" [active]="data.taxCredits | contains: suggestion"
+            [title]="suggestion.name"></fc-chip>
     </div>
 </ng-template>
 
 <ng-template #editPensionTmpl let-form="form" let-data="data">
     <form [formGroup]="form" class="my-4 flex flex-col gap-2">
         <ng-container formGroupName="employment">
-            <ng-container
-                *ngIf="data.employment.pension"
-                formGroupName="pension"
-            >
-                <fc-form-field
-                    *ngIf="
+            <ng-container *ngIf="data.employment.pension" formGroupName="pension">
+                <fc-form-field *ngIf="
                         data.employment.pension.id !== 'pensn_noncontri' &&
                         data.employment.pension.id !== 'pensn_rac______' &&
                         data.employment.pension.id !== 'pensn_rac______'
-                    "
-                >
+                    ">
                     <span formLabel>Employer Contribution</span>
                     <span formSuffix>%</span>
-                    <input
-                        formInput
-                        type="number"
-                        formControlName="employerContribPercent"
-                    />
-                    <span
-                        formError
-                        *ngIf="pension.get('employerContribPercent').invalid"
-                    >
+                    <input formInput type="number" formControlName="employerContribPercent" />
+                    <span formError *ngIf="pension.get('employerContribPercent').invalid">
                     </span>
                 </fc-form-field>
                 <fc-form-field [hidden]="data.employment.pension.maxTaxFree">
                     <span formLabel>Personal Contribution</span>
                     <span formSuffix>%</span>
-                    <input
-                        formInput
-                        type="number"
-                        formControlName="personalContribPercent"
-                    />
-                    <span
-                        formError
-                        *ngIf="pension.get('personalContribPercent').invalid"
-                    >
+                    <input formInput type="number" formControlName="personalContribPercent" />
+                    <span formError *ngIf="pension.get('personalContribPercent').invalid">
                     </span>
                 </fc-form-field>
-                <div
-                    *ngIf="data.employment.pension.id !== 'pensn_noncontri'"
-                    class="flex items-center justify-center"
-                >
-                    <fc-checkbox formControlName="maxTaxFree"
-                        >Maximise Tax Free Contributions</fc-checkbox
-                    >
+                <div *ngIf="data.employment.pension.id !== 'pensn_noncontri'" class="flex items-center justify-center">
+                    <fc-checkbox formControlName="maxTaxFree">Maximise Tax Free Contributions</fc-checkbox>
                 </div>
                 <fc-form-field>
                     <span formLabel>Annual Growth Rate (Estimate)</span>
                     <span formSuffix>%</span>
-                    <input
-                        formInput
-                        type="number"
-                        formControlName="annualGrowthRate"
-                    />
-                    <span
-                        formError
-                        *ngIf="pension.get('annualGrowthRate').invalid"
-                    >
+                    <input formInput type="number" formControlName="annualGrowthRate" />
+                    <span formError *ngIf="pension.get('annualGrowthRate').invalid">
                     </span>
                 </fc-form-field>
             </ng-container>
@@ -457,10 +329,7 @@
     <form [formGroup]="form" class="my-4 flex flex-col gap-2">
         <ng-container formGroupName="employment">
             <ng-container formArrayName="benefitInKind">
-                <ng-container
-                    *ngIf="data.employment.benefitInKind[i]"
-                    [formGroupName]="i"
-                >
+                <ng-container *ngIf="data.employment.benefitInKind[i]" [formGroupName]="i">
                     <!-- <fc-form-field>
                         <span formLabel>Name</span>
                         <input formInput type="text" formControlName="name" />
@@ -473,15 +342,8 @@
                     <fc-form-field>
                         <span formLabel>Employer Paid</span>
                         <span formPrefix>€</span>
-                        <input
-                            formInput
-                            type="number"
-                            formControlName="amount"
-                        />
-                        <span
-                            formError
-                            *ngIf="benefitInKind.at(i).get('amount').invalid"
-                        >
+                        <input formInput type="number" formControlName="amount" />
+                        <span formError *ngIf="benefitInKind.at(i).get('amount').invalid">
                         </span>
                     </fc-form-field>
                 </ng-container>
@@ -497,20 +359,14 @@
                 <fc-form-field *ngIf="data.otherIncomes[i].editable">
                     <span formLabel>Name</span>
                     <input formInput type="text" formControlName="name" />
-                    <span
-                        formError
-                        *ngIf="otherIncomes.at(i).get('name').invalid"
-                    >
+                    <span formError *ngIf="otherIncomes.at(i).get('name').invalid">
                     </span>
                 </fc-form-field>
                 <fc-form-field>
                     <span formLabel>Gross</span>
                     <span formPrefix>€</span>
                     <input formInput type="number" formControlName="gross" />
-                    <span
-                        formError
-                        *ngIf="otherIncomes.at(i).get('gross').invalid"
-                    >
+                    <span formError *ngIf="otherIncomes.at(i).get('gross').invalid">
                     </span>
                 </fc-form-field>
             </ng-container>
@@ -522,10 +378,7 @@
     <form [formGroup]="form" class="my-4 flex flex-col gap-2">
         <ng-container formGroupName="employment">
             <ng-container formArrayName="ancillary">
-                <ng-container
-                    *ngIf="data.employment.ancillary[i]"
-                    [formGroupName]="i"
-                >
+                <ng-container *ngIf="data.employment.ancillary[i]" [formGroupName]="i">
                     <!-- <fc-form-field>
                         <span formLabel>Name</span>
                         <input formInput type="string" formControlName="name" />
@@ -538,15 +391,8 @@
                     <fc-form-field>
                         <span formLabel>Gross</span>
                         <span formPrefix>€</span>
-                        <input
-                            formInput
-                            type="number"
-                            formControlName="gross"
-                        />
-                        <span
-                            formError
-                            *ngIf="ancillary.at(i).get('gross').invalid"
-                        >
+                        <input formInput type="number" formControlName="gross" />
+                        <span formError *ngIf="ancillary.at(i).get('gross').invalid">
                         </span>
                     </fc-form-field>
                 </ng-container>
@@ -556,35 +402,15 @@
 </ng-template>
 
 <ng-template #editTmpl>
-    <svg
-        class="h-6 w-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-        ></path>
+    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
     </svg>
 </ng-template>
 
 <ng-template #checkTmpl>
-    <svg
-        class="h-6 w-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        ></path>
+    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
     </svg>
 </ng-template>

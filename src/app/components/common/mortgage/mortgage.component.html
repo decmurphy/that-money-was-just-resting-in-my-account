@@ -9,8 +9,8 @@
             }">
             <div class="flex grow flex-col">
                 <h6>
-                    {{ mortgage.amount | currency: "EUR":"symbol":"1.0-0" }} @
-                    {{ mortgage.aprc }}% APRC,
+                    {{ (mortgage.initialPropertyValue * mortgage.ltv / 100.0) | currency: "EUR":"symbol":"1.0-0" }} @
+                    {{ mortgage.interestRate }}% APRC,
                     {{ mortgage.term }}y
                 </h6>
                 <p class="ml-4">
@@ -38,19 +38,19 @@
                 '-mt-4 max-h-[96rem] pt-8': editing
             }">
             <fc-form-field *ngIf="showStartMonth" class="col-span-1">
-                <span formLabel>Start After Months</span>
-                <input formInput type="number" formControlName="startAfterMonth" />
-                <span formError *ngIf="form.get('startAfterMonth').invalid">
+                <span formLabel>Start Date</span>
+                <input formInput type="date" formControlName="startDate" />
+                <span formError *ngIf="form.get('startDate').invalid">
                 </span>
             </fc-form-field>
 
             <ng-container *ngIf="(xl$ | async) === true">
 
                 <span class="col-span-1 col-start-1 text-right">Property Value</span>
-                <fc-slider class="col-span-2" formControlName="value" [min]="100000" [max]="1000000"
+                <fc-slider class="col-span-2" formControlName="initialPropertyValue" [min]="100000" [max]="1000000"
                     [step]="1000">Property Value</fc-slider>
                 <span class="col-span-1 text-left font-mono">{{
-                    mortgage.value | currency: "EUR":"symbol":"0.0-0"
+                    mortgage.initialPropertyValue | currency: "EUR":"symbol":"0.0-0"
                     }}</span>
 
                 <span class="col-span-1 col-start-1 text-right">LTV</span>
@@ -67,15 +67,16 @@
                 </span>
 
                 <span class="col-span-1 text-right">APRC</span>
-                <fc-slider class="col-span-2" formControlName="aprc" [min]="2" [max]="6" [step]="0.05">APRC</fc-slider>
-                <span class="col-span-1 text-left font-mono">{{ mortgage.aprc }}%</span>
+                <fc-slider class="col-span-2" formControlName="interestRate" [min]="2" [max]="6"
+                    [step]="0.05">APRC</fc-slider>
+                <span class="col-span-1 text-left font-mono">{{ mortgage.interestRate }}%</span>
 
                 <ng-container *ngIf="!alwaysShow">
                     <span class="col-span-1 col-start-1 text-right">Help To Buy</span>
-                    <fc-slider class="col-span-2" formControlName="htb" [min]="0" [max]="30000"
+                    <fc-slider class="col-span-2" formControlName="helpToBuyAmount" [min]="0" [max]="30000"
                         [step]="500">Deposit</fc-slider>
                     <span class="col-span-1 text-left font-mono">{{
-                        mortgage.htb | currency: "EUR":"symbol":"0.0-0"
+                        mortgage.helpToBuyAmount | currency: "EUR":"symbol":"0.0-0"
                         }}</span>
                 </ng-container>
 
@@ -91,8 +92,8 @@
                 <fc-form-field class="col-span-2">
                     <span formLabel>Value</span>
                     <span formPrefix>€</span>
-                    <input formInput type="number" formControlName="value" />
-                    <span formError *ngIf="form.get('value').invalid"> </span>
+                    <input formInput type="number" formControlName="initialPropertyValue" />
+                    <span formError *ngIf="form.get('initialPropertyValue').invalid"> </span>
                 </fc-form-field>
                 <fc-form-field class="col-span-2">
                     <span formLabel>Term</span>
@@ -103,8 +104,8 @@
                 <fc-form-field class="col-span-2">
                     <span formLabel>APRC</span>
                     <span formSuffix>%</span>
-                    <input formInput formControlName="aprc" />
-                    <span formError *ngIf="form.get('aprc').invalid"> </span>
+                    <input formInput formControlName="interestRate" />
+                    <span formError *ngIf="form.get('interestRate').invalid"> </span>
                 </fc-form-field>
                 <fc-form-field class="col-span-2">
                     <span formLabel>LTV</span>
@@ -115,8 +116,8 @@
                 <fc-form-field *ngIf="!alwaysShow" class="col-span-2">
                     <span formLabel>HTB</span>
                     <span formPrefix>€</span>
-                    <input formInput type="number" formControlName="htb" />
-                    <span formError *ngIf="form.get('htb').invalid"> </span>
+                    <input formInput type="number" formControlName="helpToBuyAmount" />
+                    <span formError *ngIf="form.get('helpToBuyAmount').invalid"> </span>
                 </fc-form-field>
                 <fc-form-field class="col-span-2">
                     <span formLabel>Overpayments</span>

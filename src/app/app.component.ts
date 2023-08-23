@@ -10,11 +10,10 @@ import { DataService } from './services/data.service';
 })
 export class AppComponent implements OnInit {
     netWorthData$: Observable<GenericPlotData[]>;
-    mortgageData$: Observable<GenericPlotData[]>;
-    constructor(private dataService: DataService) {}
+
+    constructor(private dataService: DataService) { }
 
     ngOnInit(): void {
         this.netWorthData$ = this.dataService.getNetWorthData();
-        this.mortgageData$ = this.dataService.getMortgageData();
     }
 }

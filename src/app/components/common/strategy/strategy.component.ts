@@ -5,9 +5,8 @@ import { Subscription, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { StrategyEvent } from 'app/interfaces/v2/strategy/strategy-event';
-import { Strategy } from 'app/interfaces/v2/strategy/strategy';
+import { Strategy } from 'app/interfaces/v3/strategy';
+import { Event } from 'app/interfaces/v3/events/events';
 
 @Component({
     selector: 'fc-strategy',
@@ -49,34 +48,23 @@ export class StrategyComponent extends SubscriptionHandler implements OnInit {
                 takeUntil(this.ngUnsubscribe),
                 tap((fv) => this.dataService.setStrategy(fv))
             )
-            .subscribe((fv) => {});
+            .subscribe((fv) => { });
     }
 
     addEvent() {
         this.dataService.addEvent();
     }
 
-    deleteEvent(i: number): void {
-        this.dataService.deleteEvent(i);
-    }
-
-    drop(location: CdkDragDrop<StrategyEvent[]>): void {
-        if (location.previousIndex !== location.currentIndex) {
-            moveItemInArray(
-                this.data.events,
-                location.previousIndex,
-                location.currentIndex
-            );
-            this.dataService.setStrategy(this.data);
-        }
+    deleteEvent(id: string): void {
+        this.dataService.deleteEvent(id);
     }
 
     toggleInfo() {
         this.showInfo = !this.showInfo;
     }
 
-    trackEvent: TrackByFunction<StrategyEvent> = (
+    trackEvent: TrackByFunction<Event> = (
         index: number,
-        item: StrategyEvent
-    ) => index;
+        item: Event
+    ) => item.id;
 }

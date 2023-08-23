@@ -12,11 +12,8 @@ import { Subscription, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { TaxPayer } from 'app/interfaces/v2/tax-payer';
-import { Pension } from 'app/interfaces/v2/pension';
-import { Income } from 'app/interfaces/v2/income';
-import { BenefitInKind } from 'app/interfaces/v2/benefit-in-kind';
-import { TaxCredit } from 'app/interfaces/v2/tax-credit';
+import { BenefitInKind, Income, Pension, TaxPayer } from 'app/interfaces/v3/people/people';
+import { TaxCredit } from 'app/interfaces/v3/tax/tax';
 
 @Component({
     selector: 'fc-taxpayer',

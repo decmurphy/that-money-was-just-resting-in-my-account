@@ -1,227 +1,153 @@
-<div
-    class="list-element relative flex w-full items-center font-bold"
-    [ngClass]="{
+<div class="list-element relative flex w-full items-center font-bold" [ngClass]="{
         'sticky top-0': editing
-    }"
->
-    <svg cdkDragHandle viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6">
-        <path
-            fill-rule="evenodd"
-            d="M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-            clip-rule="evenodd"
-        ></path>
-    </svg>
+    }">
     <p class="flex grow ml-4">
-        {{ event | summary: taxpayers }}
+        {{ event | summary }}
     </p>
     <button class="btn primary h-8 w-8 p-1 ml-2" (click)="editing = !editing">
-        <div
-            class="rotate-0 transition-transform duration-300"
-            [ngClass]="{
+        <div class="rotate-0 transition-transform duration-300" [ngClass]="{
                 'rotate-[360deg]': editing
-            }"
-        >
-            <ng-container
-                *ngIf="editing; then checkTmpl; else editTmpl"
-            ></ng-container>
+            }">
+            <ng-container *ngIf="editing; then checkTmpl; else editTmpl"></ng-container>
         </div>
     </button>
     <button class="btn primary h-8 w-8 p-1 ml-2" (click)="delete()">
-        <svg
-            class="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            ></path>
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+            </path>
         </svg>
     </button>
 </div>
 
-<form
-    *ngIf="form"
-    [formGroup]="form"
+<form *ngIf="form" [formGroup]="form"
     class="flex flex-wrap gap-1 relative w-full overflow-hidden border-4 border-t-0 border-sky-800 p-4 -mt-4 transition-all duration-500 rounded-b-lg"
     [ngClass]="{
         'max-h-0 py-0': !editing,
         'max-h-[96rem] pt-8': editing
-    }"
->
+    }">
     <fc-form-field class="flex basis-px">
-        <span formLabel>After Months</span>
-        <input formInput type="number" formControlName="afterMonths" />
-        <span formError *ngIf="form.get('afterMonths').invalid"> </span>
+        <span formLabel>Start Date</span>
+        <input formInput type="date" formControlName="startDate" />
+        <span formError *ngIf="form.get('startDate').invalid"> </span>
     </fc-form-field>
     <fc-form-field class="flex basis-px">
         <span formLabel>Modify</span>
-        <fc-select formInput formControlName="type">
-            <fc-option
-                *ngFor="let type of eventTypes; trackBy: trackType"
-                [value]="type"
-                (click)="selectType(type)"
-            >
-                <span>{{ type }}</span>
+        <fc-select formInput formControlName="_type">
+            <fc-option *ngFor="let t of eventTypes; trackBy: trackType" [value]="t">
+                <span>{{ t }}</span>
             </fc-option>
         </fc-select>
-        <span formError *ngIf="form.get('type').invalid"> </span>
+        <span formError *ngIf="form.get('_type').invalid"> </span>
     </fc-form-field>
-    <ng-container *ngIf="selectedType | requiresTaxpayer">
+
+    <ng-container *ngIf="selectedType == ALL_TYPES.MORTGAGE_LUMP_SUM">
         <fc-form-field class="flex basis-px">
-            <span formLabel>TaxPayer</span>
-            <fc-select formInput formControlName="taxpayerId">
-                <fc-option
-                    *ngFor="let tp of taxpayers; trackBy: trackTaxpayer"
-                    [value]="tp.id"
-                    >{{ tp.details.name }}</fc-option
-                >
+            <span formLabel>Amount</span>
+            <input formInput type="number" formControlName="amount" />
+            <span formError *ngIf="form.get('amount').invalid"> </span>
+        </fc-form-field>
+    </ng-container>
+
+    <ng-container *ngIf="selectedType == ALL_TYPES.MORTGAGE_APRC">
+        <fc-form-field class="flex basis-px">
+            <span formLabel>New Rate</span>
+            <input formInput type="number" formControlName="newRate" />
+            <span formError *ngIf="form.get('newRate').invalid"> </span>
+        </fc-form-field>
+    </ng-container>
+
+    <ng-container *ngIf="selectedType == ALL_TYPES.MORTGAGE_REPAYMENT">
+        <fc-form-field class="flex basis-px">
+            <span formLabel>Amount</span>
+            <input formInput type="number" formControlName="newMonthlyRepayment" />
+            <span formError *ngIf="form.get('newMonthlyRepayment').invalid"> </span>
+        </fc-form-field>
+    </ng-container>
+
+    <ng-container *ngIf="selectedType == ALL_TYPES.CHANGE_EXPENDITURE">
+        <fc-form-field class="flex basis-px">
+            <span formLabel>Expenditure</span>
+            <fc-select formInput formControlName="expenditureName">
+                <fc-option *ngFor="
+                        let na of allExpenditures;
+                        trackBy: trackNamedAmount
+                    " [value]="na.name">
+                    <span>{{ na.name }} - {{ na.amount | currency: "EUR" }}</span>
+                </fc-option>
             </fc-select>
-            <span formError *ngIf="form.get('taxpayerId').invalid"> </span>
         </fc-form-field>
-    </ng-container>
-    <fc-form-field *ngIf="selectedType != null" class="flex basis-px">
-        <span formLabel>Operation</span>
-        <fc-select formInput formControlName="operation">
-            <fc-option
-                *ngFor="
-                    let op of operations | filterOpsForType: selectedType;
-                    trackBy: trackOperation
-                "
-                [value]="op"
-                (click)="selectOperation(op)"
-            >
-                <span>{{ op }}</span>
-            </fc-option>
-        </fc-select>
-        <span formError *ngIf="form.get('operation').invalid"> </span>
-    </fc-form-field>
-    <ng-container *ngIf="valueTypes.indexOf(selectedType) > -1">
         <fc-form-field class="flex basis-px">
-            <span formLabel>Value</span>
-            <input formInput type="number" formControlName="value" />
-            <span formError *ngIf="form.get('value').invalid"> </span>
+            <span formLabel>Amount</span>
+            <span formPrefix>€</span>
+            <input formInput type="number" formControlName="newValue" />
+            <span formError *ngIf="form.get('newValue').invalid">
+            </span>
         </fc-form-field>
     </ng-container>
-    <ng-container *ngIf="namedAmountTypes.indexOf(selectedType) > -1">
-        <ng-container *ngIf="selectedOperation === SEO.ADD">
-            <!--
-                here put two fileds - one for name, one for amount
-            -->
-            <div
-                class="flex flex-wrap gap-1 basis-px rounded border px-4 py-2"
-                formGroupName="namedAmount"
-            >
-                <fc-form-field class="flex basis-px">
-                    <span formLabel>Name</span>
-                    <input formInput type="text" formControlName="name" />
-                    <span formError *ngIf="namedAmount.get('name').invalid">
-                    </span>
-                </fc-form-field>
-                <fc-form-field class="flex basis-px">
-                    <span formLabel>Amount</span>
-                    <span formPrefix>€</span>
-                    <input formInput type="number" formControlName="amount" />
-                    <span formError *ngIf="namedAmount.get('amount').invalid">
-                    </span>
-                </fc-form-field>
-            </div>
-        </ng-container>
-        <ng-container *ngIf="selectedOperation === SEO.CHANGE">
-            <!--
-                here put two fields, one is a select to go through the current namedamounts, the other is a input to change the amount
-            -->
-            <div class="flex flex-wrap gap-1 basis-px rounded border px-4 py-2">
-                <ng-container formGroupName="namedAmount">
-                    <fc-form-field class="flex basis-px">
-                        <span formLabel>Item</span>
-                        <fc-select formInput formControlName="_id">
-                            <fc-option
-                                *ngFor="
-                                    let na of modifiableNamedAmounts;
-                                    trackBy: trackNamedAmount
-                                "
-                                [value]="na.id"
-                                (click)="selectModifiableNamedAmount(na)"
-                            >
-                                <span
-                                    >{{ na.name }} -
-                                    {{ na.amount | currency: "EUR" }}</span
-                                >
-                            </fc-option>
-                        </fc-select>
-                    </fc-form-field>
-                </ng-container>
-                <fc-form-field class="flex basis-px">
-                    <span formLabel>New Value</span>
-                    <span formPrefix>€</span>
-                    <input formInput type="number" formControlName="value" />
-                    <span formError *ngIf="form.get('value').invalid"> </span>
-                </fc-form-field>
-            </div>
-        </ng-container>
-        <ng-container *ngIf="selectedOperation === SEO.REMOVE">
-            <!--
-                select to remove a namedamount
-            -->
-            <ng-container formGroupName="namedAmount">
-                <fc-form-field class="flex basis-px">
-                    <span formLabel>Item</span>
-                    <fc-select formInput formControlName="_id">
-                        <fc-option
-                            *ngFor="
-                                let na of modifiableNamedAmounts;
-                                trackBy: trackNamedAmount
-                            "
-                            [value]="na.id"
-                            (click)="selectModifiableNamedAmount(na)"
-                        >
-                            <span
-                                >{{ na.name }} -
-                                {{ na.amount | currency: "EUR" }}</span
-                            >
-                        </fc-option>
-                    </fc-select>
-                </fc-form-field>
-            </ng-container>
-        </ng-container>
+
+    <ng-container *ngIf="selectedType == ALL_TYPES.REMOVE_EXPENDITURE">
+        <fc-form-field class="flex basis-px">
+            <span formLabel>Expenditure</span>
+            <fc-select formInput formControlName="expenditureName">
+                <fc-option *ngFor="
+                        let na of allExpenditures;
+                        trackBy: trackNamedAmount
+                    " [value]="na.name">
+                    <span>{{ na.name }} - {{ na.amount | currency: "EUR" }}</span>
+                </fc-option>
+            </fc-select>
+        </fc-form-field>
+    </ng-container>
+
+    <ng-container
+        *ngIf="selectedType == ALL_TYPES.MONTHLY_EXPENDITURE || selectedType == ALL_TYPES.YEARLY_EXPENDITURE || selectedType == ALL_TYPES.ONCE_OFF_EXPENDITURE">
+        <div class="flex flex-wrap gap-1 basis-px rounded border px-4 py-2" formGroupName="expenditure">
+            <fc-form-field class="flex basis-px">
+                <span formLabel>Name</span>
+                <input formInput type="text" formControlName="name" />
+                <span formError *ngIf="expenditure.get('name').invalid">
+                </span>
+            </fc-form-field>
+            <fc-form-field class="flex basis-px">
+                <span formLabel>Amount</span>
+                <span formPrefix>€</span>
+                <input formInput type="number" formControlName="amount" />
+                <span formError *ngIf="expenditure.get('amount').invalid">
+                </span>
+            </fc-form-field>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="selectedType == ALL_TYPES.EMPLOYMENT_INCOME">
+        <fc-form-field class="flex basis-px">
+            <span formLabel>Job</span>
+            <fc-select formInput formControlName="jobName">
+                <fc-option *ngFor=" let income of allIncomes; trackBy: trackIncome " [value]="income.name">
+                    <span>{{ income.name }} - {{ income.gross | currency: "EUR" }}</span>
+                </fc-option>
+            </fc-select>
+        </fc-form-field>
+        <fc-form-field class="flex basis-px">
+            <span formLabel>New Salary</span>
+            <span formPrefix>€</span>
+            <input formInput type="number" formControlName="newSalary" />
+            <span formError *ngIf="form.get('newSalary').invalid">
+            </span>
+        </fc-form-field>
     </ng-container>
 </form>
 
 <ng-template #editTmpl>
-    <svg
-        class="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-        ></path>
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
     </svg>
 </ng-template>
 
 <ng-template #checkTmpl>
-    <svg
-        class="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        ></path>
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
     </svg>
 </ng-template>

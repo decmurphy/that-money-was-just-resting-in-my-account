@@ -12,41 +12,33 @@ import { Subscription, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
 import { DataService } from 'app/services/data.service';
-import { StrategyEvent } from 'app/interfaces/v2/strategy/strategy-event';
-import { TaxPayer } from 'app/interfaces/v2/tax-payer';
-import { StrategyEventOperation } from 'app/interfaces/v2/strategy/strategy-event-operation';
-import { StrategyEventType } from 'app/interfaces/v2/strategy/strategy-event-type';
-import { NamedAmount } from 'app/interfaces/v2/named-amount';
-import { FormData } from 'app/interfaces/v2/form-data';
+import { Household } from 'app/interfaces/v3/household';
+import { Income, TaxPayer } from 'app/interfaces/v3/people/people';
+import { NamedAmount } from 'app/interfaces/v3/named-amount';
+import { Event, StrategyEventType } from 'app/interfaces/v3/events/events';
 
 @Component({
     selector: 'fc-strategy-event',
     templateUrl: './strategy-event.component.html',
     styleUrls: ['./strategy-event.component.css'],
 })
-export class StrategyEventComponent
-    extends SubscriptionHandler
-    implements OnInit
-{
-    @Input() eventIdx: number;
-    @Output() onDelete: EventEmitter<number> = new EventEmitter();
+export class StrategyEventComponent extends SubscriptionHandler implements OnInit {
+
+    @Input() eventId: string;
+    @Output() onDelete: EventEmitter<string> = new EventEmitter();
+
     editing = false;
-    data: FormData;
+    data: Household;
     taxpayers: TaxPayer[];
-    event: StrategyEvent;
+    allExpenditures: NamedAmount[];
+    allIncomes: Income[];
+    event: Event;
     form: FormGroup;
     formValueChangesSub: Subscription;
 
-    SEO = StrategyEventOperation;
-
+    ALL_TYPES = StrategyEventType;
     selectedType: StrategyEventType;
-    selectedOperation: StrategyEventOperation;
-    modifiableNamedAmounts: NamedAmount[];
-
-    operations: StrategyEventOperation[];
     eventTypes: StrategyEventType[];
-    valueTypes: StrategyEventType[];
-    namedAmountTypes: StrategyEventType[];
 
     constructor(private fb: FormBuilder, private dataService: DataService) {
         super();
@@ -59,65 +51,38 @@ export class StrategyEventComponent
             .subscribe((data) => {
                 this.data = data;
                 this.taxpayers = data.taxpayers;
-                this.event = data.strategy.events[this.eventIdx];
-                // console.log(this.event);
+                this.event = data.strategy.events.find(ev => ev.id == this.eventId);
                 if (this.event) {
-                    this.selectType(this.event.type);
-                    this.selectOperation(this.event.operation);
+                    this.selectedType = this.event.type;
                     this.resetForm();
                 }
-            });
 
-        this.operations = [
-            StrategyEventOperation.ADD,
-            StrategyEventOperation.CHANGE,
-            StrategyEventOperation.REMOVE,
-        ];
+                this.data.expenditures.addedItems = this.data.strategy.events.filter(ev => {
+                    return ev.type == StrategyEventType.MONTHLY_EXPENDITURE || ev.type == StrategyEventType.YEARLY_EXPENDITURE;
+                }).map(ev => (ev as any).expenditure);
+
+                this.allExpenditures = [
+                    ...this.data.expenditures.monthlyItems,
+                    ...this.data.expenditures.yearlyItems,
+                    ...this.data.expenditures.addedItems,
+                    ...this.data.expenditures.onceOffItems
+                ];
+                this.allIncomes = data.taxpayers.map(tp => tp.getAllIncomes()).flat();
+
+            });
 
         this.eventTypes = [
             StrategyEventType.EMPLOYMENT_INCOME,
             StrategyEventType.MONTHLY_EXPENDITURE,
             StrategyEventType.YEARLY_EXPENDITURE,
             StrategyEventType.ONCE_OFF_EXPENDITURE,
+            StrategyEventType.REMOVE_EXPENDITURE,
+            StrategyEventType.CHANGE_EXPENDITURE,
             StrategyEventType.MORTGAGE_APRC,
             StrategyEventType.MORTGAGE_REPAYMENT,
             StrategyEventType.MORTGAGE_LUMP_SUM,
         ];
 
-        this.valueTypes = [
-            StrategyEventType.EMPLOYMENT_INCOME,
-            StrategyEventType.ONCE_OFF_EXPENDITURE,
-            StrategyEventType.MORTGAGE_APRC,
-            StrategyEventType.MORTGAGE_REPAYMENT,
-            StrategyEventType.MORTGAGE_LUMP_SUM,
-        ];
-
-        this.namedAmountTypes = [
-            StrategyEventType.MONTHLY_EXPENDITURE,
-            StrategyEventType.YEARLY_EXPENDITURE,
-        ];
-    }
-
-    selectOperation(op: StrategyEventOperation): void {
-        this.selectedOperation = op;
-    }
-
-    selectType(type: StrategyEventType): void {
-        this.selectedType = type;
-        switch (this.selectedType) {
-            case StrategyEventType.MONTHLY_EXPENDITURE:
-                this.modifiableNamedAmounts =
-                    this.data.expenditures.monthlyItems;
-                break;
-            case StrategyEventType.YEARLY_EXPENDITURE:
-                this.modifiableNamedAmounts =
-                    this.data.expenditures.yearlyItems;
-                break;
-            default:
-                this.modifiableNamedAmounts = [];
-                break;
-        }
-        // console.log(this.modifiableNamedAmounts);
     }
 
     selectModifiableNamedAmount(na: NamedAmount): void {
@@ -125,7 +90,7 @@ export class StrategyEventComponent
     }
 
     resetForm(): void {
-        this.event = StrategyEvent.create(this.event);
+        this.event = Event.create(this.event);
         this.form = this.event.toFormGroup(this.fb);
         this.form.updateValueAndValidity();
         this.form.markAllAsTouched();
@@ -137,25 +102,24 @@ export class StrategyEventComponent
         this.formValueChangesSub = this.form.valueChanges
             .pipe(
                 takeUntil(this.ngUnsubscribe),
-                tap((fv) => this.dataService.setEvent(this.eventIdx, fv))
+                tap((fv) => {
+                    this.dataService.setEvent(this.eventId, fv);
+                })
             )
             .subscribe((fv) => {
-                console.log(this.form);
-                console.log(fv);
             });
     }
 
     delete(): void {
-        this.onDelete.emit(this.eventIdx);
+        this.onDelete.emit(this.eventId);
     }
 
-    saveEvent(): void {
-        this.dataService.setEvent(this.eventIdx, this.form.getRawValue());
-        this.editing = false;
+    get expenditure(): FormGroup {
+        return this.form.get('expenditure') as FormGroup;
     }
 
-    get namedAmount(): FormGroup {
-        return this.form.get('namedAmount') as FormGroup;
+    get salary(): FormGroup {
+        return this.form.get('salary') as FormGroup;
     }
 
     trackTaxpayer: TrackByFunction<TaxPayer> = (
@@ -163,23 +127,18 @@ export class StrategyEventComponent
         item: TaxPayer
     ) => item.id;
 
-    trackOperation: TrackByFunction<StrategyEventOperation> = (
-        index: number,
-        item: StrategyEventOperation
-    ) => index;
-
     trackType: TrackByFunction<StrategyEventType> = (
         index: number,
         item: StrategyEventType
-    ) => index;
+    ) => item;
 
     trackNamedAmount: TrackByFunction<NamedAmount> = (
         index: number,
         item: NamedAmount
     ) => item.id;
-}
 
-export interface TypeAndOps {
-    type: StrategyEventType;
-    operations: StrategyEventOperation[];
+    trackIncome: TrackByFunction<Income> = (
+        index: number,
+        item: Income
+    ) => item.id;
 }

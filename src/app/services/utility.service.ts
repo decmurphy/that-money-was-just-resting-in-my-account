@@ -6,13 +6,13 @@ import { AppServicesModule } from '../modules/app-services.module';
     providedIn: AppServicesModule,
 })
 export class UtilityService {
-    constructor() {}
+    constructor() { }
 
     static newID(prefix = '') {
         if (prefix != '') {
-            if (prefix.length < 3 || prefix.length > 5) {
+            if (prefix.length < 2 || prefix.length > 10) {
                 throw new Error(
-                    `Prefix [${prefix}] length must be 3-5 characters`
+                    `Prefix [${prefix}] length must be 2-10 characters`
                 );
             }
         }

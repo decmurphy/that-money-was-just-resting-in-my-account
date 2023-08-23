@@ -5,7 +5,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subscription, map, takeUntil, tap } from 'rxjs';
 
 import { SubscriptionHandler } from 'app/interfaces/misc/subscription-handler';
-import { Mortgage } from 'app/interfaces/v2/mortgage';
+
+import 'app/interfaces/extensions/date.extensions';
+import { Mortgage } from 'app/interfaces/v3/mortgage';
 
 @Component({
     selector: 'fc-mortgage',
@@ -48,6 +50,7 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit, On
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['mortgage'] && changes['mortgage'].previousValue != changes['mortgage'].currentValue) {
             this.mortgage = Mortgage.create(changes['mortgage'].currentValue);
+            this.mortgage.startDate.toStartOfMonth();
             this.resetForm();
         }
     }
@@ -63,10 +66,9 @@ export class MortgageComponent extends SubscriptionHandler implements OnInit, On
 
     resetForm() {
         this.mortgage = Mortgage.create(this.mortgage);
-        console.log(this.mortgage);
 
-        this.monthlyRepayments = this.mortgage.findRepaymentForTerm();
-        this.totalCumulativeInterest = this.mortgage.getTotalInterest();
+        this.monthlyRepayments = Mortgage.findRepaymentForTerm(this.mortgage.principal, +this.mortgage.interestRate, this.mortgage.term * 12, this.mortgage.overpaymentPct);
+        this.totalCumulativeInterest = this.mortgage.getCostOfCredit();
 
         this.form = this.mortgage.toFormGroup(this.fb);
         this.form.updateValueAndValidity();

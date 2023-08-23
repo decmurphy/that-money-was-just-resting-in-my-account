@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormElementsModule } from '../../modules/form-elements/form-elements.module';
 
 import { IncomePensionComponent } from './income-pension/income-pension.component';
@@ -22,8 +21,6 @@ import { SumPipe } from './pipes/sum.pipe';
 import { AllIncomesPipe } from './pipes/all-incomes.pipe';
 import { FilterByNotInPipe } from './pipes/filter-by-not-in.pipe';
 import { ContainsPipe } from './pipes/contains.pipe';
-import { FilterOpsForTypePipe } from './pipes/filter-ops-for-type.pipe';
-import { RequiresTaxpayerPipe } from './pipes/requires-taxpayer.pipe';
 import { DisplayPipe } from './table/display.pipe';
 
 @NgModule({
@@ -33,7 +30,6 @@ import { DisplayPipe } from './table/display.pipe';
     FormsModule,
     ReactiveFormsModule,
     FormElementsModule,
-    DragDropModule,
   ],
   declarations: [
     IncomePensionComponent,
@@ -53,8 +49,6 @@ import { DisplayPipe } from './table/display.pipe';
     AllIncomesPipe,
     FilterByNotInPipe,
     ContainsPipe,
-    FilterOpsForTypePipe,
-    RequiresTaxpayerPipe,
     DisplayPipe,
   ],
   exports: [
@@ -75,8 +69,6 @@ import { DisplayPipe } from './table/display.pipe';
     AllIncomesPipe,
     FilterByNotInPipe,
     ContainsPipe,
-    FilterOpsForTypePipe,
-    RequiresTaxpayerPipe,
     DisplayPipe,
   ]
 })
