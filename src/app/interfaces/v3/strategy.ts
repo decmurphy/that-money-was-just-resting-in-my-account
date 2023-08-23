@@ -28,7 +28,7 @@ export class Strategy extends FormWithErrors {
         }
         return new Strategy(
             fd._id,
-            new Date(fd.startDate),
+            new Date(fd.startDate).toStartOfYear(),
             new Date(fd.endDate),
             fd.events.map(it => Event.create(it))
         );

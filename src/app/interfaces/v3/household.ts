@@ -65,11 +65,11 @@ export class Household extends FormWithErrors {
 
         const rent = new NamedAmount(null, 'Rent', 2000);
 
-        const today = new Date().toStartOfMonth();
+        const startOfYear = new Date().toStartOfYear();
         const startDate = new Date().toStartOfMonth();
         startDate.toStartOfMonth();
 
-        const thirtyFiveYearsFromNow = startDate.plusYears(35);
+        const thirtyFiveYearsFromNow = startOfYear.plusYears(35);
 
         return new Household(
             null,
@@ -94,7 +94,7 @@ export class Household extends FormWithErrors {
             new Mortgage(null, startDate, 450000, '3.65', 35, 90, 30000, 0),
             new Strategy(
                 null,
-                today,
+                startOfYear,
                 thirtyFiveYearsFromNow,
                 [
                     // new StrategyEvent(
