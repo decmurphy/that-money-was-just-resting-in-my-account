@@ -120,6 +120,18 @@ export class DataService {
 
     updateFormInputs() {
 
+        /**
+         * Evaluate certain things for today's date so they appear correct on the UI
+         */
+        const startOfThisYear = new Date().toStartOfYear();
+        this.data.taxpayers.forEach(tp => {
+            tp.evaluatePension(startOfThisYear);
+            tp.evaluateTax(startOfThisYear);
+        });
+
+        /**
+         * For everything else, make a copy so the UI data doesn't get changed via executing strategy events
+         */
         const copy = Household.create(this.data);
         copy.evaluate();
 
