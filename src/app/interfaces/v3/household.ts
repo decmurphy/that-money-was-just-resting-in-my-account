@@ -12,8 +12,8 @@ export class Household extends FormWithErrors {
 
     cumulativeSavings: number = 0;
 
-    cumulativeSavingsSeries: Map<number, number> = new Map();
-    cumulativeNetWorthSeries: Map<number, number> = new Map();
+    private cumulativeSavingsSeries: Map<number, number> = new Map();
+    private cumulativeNetWorthSeries: Map<number, number> = new Map();
 
     constructor(
         public _id: string = null,
