@@ -38,9 +38,25 @@
             reflected in the graphs and data
         </p>
     </div>
-    <div class="w-full mt-4 space-y-4 pb-2" formArrayName="events">
-        <div *ngFor="let ev of data.events; trackBy: trackEvent; let i = index" [formGroupName]="i">
-            <fc-strategy-event [eventId]="ev.id" (onDelete)="deleteEvent($event)"></fc-strategy-event>
+    <div class="w-full mt-4 space-y-4 pb-2">
+        <div class="flex flex-row gap-4">
+            <fc-form-field class="col-span-1">
+                <span formLabel>Start Date</span>
+                <input formInput type="date" formControlName="startDate" />
+                <span formError *ngIf="form.get('startDate').invalid">
+                </span>
+            </fc-form-field>
+            <fc-form-field class="col-span-1">
+                <span formLabel>End Date</span>
+                <input formInput type="date" formControlName="endDate" />
+                <span formError *ngIf="form.get('endDate').invalid">
+                </span>
+            </fc-form-field>
         </div>
+        <ng-container formArrayName="events">
+            <div *ngFor="let ev of data.events; trackBy: trackEvent; let i = index" [formGroupName]="i">
+                <fc-strategy-event [eventId]="ev.id" (onDelete)="deleteEvent($event)"></fc-strategy-event>
+            </div>
+        </ng-container>
     </div>
 </form>

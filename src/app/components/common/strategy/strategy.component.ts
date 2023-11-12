@@ -39,6 +39,8 @@ export class StrategyComponent extends SubscriptionHandler implements OnInit {
         this.form.updateValueAndValidity();
         this.form.markAllAsTouched();
 
+        console.log(this.data);
+
         if (this.formValueChangesSub != null) {
             this.formValueChangesSub.unsubscribe();
         }
